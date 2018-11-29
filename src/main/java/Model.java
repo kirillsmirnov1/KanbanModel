@@ -61,6 +61,9 @@ public class Model {
         fillBacklog();
         System.out.println("\nIn backlog: ");
         stages.get(WorkStages.BACKLOG).printTasks();
+        // TODO закончить внешний цикл
+
+        // TODO сделать внутренний цикл
     }
 
     // Заполнение бэклога
