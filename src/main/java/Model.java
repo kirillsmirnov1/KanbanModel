@@ -72,11 +72,9 @@ public class Model {
 
     // Создание задачи со случайным названием и стоимостью
     private Task generateRandomTask() {
-        Task task = new Task(RandomStringUtils   // рандомное имя TODO брать осмысленные имена
+        return new Task(RandomStringUtils   // рандомное имя TODO брать осмысленные имена
                 .random(10, true, false),
                 generateRandomCosts());
-
-        return task;
     }
 
     // Создание случайных стоимостей для задачи
