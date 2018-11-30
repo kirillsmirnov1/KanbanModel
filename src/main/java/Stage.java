@@ -1,9 +1,7 @@
-import java.util.ArrayList;
-
 // Абстрактный класс Стадии
 public abstract class Stage {
     protected int WIPLimit;               // Ограничение на количество задач
-    protected final WorkStages TYPE;      // Тип Стадии
+    protected final StageType TYPE;      // Тип Стадии
 
     public int getWIPLimit() {
         return WIPLimit;
@@ -13,12 +11,12 @@ public abstract class Stage {
         this.WIPLimit = WIPLimit;
     }
 
-    public WorkStages getTYPE() {
+    public StageType getTYPE() {
         return TYPE;
     }
 
     // Конструктор, заполняет тип и лимит Стадии
-    Stage(WorkStages type, int WIPLimit){
+    Stage(StageType type, int WIPLimit){
         this.TYPE = type;
         this.WIPLimit = WIPLimit;
     }

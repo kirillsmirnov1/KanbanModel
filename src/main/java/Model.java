@@ -1,22 +1,19 @@
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.stream.Stream;
 
 public class Model {
-    private HashMap<WorkStages, Stage>  stages;
+    private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
 
     private static final int[] DEFAULT_WIP = {3, 3, 3, 3, 3, 3, 3, Integer.MAX_VALUE};  // TODO заполнять из файла
     private static final int   NUMBER_OF_WORKERS = 13;                                  // TODO заполнять из файла
-    private static final int   NUMBER_OF_STAGES = WorkStages.values().length;
+    private static final int   NUMBER_OF_STAGES = StageType.values().length;
     private static final int   NUMBER_OF_DAYS = 10;
 
     private double productivityLevel;   // минимум продуктивности
@@ -26,8 +23,8 @@ public class Model {
         stages  = new HashMap<>();
         workers = new Worker[NUMBER_OF_WORKERS];
 
-        for(WorkStages stage : WorkStages.values()){
-            if(stage == WorkStages.BACKLOG || stage == WorkStages.DEPLOYMENT)
+        for(StageType stage : StageType.values()){
+            if(stage == StageType.BACKLOG || stage == StageType.DEPLOYMENT)
                 stages.put(stage, new StageStorage(stage, DEFAULT_WIP[stage.ordinal()]));
             else
                 stages.put(stage, new StageWorking(stage, DEFAULT_WIP[stage.ordinal()]));
@@ -40,7 +37,7 @@ public class Model {
         }
 
         System.out.println("Model contains: \nStages: ");
-        Stream.of(WorkStages.toSortedStringArray(stages)).forEach(System.out::println);
+        Stream.of(StageType.toSortedStringArray(stages)).forEach(System.out::println);
         System.out.println("Workers: ");
         Stream.of(workers).forEach(System.out::println);
     }
@@ -60,7 +57,7 @@ public class Model {
         productivityLevel = 1d;
         fillBacklog();
         System.out.println("\nIn backlog: ");
-        stages.get(WorkStages.BACKLOG).printTasks();
+        stages.get(StageType.BACKLOG).printTasks();
         // TODO закончить внешний цикл
 
         // TODO сделать внутренний цикл
@@ -68,16 +65,9 @@ public class Model {
 
     // Заполнение бэклога
     private void fillBacklog() {
-        while (stages.get(WorkStages.BACKLOG).canAddTask()){
-            stages.get(WorkStages.BACKLOG).addTask(generateRandomTask());
+        while (stages.get(StageType.BACKLOG).canAddTask()){
+            stages.get(StageType.BACKLOG).addTask(Task.generateRandomTask());
         }
-    }
-
-    // Создание задачи со случайным названием и стоимостью
-    private Task generateRandomTask() {
-        return new Task(RandomStringUtils   // рандомное имя TODO брать осмысленные имена
-                .random(10, true, false),
-                generateRandomCosts());
     }
 
     // Создание случайных стоимостей для задачи

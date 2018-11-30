@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class StageStorage extends Stage {
     private ArrayList<Task> tasksInStorage;
 
-    StageStorage(WorkStages type, int WIPLimit){
+    StageStorage(StageType type, int WIPLimit){
         super(type, WIPLimit);
         tasksInStorage = new ArrayList<>();
     }

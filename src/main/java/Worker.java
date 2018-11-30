@@ -8,11 +8,11 @@ public class Worker {
 
     Worker(String name, double[] productivityAtStage){
 
-        if(productivityAtStage.length != WorkStages.values().length)
+        if(productivityAtStage.length != StageType.values().length)
             throw new IllegalArgumentException("Неправильный размер массива");
 
-        if(productivityAtStage[WorkStages.BACKLOG.ordinal()] != 0 ||
-           productivityAtStage[WorkStages.DEPLOYMENT.ordinal()] != 0)
+        if(productivityAtStage[StageType.BACKLOG.ordinal()] != 0 ||
+           productivityAtStage[StageType.DEPLOYMENT.ordinal()] != 0)
             throw new IllegalArgumentException("Первый и последний столбцы не могут иметь нагрузку");
 
 
