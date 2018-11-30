@@ -66,6 +66,6 @@ public class Task {
             randomCosts.put(stage, new Random().nextInt(10));
         }
 
-        return new Task(RandomStringUtils.random(10, true, false), randomCosts);
+        return new Task(RandomStringUtils.random(10, true, false), randomCosts); // TODO Заменить имя на номер
     }
 }

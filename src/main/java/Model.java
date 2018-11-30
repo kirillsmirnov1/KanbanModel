@@ -58,6 +58,10 @@ public class Model {
         fillBacklog();
         System.out.println("\nIn backlog: ");
         stages.get(StageType.BACKLOG).printTasks();
+        Stream.of(workers).forEach(Worker::refillEnergy);
+//        Stream.of(workers).forEach(w -> System.out.print(w.getEnergy() + " "));
+//        Stream.of(workers).forEach(w -> w.deductEnergy(2));
+//        Stream.of(workers).forEach(w -> System.out.print(w.getEnergy() + " "));
         // TODO закончить внешний цикл
 
         // TODO сделать внутренний цикл
@@ -68,15 +72,6 @@ public class Model {
         while (stages.get(StageType.BACKLOG).canAddTask()){
             stages.get(StageType.BACKLOG).addTask(Task.generateRandomTask());
         }
-    }
-
-    // Создание случайных стоимостей для задачи
-    private int[] generateRandomCosts() { // TODO перенести в конструктор таски
-        int[] productivity = new Random().ints(NUMBER_OF_STAGES, 0, 10).toArray();
-        productivity[0] = 0;
-        productivity[NUMBER_OF_STAGES - 1] = 0;
-
-        return productivity;
     }
 
     // Создание работника со случайным именем и продуктивностью
@@ -127,8 +122,7 @@ public class Model {
                 lineCounter++;
             }
         } catch (IOException e){ // TODO нормальный отлов исключений
-            System.out.println(e.getMessage());
-            System.exit(1);
+            e.printStackTrace();
         }
         return names;
     }

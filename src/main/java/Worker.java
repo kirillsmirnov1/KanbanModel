@@ -1,10 +1,11 @@
 public class Worker {
     private final double[] productivityAtStage;
+
     private int energy;
 
     private final String name;
-    private static final int MAX_ENERGY = 10;
 
+    private static final int MAX_ENERGY = 10;
 
     Worker(String name, double[] productivityAtStage){
 
@@ -27,5 +28,13 @@ public class Worker {
 
     public void refillEnergy(){
         energy = MAX_ENERGY;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void deductEnergy(int deductedEnergy){ // TODO проверка на корректное значение
+        energy -= deductedEnergy;
     }
 }
