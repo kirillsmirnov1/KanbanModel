@@ -1,29 +1,39 @@
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Random;
+
 public class Worker {
-    private final double[] productivityAtStage;
+    private static int workerCounter = 0;
 
+    private HashMap<StageType, Double> productivityAtStage;
     private int energy;
-
     private final String name;
 
     private static final int MAX_ENERGY = 10;
 
-    Worker(String name, double[] productivityAtStage){
+    Worker(String name, HashMap<StageType, Double> productivityAtStage){
 
-        if(productivityAtStage.length != StageType.values().length)
+        if(productivityAtStage.size() != StageType.workStages.length)
             throw new IllegalArgumentException("Неправильный размер массива");
-
-        if(productivityAtStage[StageType.BACKLOG.ordinal()] != 0 ||
-           productivityAtStage[StageType.DEPLOYMENT.ordinal()] != 0)
-            throw new IllegalArgumentException("Первый и последний столбцы не могут иметь нагрузку");
-
 
         this.name = name;
         this.productivityAtStage = productivityAtStage;
     }
 
+    static Worker generateRandomWorker() {
+        HashMap<StageType, Double> randomProductivity = new HashMap<>();
+        for (StageType stage : StageType.workStages) {
+            randomProductivity.put(stage, new Random().nextDouble());
+        }
+
+        //return new Task(RandomStringUtils.random(10, true, false), randomCosts);
+        return new Worker(Main.workerNames[workerCounter++], randomProductivity);
+    }
+
+
     @Override
     public String toString(){
-        return "W: " + name;// + " pr: " + java.util.Arrays.toString(productivityAtStage);
+        return "W: " + name + " pr: " + Arrays.toString(StageType.toSortedStringArray(productivityAtStage));
     }
 
     public void refillEnergy(){

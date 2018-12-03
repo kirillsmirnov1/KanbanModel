@@ -1,10 +1,4 @@
-import org.apache.commons.lang3.RandomStringUtils;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.stream.Stream;
 
 public class Model {
@@ -12,12 +6,16 @@ public class Model {
     private Worker[] workers;
 
     private static final int[] DEFAULT_WIP = {3, 3, 3, 3, 3, 3, 3, Integer.MAX_VALUE};  // TODO заполнять из файла
-    private static final int   NUMBER_OF_WORKERS = 13;                                  // TODO заполнять из файла
+
+    public static int getNumberOfWorkers() {
+        return NUMBER_OF_WORKERS;
+    }
+
+    private static final int   NUMBER_OF_WORKERS = 4;                                  // TODO заполнять из файла в мэйн, сюда передавать через конструктор
     private static final int   NUMBER_OF_STAGES = StageType.values().length;
     private static final int   NUMBER_OF_DAYS = 10;
 
     private double productivityLevel;   // минимум продуктивности
-
 
     Model() {
         stages  = new HashMap<>();
@@ -30,10 +28,8 @@ public class Model {
                 stages.put(stage, new StageWorking(stage, DEFAULT_WIP[stage.ordinal()]));
         }
 
-        String[] animalNames = getAnimalNames(NUMBER_OF_WORKERS);
-
         for(int i = 0; i < workers.length; ++i){
-            workers[i] = generateNamedWorker(animalNames[i]);
+            workers[i] = Worker.generateRandomWorker();
         }
 
         System.out.println("Model contains: \nStages: ");
@@ -72,58 +68,5 @@ public class Model {
         while (stages.get(StageType.BACKLOG).canAddTask()){
             stages.get(StageType.BACKLOG).addTask(Task.generateRandomTask());
         }
-    }
-
-    // Создание работника со случайным именем и продуктивностью
-    private Worker generateRandomWorker() { // TODO считывание работников из файла
-        return new Worker(                  // TODO XML структура файла работников
-                RandomStringUtils   // рандомное имя
-                        .random(10, true, false),
-                        generateRandomProductivity()
-                );
-    }
-
-    // Создание сотрудника с именем и произвольной продуктивностью
-    private Worker generateNamedWorker(String name) {
-        return new Worker(
-                name,
-                generateRandomProductivity()
-        );
-    }
-
-    // Создание массива произвольной продуктивности
-    private double[] generateRandomProductivity() {
-        double[] productivity = new Random().doubles().limit(NUMBER_OF_STAGES).toArray();
-        productivity[0] = 0d;
-        productivity[NUMBER_OF_STAGES - 1] = 0d;
-
-        return productivity;
-    }
-
-    // Получить массив звериных имен
-    private String[] getAnimalNames(int numberOfNames) {
-        String[] names = new String[numberOfNames];
-        int[] lineNumbers;
-        int numberOfLines;
-        int lineCounter = 1;
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("animals.txt"));
-            String line = br.readLine();
-            numberOfLines = Integer.parseInt(line);
-            lineNumbers = new Random().ints(1, numberOfLines).limit(NUMBER_OF_WORKERS).sorted().toArray();
-
-            for (int i = 0; i < NUMBER_OF_WORKERS; ++i) {
-                while (lineCounter < lineNumbers[i] - 1) {
-                    br.readLine();
-                    lineCounter++;
-                }
-                names[i] = br.readLine();
-                lineCounter++;
-            }
-        } catch (IOException e){ // TODO нормальный отлов исключений
-            e.printStackTrace();
-        }
-        return names;
     }
 }
