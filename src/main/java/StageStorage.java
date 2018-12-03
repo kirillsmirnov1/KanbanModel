@@ -24,12 +24,17 @@ public class StageStorage extends Stage {
     }
 
     @Override
-    public int freeSpace() {
-        return WIPLimit - tasksInStorage.size();
+    public void printTasks(){
+        tasksInStorage.forEach(System.out::println);
     }
 
     @Override
-    public void printTasks(){
-        tasksInStorage.forEach(System.out::println);
+    public int getNumberOfTasks() {
+        return tasksInStorage.size();
+    }
+
+    @Override
+    public Task[] getTasksToRemove() {
+        return tasksInStorage.toArray(new Task[0]);
     }
 }

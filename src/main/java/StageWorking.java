@@ -31,13 +31,22 @@ public class StageWorking extends Stage {
     }
 
     @Override
-    public int freeSpace() {
-        return WIPLimit - (tasksInWork.size() + finishedTasks.size());
+    public void printTasks(){ // TODO перенести в модель
+        tasksInWork.forEach(System.out::println);
+        finishedTasks.forEach(System.out::println);
     }
 
     @Override
-    public void printTasks(){
-        tasksInWork.forEach(System.out::println);
-        finishedTasks.forEach(System.out::println);
+    public int getNumberOfTasks() {
+        return tasksInWork.size() + finishedTasks.size();
+    }
+
+    @Override
+    public Task[] getTasksToRemove() {
+        return finishedTasks.toArray(new Task[0]);
+    }
+
+    public Task[] getTasksInWork(){
+        return tasksInWork.toArray(new Task[0]);
     }
 }
