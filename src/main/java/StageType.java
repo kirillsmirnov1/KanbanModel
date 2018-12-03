@@ -23,7 +23,7 @@ public enum StageType {
         stagesReverse = stagesReverse_dummy;
     }
 
-    StageType nextStage(){ //TODO использовать это в следующей стадии в таске
+    public StageType nextStage(){ //TODO использовать это в следующей стадии в таске
         if(this == DEPLOYMENT) return DEPLOYMENT;
         return values()[this.ordinal()+1];
     }

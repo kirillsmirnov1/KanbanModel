@@ -20,7 +20,7 @@ public class Worker {
         this.productivityAtStage = productivityAtStage;
     }
 
-    static Worker generateRandomWorker() {
+    public static Worker generateRandomWorker() {
         HashMap<StageType, Double> randomProductivity = new HashMap<>();
         for (StageType stage : StageType.workStages) {
             randomProductivity.put(stage, new Random().nextDouble());

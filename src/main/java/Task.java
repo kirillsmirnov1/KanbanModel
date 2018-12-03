@@ -3,7 +3,7 @@ import java.util.Random;
 
 // Задача
 public class Task {
-    private static int TaskCounter = 0;
+    private static int taskCounter = 0;
 
     private HashMap<StageType, Integer> stagesCosts;   // Стоимость выполнения каждой стадии
     private HashMap<StageType, Integer> stagesAdvance; // Остаток до выполнения каждой стадии
@@ -80,15 +80,15 @@ public class Task {
         return "T: " + name + ", costs: " + str.toString();
     }
 
-    static Task generateRandomTask(){
+    public static Task generateRandomTask(){
         HashMap<StageType, Integer> randomCosts = new HashMap<>();
         for(StageType stage : StageType.workStages){
             randomCosts.put(stage, new Random().nextInt(10));
         }
 
-        TaskCounter++;
+        taskCounter++;
 
         //return new Task(RandomStringUtils.random(10, true, false), randomCosts);
-        return new Task(Integer.toString(TaskCounter), randomCosts);
+        return new Task(Integer.toString(taskCounter), randomCosts);
     }
 }

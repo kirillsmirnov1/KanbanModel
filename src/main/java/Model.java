@@ -6,14 +6,8 @@ public class Model {
     private Worker[] workers;
 
     private static final int[] DEFAULT_WIP = {3, 3, 3, 3, 3, 3, 3, Integer.MAX_VALUE};  // TODO заполнять из файла
-
-    public static int getNumberOfWorkers() {
-        return NUMBER_OF_WORKERS;
-    }
-
     private static final int   NUMBER_OF_WORKERS = 5;                                  // TODO заполнять из файла в мэйн, сюда передавать через конструктор
     private static final int   NUMBER_OF_DAYS = 10;
-
     private double productivityLevel;   // минимум продуктивности
 
     Model() {
@@ -31,8 +25,6 @@ public class Model {
             workers[i] = Worker.generateRandomWorker();
         }
 
-        System.out.println("Model contains: \nStages: ");
-        Stream.of(StageType.toSortedStringArray(stages)).forEach(System.out::println);
         System.out.println("Workers: ");
         Stream.of(workers).forEach(System.out::println);
     }
@@ -48,7 +40,7 @@ public class Model {
     }
 
     // Внешний цикл
-    void outerCycle(){
+    private void outerCycle(){
         // Подготовка цикла
         productivityLevel = 1d;
         fillBacklog();
@@ -61,7 +53,6 @@ public class Model {
                 productivityLevel -= 0.05d;
         }
     }
-
     private void printStages() {
         for(StageType stage : StageType.values()){
             System.out.println("\nIn " + stage.toString() + ": [" + stages.get(stage).getNumberOfTasks() + "/" + stages.get(stage).getWIPLimit() + "]");
@@ -133,7 +124,7 @@ public class Model {
                                             worker.deductEnergy((int)((double)taskCanTake / worker.getProductivityAtStage(stage))); // TODO округление в меньшую сторону
                                             task.makeSomeWork(taskCanTake);
                                             amountOfWork += taskCanTake;
-                                            ((StageWorking)stages.get(stage)).moveTaskToFinished(task); // FIXME Тут может быть порблема с перемещением.
+                                            ((StageWorking)stages.get(stage)).moveTaskToFinished(task); 
                                         } else {
                                             worker.deductEnergy(workerCanGive);
                                             task.makeSomeWork(workerCanGive);
@@ -154,5 +145,9 @@ public class Model {
         while (stages.get(StageType.BACKLOG).canAddTask()){
             stages.get(StageType.BACKLOG).addTask(Task.generateRandomTask());
         }
+    }
+
+    public static int getNumberOfWorkers() {
+        return NUMBER_OF_WORKERS;
     }
 }
