@@ -28,6 +28,7 @@ public class Task {
         this.name = name;
 
         stage = StageType.BACKLOG;
+        calculateNextStage();
     }
 
     // Возвращает стадию на которой сейчас находится карточка
@@ -50,9 +51,20 @@ public class Task {
 
     public void moveToNextStage(){
         stage = nextStage;
-        do{
-            nextStage = StageType.values()[nextStage.ordinal()+1];
-        }while(stageCosts.get(nextStage) != 0 && nextStage != StageType.DEPLOYMENT);
+        calculateNextStage();
+    }
+
+    private void calculateNextStage(){
+        if(stage != StageType.DEPLOYMENT) {
+            nextStage = StageType.values()[stage.ordinal() + 1];
+            while (true) {
+                if (nextStage == StageType.DEPLOYMENT)
+                    return;
+                if (stageCosts.get(nextStage) != 0)
+                    return;
+                nextStage = StageType.values()[nextStage.ordinal() + 1];
+            }
+        }
     }
 
     @Override
