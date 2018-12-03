@@ -11,8 +11,7 @@ public class Model {
         return NUMBER_OF_WORKERS;
     }
 
-    private static final int   NUMBER_OF_WORKERS = 4;                                  // TODO заполнять из файла в мэйн, сюда передавать через конструктор
-    private static final int   NUMBER_OF_STAGES = StageType.values().length;
+    private static final int   NUMBER_OF_WORKERS = 5;                                  // TODO заполнять из файла в мэйн, сюда передавать через конструктор
     private static final int   NUMBER_OF_DAYS = 10;
 
     private double productivityLevel;   // минимум продуктивности
@@ -53,16 +52,21 @@ public class Model {
         // Подготовка цикла
         productivityLevel = 1d;
         fillBacklog();
-        //printStages();
-        System.out.println("\nIn backlog: ");
-        stages.get(StageType.BACKLOG).printTasks();
+        printStages();
+
         Stream.of(workers).forEach(Worker::refillEnergy);
-//        Stream.of(workers).forEach(w -> System.out.print(w.getEnergy() + " "));
-//        Stream.of(workers).forEach(w -> w.deductEnergy(2));
-//        Stream.of(workers).forEach(w -> System.out.print(w.getEnergy() + " "));
+
         while(productivityLevel > 0d && workersHaveEnergy()){ // TODO пересчет энергии работников
             if(!innerCycle())
                 productivityLevel -= 0.05d;
+        }
+    }
+
+    private void printStages() {
+        for(StageType stage : StageType.values()){
+            System.out.println("\nIn " + stage.toString() + ": [" + stages.get(stage).getNumberOfTasks() + "/" + stages.get(stage).getWIPLimit() + "]");
+            stages.get(stage).printTasks();
+            //System.out.println("\n");
         }
     }
 
