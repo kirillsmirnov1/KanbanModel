@@ -1,11 +1,11 @@
-import org.apache.commons.lang3.RandomStringUtils;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
 // Задача
 public class Task {
+    private static int TaskCounter = 0;
+
     private HashMap<StageType, Integer> stageCosts;   // Стоимость выполнения каждой стадии
     private HashMap<StageType, Integer> stageAdvance; // Остаток до выполнения каждой стадии
 
@@ -44,7 +44,7 @@ public class Task {
         return stageCosts.get(stage) - stageAdvance.get(stage);
     }
 
-    public void makeSomeWork(int work){
+    public void makeSomeWork(int work){ // TODO добавить проверку на то что значение корректно
         stageAdvance.replace(stage, stageAdvance.get(stage) + work);
     }
 
@@ -66,6 +66,9 @@ public class Task {
             randomCosts.put(stage, new Random().nextInt(10));
         }
 
-        return new Task(RandomStringUtils.random(10, true, false), randomCosts); // TODO Заменить имя на номер
+        TaskCounter++;
+
+        //return new Task(RandomStringUtils.random(10, true, false), randomCosts);
+        return new Task(Integer.toString(TaskCounter), randomCosts);
     }
 }
