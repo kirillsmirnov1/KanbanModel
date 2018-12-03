@@ -12,7 +12,7 @@ public class StageWorking extends Stage {
 
     @Override
     public boolean canAddTask() {
-        return WIPLimit > (tasksInWork.size() + finishedTasks.size());
+        return getWIPLimit() > (tasksInWork.size() + finishedTasks.size());
     }
 
     @Override
@@ -32,8 +32,14 @@ public class StageWorking extends Stage {
 
     @Override
     public void printTasks(){ // TODO перенести в модель
-        tasksInWork.forEach(System.out::println);
-        finishedTasks.forEach(System.out::println);
+        if(tasksInWork.size()>0){
+            System.out.println("In work:");
+            tasksInWork.forEach(System.out::println);
+        }
+        if(finishedTasks.size()>0){
+            System.out.println("Finished:");
+            finishedTasks.forEach(System.out::println);
+        }
     }
 
     @Override

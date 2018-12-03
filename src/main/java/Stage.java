@@ -1,7 +1,11 @@
 // Абстрактный класс Стадии
 public abstract class Stage {
-    protected int WIPLimit;               // Ограничение на количество задач
-    protected final StageType TYPE;      // Тип Стадии
+    public int getWIPLimit() {
+        return WIPLimit;
+    }
+
+    private int WIPLimit;               // Ограничение на количество задач
+    private final StageType TYPE;      // Тип Стадии
 
     // Конструктор, заполняет тип и лимит Стадии
     Stage(StageType type, int WIPLimit){

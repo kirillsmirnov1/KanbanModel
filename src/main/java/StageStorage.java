@@ -10,7 +10,7 @@ public class StageStorage extends Stage {
 
     @Override
     public boolean canAddTask(){
-        return WIPLimit > tasksInStorage.size();
+        return getWIPLimit() > tasksInStorage.size();
     }
 
     @Override
@@ -25,7 +25,10 @@ public class StageStorage extends Stage {
 
     @Override
     public void printTasks(){
-        tasksInStorage.forEach(System.out::println);
+        if(tasksInStorage.size() > 0) {
+            System.out.println("In storage: ");
+            tasksInStorage.forEach(System.out::println);
+        }
     }
 
     @Override
