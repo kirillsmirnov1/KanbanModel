@@ -28,6 +28,7 @@ public class Task {
         this.name = name;
 
         stage = StageType.BACKLOG;
+        nextStage = stage;
         calculateNextStage();
     }
 
@@ -55,16 +56,13 @@ public class Task {
     }
 
     private void calculateNextStage(){
-        if(stage != StageType.DEPLOYMENT) {
-            nextStage = StageType.values()[stage.ordinal() + 1];
-            while (true) {
+            do {
+                nextStage = nextStage.nextStage();
                 if (nextStage == StageType.DEPLOYMENT)
                     return;
                 if (stageCosts.get(nextStage) != 0)
                     return;
-                nextStage = StageType.values()[nextStage.ordinal() + 1];
-            }
-        }
+            } while (true);
     }
 
     @Override
