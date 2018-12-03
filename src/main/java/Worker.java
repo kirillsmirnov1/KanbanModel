@@ -47,4 +47,8 @@ public class Worker {
     public void deductEnergy(int deductedEnergy){ // TODO проверка на корректное значение
         energy -= deductedEnergy;
     }
+
+    public double getProductivityAtStage(StageType stage) {
+        return productivityAtStage.get(stage);
+    }
 }
