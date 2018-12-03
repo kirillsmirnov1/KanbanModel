@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -6,8 +5,8 @@ import java.util.Random;
 public class Task {
     private static int TaskCounter = 0;
 
-    private HashMap<StageType, Integer> stageCosts;   // Стоимость выполнения каждой стадии
-    private HashMap<StageType, Integer> stageAdvance; // Остаток до выполнения каждой стадии
+    private HashMap<StageType, Integer> stagesCosts;   // Стоимость выполнения каждой стадии
+    private HashMap<StageType, Integer> stagesAdvance; // Остаток до выполнения каждой стадии
 
     private final String name;       // Название задачи
 
@@ -15,15 +14,15 @@ public class Task {
     private StageType nextStage;    // Следующая стадия
 
     // Карточка конструируется при добавлении в бэклог
-    Task(String name, HashMap<StageType, Integer> stageCosts) throws IllegalArgumentException{
+    Task(String name, HashMap<StageType, Integer> stageCosts) throws IllegalArgumentException{ // TODO добавить день добавления и завершения
 
         if(stageCosts.size() != StageType.values().length-2)
             throw new IllegalArgumentException("Неправильный размер массива");
 
-        this.stageCosts = stageCosts;
-        stageAdvance = new HashMap<>();
+        this.stagesCosts = stageCosts;
+        stagesAdvance = new HashMap<>();
 
-        stageCosts.forEach((k, v) -> stageAdvance.put(k, 0));
+        stageCosts.forEach((k, v) -> stagesAdvance.put(k, 0));
 
         this.name = name;
 
@@ -43,11 +42,11 @@ public class Task {
     }
 
     public int getResumingWorkAtCurrentStage(){
-        return stageCosts.get(stage) - stageAdvance.get(stage);
+        return stagesCosts.get(stage) - stagesAdvance.get(stage);
     }
 
     public void makeSomeWork(int work){ // TODO добавить проверку на то что значение корректно
-        stageAdvance.replace(stage, stageAdvance.get(stage) + work);
+        stagesAdvance.replace(stage, stagesAdvance.get(stage) + work);
     }
 
     public void moveToNextStage(){
@@ -60,14 +59,25 @@ public class Task {
                 nextStage = nextStage.nextStage();
                 if (nextStage == StageType.DEPLOYMENT)
                     return;
-                if (stageCosts.get(nextStage) != 0)
+                if (stagesCosts.get(nextStage) != 0)
                     return;
             } while (true);
     }
 
     @Override
     public String toString(){ // TODO вывод выполнения в процентах
-        return "T: " + name + ", costs: " + Arrays.toString(StageType.toSortedStringArray(stageCosts));
+        String[] costs = StageType.toSortedStringArray(stagesCosts);
+        String[] advance = StageType.toSortedStringArray(stagesAdvance);
+
+        StringBuilder str = new StringBuilder("[ ");
+
+        for(int i = 0; i < costs.length; ++i){
+            str.append(advance[i]).append("/").append(costs[i]).append(", ");
+        }
+        str.delete(str.lastIndexOf(","), str.lastIndexOf(",") + 1);
+        str.append("]");
+
+        return "T: " + name + ", costs: " + str.toString();
     }
 
     static Task generateRandomTask(){
