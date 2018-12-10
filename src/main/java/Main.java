@@ -1,16 +1,36 @@
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Random;
 
-public class Main {
+// TODO графооооон
+// TODO статистика и графики
+
+public class Main extends Application{
 
     static public String[] workerNames = new String[Model.getNumberOfWorkers()];
+    Model model;
 
     public static void main(String[] args) {
         fillWorkerNames();
 
-        Model model = new Model();
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+        Parent root = FXMLLoader.load(getClass().getResource("MainWindow.fxml"));
+        primaryStage.setTitle("Kanban Model");
+        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.show();
+
+        model = new Model();// TODO добавить в модель функции-итераторы вида "сделай следующий шаг"
         model.start();
     }
 
@@ -20,7 +40,7 @@ public class Main {
         int lineCounter = 1;
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("animals.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("shortAnimals.txt"));
             String line = br.readLine();
             numberOfLines = Integer.parseInt(line);
             lineNumbers = new Random().ints(1, numberOfLines).limit(Model.getNumberOfWorkers()).sorted().toArray();
