@@ -1,3 +1,5 @@
+package trulden.com.vk.KanbanModel.model;
+
 import java.util.HashMap;
 import java.util.stream.Stream;
 
@@ -10,7 +12,7 @@ public class Model {
     private static final int   NUMBER_OF_DAYS = 10;
     private double productivityLevel;   // минимум продуктивности
 
-    Model() {
+    public Model() {
         stages  = new HashMap<>();
         workers = new Worker[NUMBER_OF_WORKERS];
 

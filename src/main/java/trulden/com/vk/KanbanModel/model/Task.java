@@ -1,3 +1,5 @@
+package trulden.com.vk.KanbanModel.model;
+
 import java.util.HashMap;
 import java.util.Random;
 

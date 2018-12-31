@@ -1,10 +1,12 @@
+package trulden.com.vk.KanbanModel.model;
+
 import java.util.ArrayList;
 
 public class StageWorking extends Stage {
     private ArrayList<Task> tasksInWork;
     private ArrayList<Task> finishedTasks;
 
-    StageWorking(StageType type, int WIPLimit) {
+    public StageWorking(StageType type, int WIPLimit) {
         super(type, WIPLimit);
         tasksInWork   = new ArrayList<>();
         finishedTasks = new ArrayList<>();

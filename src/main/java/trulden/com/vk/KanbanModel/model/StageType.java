@@ -1,3 +1,5 @@
+package trulden.com.vk.KanbanModel.model;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;

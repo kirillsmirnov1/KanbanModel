@@ -1,3 +1,5 @@
+package trulden.com.vk.KanbanModel.model;
+
 // Абстрактный класс Стадии
 public abstract class Stage {
     private int WIPLimit;               // Ограничение на количество задач
@@ -5,7 +7,7 @@ public abstract class Stage {
     private final StageType TYPE;      // Тип Стадии
     // Конструктор, заполняет тип и лимит Стадии
 
-    Stage(StageType type, int WIPLimit){
+    public Stage(StageType type, int WIPLimit){
         this.TYPE = type;
         this.WIPLimit = WIPLimit;
     }

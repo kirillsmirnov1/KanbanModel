@@ -1,18 +1,22 @@
+package trulden.com.vk.KanbanModel;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import trulden.com.vk.KanbanModel.model.Model;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Random;
 
 // TODO графооооон
 // TODO статистика и графики
 
-public class Main extends Application{
+public class MainApp extends Application{
 
     static public String[] workerNames = new String[Model.getNumberOfWorkers()];
     Model model;
@@ -25,9 +29,13 @@ public class Main extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("MainWindow.fxml"));
+        FXMLLoader loader = new FXMLLoader();
+        URL url = getClass().getResource("/trulden/com/vk/KanbanModel/view/MainWindow.fxml");
+        loader.setLocation(url);
+        Parent root = loader.load();
         primaryStage.setTitle("Kanban Model");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, 900, 400));
+        primaryStage.setResizable(false);
         primaryStage.show();
 
         model = new Model();// TODO добавить в модель функции-итераторы вида "сделай следующий шаг"

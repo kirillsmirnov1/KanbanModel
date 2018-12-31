@@ -1,3 +1,7 @@
+package trulden.com.vk.KanbanModel.model;
+
+import trulden.com.vk.KanbanModel.MainApp;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
@@ -27,7 +31,7 @@ public class Worker {
         }
 
         //return new Task(RandomStringUtils.random(10, true, false), randomCosts);
-        return new Worker(Main.workerNames[workerCounter++], randomProductivity);
+        return new Worker(MainApp.workerNames[workerCounter++], randomProductivity);
     }
 
 
