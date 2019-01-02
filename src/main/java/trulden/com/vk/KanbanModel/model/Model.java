@@ -1,9 +1,14 @@
 package trulden.com.vk.KanbanModel.model;
 
+import trulden.com.vk.KanbanModel.MainApp;
+import trulden.com.vk.KanbanModel.view.MainWindowController;
+
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class Model {
+    MainApp mainApp;
+
     private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
 
@@ -12,7 +17,9 @@ public class Model {
     private static final int   NUMBER_OF_DAYS = 10;
     private double productivityLevel;   // минимум продуктивности
 
-    public Model() {
+    public Model(MainApp mainApp) {
+        this.mainApp = mainApp;
+
         stages  = new HashMap<>();
         workers = new Worker[NUMBER_OF_WORKERS];
 
@@ -145,7 +152,9 @@ public class Model {
     // Заполнение бэклога
     private void fillBacklog() {
         while (stages.get(StageType.BACKLOG).canAddTask()){
-            stages.get(StageType.BACKLOG).addTask(Task.generateRandomTask());
+            Task newTask = Task.generateRandomTask();
+            stages.get(StageType.BACKLOG).addTask(newTask);
+            mainApp.mainWindowController.addTask(newTask, StageType.BACKLOG);
         }
     }
 

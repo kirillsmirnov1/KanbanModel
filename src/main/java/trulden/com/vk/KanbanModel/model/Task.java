@@ -10,6 +10,7 @@ public class Task {
     private HashMap<StageType, Integer> stagesCosts;   // Стоимость выполнения каждой стадии
     private HashMap<StageType, Integer> stagesAdvance; // Остаток до выполнения каждой стадии
 
+    private final String namePrefix = "T: ";
     private final String name;       // Название задачи
 
     private StageType stage;        // Текущая стадия
@@ -79,7 +80,8 @@ public class Task {
         str.delete(str.lastIndexOf(","), str.lastIndexOf(",") + 1);
         str.append("]");
 
-        return "T: " + name + ", costs: " + str.toString();
+        //return namePrefix + name + ", costs: " + str.toString();
+        return getName() + "\n" + str.toString();
     }
 
     public static Task generateRandomTask(){
@@ -92,5 +94,9 @@ public class Task {
 
         //return new Task(RandomStringUtils.random(10, true, false), randomCosts);
         return new Task(Integer.toString(taskCounter), randomCosts);
+    }
+
+    public String getName() {
+        return namePrefix + name;
     }
 }

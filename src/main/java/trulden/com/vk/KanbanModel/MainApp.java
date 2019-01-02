@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.Model;
+import trulden.com.vk.KanbanModel.view.MainWindowController;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,6 +21,7 @@ public class MainApp extends Application{
 
     static public String[] workerNames = new String[Model.getNumberOfWorkers()];
     Model model;
+    public MainWindowController mainWindowController;
 
     public static void main(String[] args) {
         fillWorkerNames();
@@ -34,11 +36,14 @@ public class MainApp extends Application{
         loader.setLocation(url);
         Parent root = loader.load();
         primaryStage.setTitle("Kanban Model");
-        primaryStage.setScene(new Scene(root, 900, 400));
+        primaryStage.setScene(new Scene(root, 1350, 400));
         primaryStage.setResizable(false);
+
+        mainWindowController = loader.getController();
+
         primaryStage.show();
 
-        model = new Model();// TODO добавить в модель функции-итераторы вида "сделай следующий шаг"
+        model = new Model(this);// TODO добавить в модель функции-итераторы вида "сделай следующий шаг"
         model.start();
     }
 
