@@ -11,6 +11,8 @@ import trulden.com.vk.KanbanModel.model.Task;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+// TODO отображать WIP лимиты и заполнение столбцов
+
 public class MainWindowController {
 
     @FXML
@@ -57,6 +59,18 @@ public class MainWindowController {
         label.setWrapText(true);
         label.setMinHeight(40);
         stagesHashMap.get(stage).getChildren().add(label);
+    }
+
+
+    public void updateTask(Task task, StageType stage){
+        ObservableList<Node> labelList = stagesHashMap.get(stage).getChildren();
+
+        for(int i=0; i < labelList.size(); i++){
+            if(((Label)labelList.get(i)).getText().contains(task.getName())){
+                ((Label) labelList.get(i)).setText(task.toString());
+                break;
+            }
+        }
     }
 
     public void removeTask(Task task, StageType stage){

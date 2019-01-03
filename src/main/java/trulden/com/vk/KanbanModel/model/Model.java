@@ -146,6 +146,8 @@ public class Model {
                                             task.makeSomeWork(workerCanGive);
                                             amountOfWork += workerCanGive;
                                         }
+
+                                        mainApp.mainWindowController.updateTask(task, task.getStage());
                                     }
                                 }
                             }
