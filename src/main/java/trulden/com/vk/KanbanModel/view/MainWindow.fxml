@@ -12,7 +12,7 @@
 
 <AnchorPane minWidth="1350.0" prefHeight="400.0"  xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trulden.com.vk.KanbanModel.view.MainWindowController">
    <fx:define>
-      <Double fx:id="ROW_WIDTH" fx:value="150.0"/> 
+      <Double fx:id="ROW_WIDTH" fx:value="160.0"/>
       <Double fx:id="STAGES_CONTAINER_WIDTH" fx:value="1200"/>
       <Double fx:id="STAGE_WIDTH" fx:value="1350"/>
    </fx:define>

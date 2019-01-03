@@ -96,9 +96,16 @@ public class Model {
                     for(Task task : stages.get(stage).getTasksToRemove()){
                         if(task != null){
                         if(stages.get(task.getNextStage()).canAddTask()){
+                            // Убираю таску с прошлой стадии
                             stages.get(stage).removeTask(task);
+                            mainApp.mainWindowController.removeTask(task, task.getStage());
+
+                            // Переношу на следующую
                             stages.get(task.getNextStage()).addTask(task);
                             task.moveToNextStage();
+                            mainApp.mainWindowController.addTask(task, task.getStage());
+
+                            // Записываю, что изменение было
                             tasksMoved = true;
                         }
                         }
@@ -133,7 +140,7 @@ public class Model {
                                             worker.deductEnergy((int)((double)taskCanTake / worker.getProductivityAtStage(stage))); // TODO округление в меньшую сторону
                                             task.makeSomeWork(taskCanTake);
                                             amountOfWork += taskCanTake;
-                                            ((StageWorking)stages.get(stage)).moveTaskToFinished(task); 
+                                            ((StageWorking)stages.get(stage)).moveTaskToFinished(task);
                                         } else {
                                             worker.deductEnergy(workerCanGive);
                                             task.makeSomeWork(workerCanGive);

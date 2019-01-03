@@ -9,6 +9,7 @@ import trulden.com.vk.KanbanModel.model.StageType;
 import trulden.com.vk.KanbanModel.model.Task;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class MainWindowController {
 
@@ -44,7 +45,13 @@ public class MainWindowController {
         stagesHashMap.put(StageType.DEPLOYMENT, deploymentVBox);
     }
 
-    public void addTask(Task task, StageType stage){
+    public void addTask(Task task, StageType stage) {
+
+        // TODO выгрузить вьюшку в отдельный поток, иначе этот слип все вешает
+//        try{
+//            TimeUnit.SECONDS.sleep(1);
+//            // this.wait(1000);
+//        } catch (InterruptedException e){}
         String str = task.toString();
         Label label = new Label(str);
         label.setWrapText(true);
