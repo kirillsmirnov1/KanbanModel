@@ -10,9 +10,6 @@ import trulden.com.vk.KanbanModel.model.StageType;
 import trulden.com.vk.KanbanModel.model.Task;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-
-// TODO отображать WIP лимиты и заполнение столбцов
 
 public class MainWindowController {
 

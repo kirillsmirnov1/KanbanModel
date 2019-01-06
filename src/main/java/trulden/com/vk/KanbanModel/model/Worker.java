@@ -48,7 +48,7 @@ public class Worker {
         return energy;
     }
 
-    public void deductEnergy(int deductedEnergy){ // TODO проверка на корректное значение
+    public void deductEnergy(int deductedEnergy){
         energy -= deductedEnergy;
     }
 

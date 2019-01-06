@@ -17,7 +17,7 @@ public class Task {
     private StageType nextStage;    // Следующая стадия
 
     // Карточка конструируется при добавлении в бэклог
-    Task(String name, HashMap<StageType, Integer> stageCosts) throws IllegalArgumentException{ // TODO добавить день добавления и завершения
+    Task(String name, HashMap<StageType, Integer> stageCosts) throws IllegalArgumentException{
 
         if(stageCosts.size() != StageType.values().length-2)
             throw new IllegalArgumentException("Неправильный размер массива");
@@ -48,7 +48,7 @@ public class Task {
         return stagesCosts.get(stage) - stagesAdvance.get(stage);
     }
 
-    public void makeSomeWork(int work){ // TODO добавить проверку на то что значение корректно
+    public void makeSomeWork(int work){
         stagesAdvance.replace(stage, stagesAdvance.get(stage) + work);
     }
 
@@ -68,7 +68,7 @@ public class Task {
     }
 
     @Override
-    public String toString(){ // TODO вывод выполнения в процентах
+    public String toString(){
         String[] costs = StageType.toSortedStringArray(stagesCosts);
         String[] advance = StageType.toSortedStringArray(stagesAdvance);
 
