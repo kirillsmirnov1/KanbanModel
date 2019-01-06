@@ -14,9 +14,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
 
-// TODO графооооон
-// TODO статистика и графики
-
 public class MainApp extends Application{
 
     static public String[] workerNames = new String[Model.getNumberOfWorkers()];
@@ -36,7 +33,7 @@ public class MainApp extends Application{
         loader.setLocation(url);
         Parent root = loader.load();
         primaryStage.setTitle("Kanban Model");
-        primaryStage.setScene(new Scene(root, 1440, 400)); // TODO размеры и для мэйна и для формы брать из какого-нибудь инишника
+        primaryStage.setScene(new Scene(root, 1440, 400));
         primaryStage.setResizable(false);
 
         mainWindowController = loader.getController();
@@ -65,7 +62,7 @@ public class MainApp extends Application{
                 workerNames[i] = br.readLine();
                 lineCounter++;
             }
-        } catch (IOException e){ // TODO нормальный отлов исключений
+        } catch (IOException e){
             e.printStackTrace();
         }
     }

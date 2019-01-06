@@ -17,12 +17,16 @@ public enum StageType {
     DEPLOYMENT;      // Поставка
 
     public static final StageType[] workStages = {ANALYSIS, DESIGN, IMPLEMENTATION, INTEGRATION, DOCUMENTATION, TESTING};
+    public static final StageType[] workStagesReverse; // Рабочие стадии в обратном порядке
     public static final StageType[] stagesReverse; // Стадии в обратном порядке
 
     static {
         StageType[] stagesReverse_dummy = values();
         ArrayUtils.reverse(stagesReverse_dummy);
-        stagesReverse = stagesReverse_dummy;
+        stagesReverse = stagesReverse_dummy.clone();
+        stagesReverse_dummy = workStages.clone();
+        ArrayUtils.reverse(stagesReverse_dummy);
+        workStagesReverse = stagesReverse_dummy;
     }
 
     public StageType nextStage(){ //TODO использовать это в следующей стадии в таске

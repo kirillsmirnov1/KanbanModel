@@ -14,8 +14,8 @@ public class Model implements Runnable{
     private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
 
-    private static final int[] DEFAULT_WIP = {3, 3, 3, 3, 3, 3, 3, Integer.MAX_VALUE};  // TODO заполнять из файла
-    private static final int   NUMBER_OF_WORKERS = 5;                                  // TODO заполнять из файла в мэйн, сюда передавать через конструктор
+    private static final int[] DEFAULT_WIP = {3, 3, 3, 3, 3, 3, 3, Integer.MAX_VALUE};
+    private static final int   NUMBER_OF_WORKERS = 5;
     private static final int   NUMBER_OF_DAYS = 50;
     private double productivityLevel;   // минимум продуктивности
 
@@ -62,7 +62,7 @@ public class Model implements Runnable{
 
         Stream.of(workers).forEach(Worker::refillEnergy);
 
-        while(productivityLevel > 0d && workersHaveEnergy()){ // TODO пересчет энергии работников
+        while(productivityLevel > 0d && workersHaveEnergy()){
             if(!innerCycle())
                 productivityLevel -= 0.05d;
         }
@@ -124,47 +124,42 @@ public class Model implements Runnable{
 
     private int makeSomeWork() {
         int amountOfWork = 0;
-        for(StageType stage : StageType.stagesReverse){ // TODO заменить на проход по рабочим стадиям
-                switch (stage){
-                    case BACKLOG:
-                    case DEPLOYMENT:
-                        break;
-                    default:
-                        if(stages.get(stage).getNumberOfTasks() !=0){
-                            for(Task task : ((StageWorking)stages.get(stage)).getTasksInWork()){
-                                for(Worker worker : workers){
-                                    // Смотрю сколько в таске осталось работы
-                                    int taskCanTake   = task.getResumingWorkAtCurrentStage();
-                                    if(taskCanTake > 0 // Если еще есть
-                                            && worker.getEnergy() > 0 // И у работника есть силы
-                                            && worker.getProductivityAtStage(stage) >= productivityLevel){ // И он достаточно компетентен
+        for(StageType stage : StageType.workStagesReverse){
 
-                                        //Считаю сколько он может наработать
-                                        int workerCanGive = (int) (worker.getEnergy() * worker.getProductivityAtStage(stage)); // TODO округление в большую сторону
-                                        int workDone;
+            if(stages.get(stage).getNumberOfTasks() !=0){
+                for(Task task : ((StageWorking)stages.get(stage)).getTasksInWork()){
+                    for(Worker worker : workers){
+                        // Смотрю сколько в таске осталось работы
+                        int taskCanTake   = task.getResumingWorkAtCurrentStage();
+                        if(taskCanTake > 0 // Если еще есть
+                                && worker.getEnergy() > 0 // И у работника есть силы
+                                && worker.getProductivityAtStage(stage) >= productivityLevel){ // И он достаточно компетентен
 
-                                        //Выполняю возможное количество работы
-                                        if(workerCanGive >= taskCanTake){
-                                            worker.deductEnergy((int)((double)taskCanTake / worker.getProductivityAtStage(stage))); // TODO округление в меньшую сторону
-                                            task.makeSomeWork(taskCanTake);
-                                            workDone = taskCanTake;
-                                            ((StageWorking)stages.get(stage)).moveTaskToFinished(task);
-                                        } else {
-                                            worker.deductEnergy(workerCanGive);
-                                            task.makeSomeWork(workerCanGive);
-                                            workDone = workerCanGive;
-                                        }
+                            //Считаю сколько он может наработать
+                            int workerCanGive = (int) (worker.getEnergy() * worker.getProductivityAtStage(stage)); // TODO округление в большую сторону
+                            int workDone;
 
-                                        if(workDone > 0){
-                                            amountOfWork += workDone;
-                                            mwc.updateTask(task, task.getStage());
-                                            Util.sleepMilliseconds(timeToSleep);
-                                        }
-                                    }
-                                }
+                            //Выполняю возможное количество работы
+                            if(workerCanGive >= taskCanTake){
+                                worker.deductEnergy((int)((double)taskCanTake / worker.getProductivityAtStage(stage))); // TODO округление в меньшую сторону
+                                task.makeSomeWork(taskCanTake);
+                                workDone = taskCanTake;
+                                ((StageWorking)stages.get(stage)).moveTaskToFinished(task);
+                            } else {
+                                worker.deductEnergy(workerCanGive);
+                                task.makeSomeWork(workerCanGive);
+                                workDone = workerCanGive;
+                            }
+
+                            if(workDone > 0){
+                                amountOfWork += workDone;
+                                mwc.updateTask(task, task.getStage());
+                                Util.sleepMilliseconds(timeToSleep);
                             }
                         }
+                    }
                 }
+            }
         }
 
         return amountOfWork;
