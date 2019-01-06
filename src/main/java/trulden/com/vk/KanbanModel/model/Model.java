@@ -70,7 +70,7 @@ public class Model implements Runnable{
     private void printStages() {
         for(StageType stage : StageType.values()){
             System.out.println("\nIn " + stage.toString() + ": [" + stages.get(stage).getNumberOfTasks() + "/" + stages.get(stage).getWIPLimit() + "]");
-            stages.get(stage).printTasks();
+            System.out.println(stages.get(stage).composeTasksStatus());
             //System.out.println("\n");
         }
     }
@@ -129,19 +129,18 @@ public class Model implements Runnable{
             if(stages.get(stage).getNumberOfTasks() !=0){
                 for(Task task : ((StageWorking)stages.get(stage)).getTasksInWork()){
                     for(Worker worker : workers){
-                        // Смотрю сколько в таске осталось работы
-                        int taskCanTake   = task.getResumingWorkAtCurrentStage();
-                        if(taskCanTake > 0 // Если еще есть
-                                && worker.getEnergy() > 0 // И у работника есть силы
-                                && worker.getProductivityAtStage(stage) >= productivityLevel){ // И он достаточно компетентен
+                        int taskCanTake   = task.getResumingWorkAtCurrentStage();       // Смотрю сколько в таске осталось работы
+                        if(taskCanTake > 0                                                      // Если работа еще есть
+                                && worker.getEnergy() > 0                                       // И у работника есть силы
+                                && worker.getProductivityAtStage(stage) >= productivityLevel){  // И он достаточно компетентен
 
                             //Считаю сколько он может наработать
-                            int workerCanGive = (int) (worker.getEnergy() * worker.getProductivityAtStage(stage)); // TODO округление в большую сторону
+                            int workerCanGive = (int) (worker.getEnergy() * worker.getProductivityAtStage(stage));
                             int workDone;
 
                             //Выполняю возможное количество работы
                             if(workerCanGive >= taskCanTake){
-                                worker.deductEnergy((int)((double)taskCanTake / worker.getProductivityAtStage(stage))); // TODO округление в меньшую сторону
+                                worker.deductEnergy((int)((double)taskCanTake / worker.getProductivityAtStage(stage)));
                                 task.makeSomeWork(taskCanTake);
                                 workDone = taskCanTake;
                                 ((StageWorking)stages.get(stage)).moveTaskToFinished(task);

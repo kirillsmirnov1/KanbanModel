@@ -24,7 +24,7 @@ public abstract class Stage {
     public abstract boolean canAddTask();
     public abstract void    addTask(Task task);
     public abstract void    removeTask(Task task);
-    public abstract void    printTasks();
+    public abstract String  composeTasksStatus();
     public abstract int     getNumberOfTasks();
     public abstract Task[]  getTasksToRemove();
 }

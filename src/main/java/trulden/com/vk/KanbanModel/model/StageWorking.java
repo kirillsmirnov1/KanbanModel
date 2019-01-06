@@ -33,15 +33,17 @@ public class StageWorking extends Stage {
     }
 
     @Override
-    public void printTasks(){ // TODO перенести в модель
+    public String composeTasksStatus(){
+        StringBuilder str = new StringBuilder();
         if(tasksInWork.size()>0){
-            System.out.println("In work:");
-            tasksInWork.forEach(System.out::println);
+            str.append("In work:").append("\n");
+            tasksInWork.forEach(t -> str.append(t.toString()).append("\n"));
         }
         if(finishedTasks.size()>0){
-            System.out.println("Finished:");
-            finishedTasks.forEach(System.out::println);
+            str.append("Finished:").append("\n");
+            finishedTasks.forEach(t -> str.append(t.toString()).append("\n"));
         }
+        return str.toString();
     }
 
     @Override

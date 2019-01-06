@@ -26,11 +26,13 @@ public class StageStorage extends Stage {
     }
 
     @Override
-    public void printTasks(){
-        if(tasksInStorage.size() > 0) {
-            System.out.println("In storage: ");
-            tasksInStorage.forEach(System.out::println);
+    public String composeTasksStatus(){
+        StringBuilder str = new StringBuilder();
+        if(tasksInStorage.size()>0){
+            str.append("In storage:").append("\n");
+            tasksInStorage.forEach(t -> str.append(t.toString()).append("\n"));
         }
+        return str.toString();
     }
 
     @Override
