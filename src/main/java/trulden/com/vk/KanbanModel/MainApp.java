@@ -36,18 +36,17 @@ public class MainApp extends Application{
         loader.setLocation(url);
         Parent root = loader.load();
         primaryStage.setTitle("Kanban Model");
-        primaryStage.setScene(new Scene(root, 1440, 400));
+        primaryStage.setScene(new Scene(root, 1440, 400)); // TODO размеры и для мэйна и для формы брать из какого-нибудь инишника
         primaryStage.setResizable(false);
 
         mainWindowController = loader.getController();
 
         primaryStage.show();
 
-        model = new Model(this);// TODO добавить в модель функции-итераторы вида "сделай следующий шаг"
-        model.start();
+        new Thread(new Model(mainWindowController)).start();
     }
 
-    static void fillWorkerNames(){ // TODO отобрать имена, чтобы не было слишком длинных
+    static void fillWorkerNames(){
         int[] lineNumbers;
         int numberOfLines;
         int lineCounter = 1;

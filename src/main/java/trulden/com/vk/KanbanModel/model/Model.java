@@ -1,24 +1,28 @@
 package trulden.com.vk.KanbanModel.model;
 
 import trulden.com.vk.KanbanModel.MainApp;
+import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-public class Model {
-    MainApp mainApp;
+public class Model implements Runnable{
+   MainWindowController mwc;
 
     private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
 
     private static final int[] DEFAULT_WIP = {3, 3, 3, 3, 3, 3, 3, Integer.MAX_VALUE};  // TODO заполнять из файла
     private static final int   NUMBER_OF_WORKERS = 5;                                  // TODO заполнять из файла в мэйн, сюда передавать через конструктор
-    private static final int   NUMBER_OF_DAYS = 10;
+    private static final int   NUMBER_OF_DAYS = 50;
     private double productivityLevel;   // минимум продуктивности
 
-    public Model(MainApp mainApp) {
-        this.mainApp = mainApp;
+    private final int timeToSleep = 50;
+
+    public Model(MainWindowController mwc) {
+        this.mwc = mwc;
 
         stages  = new HashMap<>();
         workers = new Worker[NUMBER_OF_WORKERS];
@@ -39,7 +43,8 @@ public class Model {
     }
 
     // Запуск модели
-    public void start(){
+    @Override
+    public void run(){
         // Прогоняю внешний цикл столько скольно нужно раз.
         // Считаю что цикл выполняется за день
         for(int day=0; day < NUMBER_OF_DAYS; ++day){
@@ -98,12 +103,14 @@ public class Model {
                         if(stages.get(task.getNextStage()).canAddTask()){
                             // Убираю таску с прошлой стадии
                             stages.get(stage).removeTask(task);
-                            mainApp.mainWindowController.removeTask(task, task.getStage());
+                            mwc.removeTask(task, task.getStage());
 
                             // Переношу на следующую
                             stages.get(task.getNextStage()).addTask(task);
                             task.moveToNextStage();
-                            mainApp.mainWindowController.addTask(task, task.getStage());
+                            mwc.addTask(task.toString(), task.getStage());
+
+                            Util.sleepMilliseconds(timeToSleep);
 
                             // Записываю, что изменение было
                             tasksMoved = true;
@@ -134,20 +141,25 @@ public class Model {
 
                                         //Считаю сколько он может наработать
                                         int workerCanGive = (int) (worker.getEnergy() * worker.getProductivityAtStage(stage)); // TODO округление в большую сторону
+                                        int workDone;
 
                                         //Выполняю возможное количество работы
                                         if(workerCanGive >= taskCanTake){
                                             worker.deductEnergy((int)((double)taskCanTake / worker.getProductivityAtStage(stage))); // TODO округление в меньшую сторону
                                             task.makeSomeWork(taskCanTake);
-                                            amountOfWork += taskCanTake;
+                                            workDone = taskCanTake;
                                             ((StageWorking)stages.get(stage)).moveTaskToFinished(task);
                                         } else {
                                             worker.deductEnergy(workerCanGive);
                                             task.makeSomeWork(workerCanGive);
-                                            amountOfWork += workerCanGive;
+                                            workDone = workerCanGive;
                                         }
 
-                                        mainApp.mainWindowController.updateTask(task, task.getStage());
+                                        if(workDone > 0){
+                                            amountOfWork += workDone;
+                                            mwc.updateTask(task, task.getStage());
+                                            Util.sleepMilliseconds(timeToSleep);
+                                        }
                                     }
                                 }
                             }
@@ -163,7 +175,9 @@ public class Model {
         while (stages.get(StageType.BACKLOG).canAddTask()){
             Task newTask = Task.generateRandomTask();
             stages.get(StageType.BACKLOG).addTask(newTask);
-            mainApp.mainWindowController.addTask(newTask, StageType.BACKLOG);
+            mwc.addTask(newTask.toString(), StageType.BACKLOG);
+
+            Util.sleepMilliseconds(timeToSleep);
         }
     }
 

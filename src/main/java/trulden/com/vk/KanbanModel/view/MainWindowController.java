@@ -1,5 +1,6 @@
 package trulden.com.vk.KanbanModel.view;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -15,6 +16,9 @@ import java.util.concurrent.TimeUnit;
 
 public class MainWindowController {
 
+    // Label'ы с названиями стадий и WIP лимитом
+
+    // VBox'ы в которых хранятся таски
     @FXML
     private VBox backlogVBox;
     @FXML
@@ -47,18 +51,11 @@ public class MainWindowController {
         stagesHashMap.put(StageType.DEPLOYMENT, deploymentVBox);
     }
 
-    public void addTask(Task task, StageType stage) {
-
-        // TODO выгрузить вьюшку в отдельный поток, иначе этот слип все вешает
-//        try{
-//            TimeUnit.SECONDS.sleep(1);
-//            // this.wait(1000);
-//        } catch (InterruptedException e){}
-        String str = task.toString();
-        Label label = new Label(str);
+    public void addTask(String taskText, StageType stage) {
+        Label label = new Label(taskText);
         label.setWrapText(true);
         label.setMinHeight(40);
-        stagesHashMap.get(stage).getChildren().add(label);
+        Platform.runLater(() -> stagesHashMap.get(stage).getChildren().add(label) ); // лямбды это магия
     }
 
 
@@ -67,7 +64,8 @@ public class MainWindowController {
 
         for(int i=0; i < labelList.size(); i++){
             if(((Label)labelList.get(i)).getText().contains(task.getName())){
-                ((Label) labelList.get(i)).setText(task.toString());
+                int makingIteratorConstant = i;
+                Platform.runLater(() -> ((Label) labelList.get(makingIteratorConstant)).setText(task.toString()) );
                 break;
             }
         }
@@ -78,7 +76,8 @@ public class MainWindowController {
 
         for(int i=0; i < labelList.size(); i++){
             if(((Label)labelList.get(i)).getText().contains(task.getName())){
-                labelList.remove(i);
+                int makingIteratorConstant = i;
+                Platform.runLater(() -> labelList.remove(makingIteratorConstant) );
                 break;
             }
         }
