@@ -58,13 +58,19 @@ public class Task {
     }
 
     private void calculateNextStage(){
-            do {
-                nextStage = nextStage.nextStage();
-                if (nextStage == StageType.DEPLOYMENT)
-                    return;
-                if (stagesCosts.get(nextStage) != 0)
-                    return;
-            } while (true);
+        if(stage != StageType.DEPLOYMENT) {
+            nextStage = stage.nextStage();
+        }
+
+        // Вариант когда задача сразу переходит на нужную стадию
+        // Потом нужно сделать это одной из опций
+//            do {
+//                nextStage = nextStage.nextStage();
+//                if (nextStage == StageType.DEPLOYMENT)
+//                    return;
+//                if (stagesCosts.get(nextStage) != 0)
+//                    return;
+//            } while (true);
     }
 
     @Override

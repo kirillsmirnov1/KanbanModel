@@ -128,8 +128,17 @@ public class Model implements Runnable{
 
             if(stages.get(stage).getNumberOfTasks() !=0){
                 for(Task task : ((StageWorking)stages.get(stage)).getTasksInWork()){
+
+                    if(task.getResumingWorkAtCurrentStage() == 0){ // Для задач с нулевой трудоемкостью на стадии
+                        ((StageWorking)stages.get(stage)).moveTaskToFinished(task);
+                        mwc.updateTask(task, task.getStage());
+                        Util.sleepMilliseconds(timeToSleep);
+                    }
+
                     for(Worker worker : workers){
                         int taskCanTake   = task.getResumingWorkAtCurrentStage();       // Смотрю сколько в таске осталось работы
+
+
                         if(taskCanTake > 0                                                      // Если работа еще есть
                                 && worker.getEnergy() > 0                                       // И у работника есть силы
                                 && worker.getProductivityAtStage(stage) >= productivityLevel){  // И он достаточно компетентен
