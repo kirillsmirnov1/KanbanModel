@@ -11,31 +11,30 @@
 
 
 <?import javafx.scene.control.ScrollPane?>
-<AnchorPane minWidth="1300.0" prefHeight="400.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trulden.com.vk.KanbanModel.view.MainWindowController">
+<AnchorPane minWidth="1290.0" prefHeight="400.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trulden.com.vk.KanbanModel.view.MainWindowController">
    <fx:define>
       <Double fx:id="ROW_WIDTH" fx:value="160.0"/>
-      <Double fx:id="STAGES_CONTAINER_WIDTH" fx:value="1300"/>
-      <Double fx:id="STAGE_WIDTH" fx:value="1300"/>
+      <Double fx:id="STAGES_CONTAINER_WIDTH" fx:value="1290"/>
+      <Double fx:id="STAGE_WIDTH" fx:value="1290"/>
    </fx:define>
    <children>
           <AnchorPane minHeight="0.0" minWidth="$STAGES_CONTAINER_WIDTH" prefHeight="398.0" >
                <children>
-                  <VBox prefHeight="200.0" prefWidth="$STAGES_CONTAINER_WIDTH" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox prefHeight="200.0" prefWidth="$STAGES_CONTAINER_WIDTH" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" >
                      <children>
                         <!-- Названия столбцов -->
                         <HBox minWidth="$STAGES_CONTAINER_WIDTH"  >
                            <children>
-                              <Label minWidth="$ROW_WIDTH" text=" Backlog" textAlignment="CENTER" />
-                              <Label minWidth="$ROW_WIDTH" text="Analysis" textAlignment="CENTER" />
-                              <Label minWidth="$ROW_WIDTH" text="Design" textAlignment="CENTER" />
-                              <Label minWidth="$ROW_WIDTH" text="Implementation" textAlignment="CENTER" />
-                              <Label minWidth="$ROW_WIDTH" text="Integration" textAlignment="CENTER" />
-                              <Label minWidth="$ROW_WIDTH" text="Documentation" textAlignment="CENTER" />
-                              <Label minWidth="$ROW_WIDTH" text="Testing" textAlignment="CENTER" />
-                              <Label minWidth="$ROW_WIDTH" text="Deployment" textAlignment="CENTER" />
+                              <Label fx:id="backlogLabel" minWidth="$ROW_WIDTH" text="Backlog" textAlignment="CENTER" />
+                              <Label fx:id="analysisLabel" minWidth="$ROW_WIDTH" text="Analysis" textAlignment="CENTER" />
+                              <Label fx:id="designLabel" minWidth="$ROW_WIDTH" text="Design" textAlignment="CENTER" />
+                              <Label fx:id="implementationLabel" minWidth="$ROW_WIDTH" text="Implementation" textAlignment="CENTER" />
+                              <Label fx:id="integrationLabel" minWidth="$ROW_WIDTH" text="Integration" textAlignment="CENTER" />
+                              <Label fx:id="documentationLabel" minWidth="$ROW_WIDTH" text="Documentation" textAlignment="CENTER" />
+                              <Label fx:id="testingLabel" minWidth="$ROW_WIDTH" text="Testing" textAlignment="CENTER" />
+                              <Label fx:id="deploymentLabel" minWidth="$ROW_WIDTH" text="Deployment" textAlignment="CENTER" />
                            </children>
                         </HBox>
-
                         <ScrollPane hbarPolicy="NEVER" >
                            <!-- Столбцы -->
                            <HBox prefWidth="$STAGES_CONTAINER_WIDTH">

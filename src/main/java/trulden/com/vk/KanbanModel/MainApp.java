@@ -33,7 +33,7 @@ public class MainApp extends Application{
         loader.setLocation(url);
         Parent root = loader.load();
         primaryStage.setTitle("Kanban Model");
-        primaryStage.setScene(new Scene(root, 1300, 400));
+        primaryStage.setScene(new Scene(root, 1290, 400));
         primaryStage.setResizable(false);
 
         mainWindowController = loader.getController();

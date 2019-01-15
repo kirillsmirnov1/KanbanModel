@@ -14,7 +14,7 @@ public class Model implements Runnable{
     private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
 
-    private static final int[] DEFAULT_WIP = {3, 3, 3, 3, 3, 3, 3, Integer.MAX_VALUE};
+    public static final int[] DEFAULT_WIP = {3, 3, 3, 3, 3, 3, 3, Integer.MAX_VALUE};
     private static final int   NUMBER_OF_WORKERS = 5;
     private static final int   NUMBER_OF_DAYS = 50;
     private double productivityLevel;   // минимум продуктивности
