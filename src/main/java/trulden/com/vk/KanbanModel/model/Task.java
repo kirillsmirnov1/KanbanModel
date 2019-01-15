@@ -47,6 +47,7 @@ public class Task {
     public int getResumingWorkAtCurrentStage(){
         return stagesCosts.get(stage) - stagesAdvance.get(stage);
     }
+    public int getWorkAtStage(StageType stage) { return stagesCosts.get(stage); }
 
     public void makeSomeWork(int work){
         stagesAdvance.replace(stage, stagesAdvance.get(stage) + work);
