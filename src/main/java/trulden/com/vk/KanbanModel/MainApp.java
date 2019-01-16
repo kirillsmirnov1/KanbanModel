@@ -1,5 +1,6 @@
 package trulden.com.vk.KanbanModel;
 
+import com.oracle.tools.packager.IOUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,28 +9,32 @@ import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.Model;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
+
+import org.json.*;
+import com.google.gson.Gson;
 
 public class MainApp extends Application{
 
-    private int sceneW = 1440, sceneH = 400;
+    private int sceneW, sceneH;
 
-    static public String[] workerNames = new String[Model.getNumberOfWorkers()];
+    static public String[] workerNames;
 
     Model model;
     public MainWindowController mainWindowController;
     public static void main(String[] args) {
-        fillWorkerNames();
-
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        parseJson();
+        fillWorkerNames();
+
         FXMLLoader loader = new FXMLLoader();
         URL url = getClass().getResource("/trulden/com/vk/KanbanModel/view/MainWindow.fxml");
         loader.setLocation(url);
@@ -41,14 +46,28 @@ public class MainApp extends Application{
         mainWindowController = loader.getController();
 
         primaryStage.show();
+        model = new Model(mainWindowController);
+        new Thread(model).start();
+    }
 
-        new Thread(new Model(mainWindowController)).start();
+    private void parseJson() {
+        try {
+            JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
+            Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
+            Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
+            Model.setTimeToSleep(obj.getInt("timeToSleep"));
+            Model.setDefaultWip(new Gson().fromJson(obj.getString("DEFAULT_WIP"), int[].class));
+            sceneW = obj.getInt("sceneW");
+            sceneH = obj.getInt("sceneH");
+        } catch (IOException e) {}
     }
 
     static void fillWorkerNames(){
         int[] lineNumbers;
         int numberOfLines;
         int lineCounter = 1;
+
+        workerNames = new String[Model.getNumberOfWorkers()];
 
         try {
             BufferedReader br = new BufferedReader(new FileReader("shortAnimals.txt"));

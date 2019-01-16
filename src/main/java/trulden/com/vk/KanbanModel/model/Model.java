@@ -14,10 +14,10 @@ public class Model implements Runnable{
     private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
 
-    private static int[] DEFAULT_WIP = {3, 3, 3, 3, 3, 3, 3, Integer.MAX_VALUE};
-    private static int   NUMBER_OF_WORKERS = 5;
-    private static int   NUMBER_OF_DAYS = 50;
-    private int          timeToSleep = 50;
+    private static int[] DEFAULT_WIP;
+    private static int   NUMBER_OF_WORKERS;
+    private static int   NUMBER_OF_DAYS;
+    private static int   timeToSleep;
 
     private double productivityLevel;   // минимум продуктивности
     private int    currentDay;
@@ -34,8 +34,8 @@ public class Model implements Runnable{
         NUMBER_OF_DAYS = numberOfDays;
     }
 
-    public void setTimeToSleep(int timeToSleep) {
-        this.timeToSleep = timeToSleep;
+    public static void setTimeToSleep(int tts) {
+        timeToSleep = tts;
     }
 
     public Model(MainWindowController mwc) {
