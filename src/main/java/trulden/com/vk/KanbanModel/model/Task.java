@@ -16,22 +16,30 @@ public class Task {
     private StageType stage;        // Текущая стадия
     private StageType nextStage;    // Следующая стадия
 
+
+    private HashMap<StageType, Integer> daysAtStages; // Дни в котороые карточка прибывала на стадии
+
     // Карточка конструируется при добавлении в бэклог
-    Task(String name, HashMap<StageType, Integer> stageCosts) throws IllegalArgumentException{
+    Task(String name, HashMap<StageType, Integer> stageCosts, int day) throws IllegalArgumentException{
 
         if(stageCosts.size() != StageType.values().length-2)
             throw new IllegalArgumentException("Неправильный размер массива");
+
+        this.name = name;
 
         this.stagesCosts = stageCosts;
         stagesAdvance = new HashMap<>();
 
         stageCosts.forEach((k, v) -> stagesAdvance.put(k, 0));
 
-        this.name = name;
+        daysAtStages = new HashMap<>();
 
         stage = StageType.BACKLOG;
+
+        daysAtStages.put(stage, day);
+
         nextStage = stage;
-        calculateNextStage();
+        calculateNextStage(); // Это нужно для сценария с непоследовательной сменой стадий
     }
 
     // Возвращает стадию на которой сейчас находится карточка
@@ -53,15 +61,16 @@ public class Task {
         stagesAdvance.replace(stage, stagesAdvance.get(stage) + work);
     }
 
-    public void moveToNextStage(){
-        stage = nextStage;
-        calculateNextStage();
+    public void moveToNextStage(int day){
+        if(stage != StageType.DEPLOYMENT) {
+            daysAtStages.put(nextStage, day);
+            stage = nextStage;
+            calculateNextStage();
+        }
     }
 
     private void calculateNextStage(){
-        if(stage != StageType.DEPLOYMENT) {
             nextStage = stage.nextStage();
-        }
 
         // Вариант когда задача сразу переходит на нужную стадию
         // Потом нужно сделать это одной из опций
@@ -88,10 +97,19 @@ public class Task {
         str.append("]");
 
         //return namePrefix + name + ", costs: " + str.toString();
+        if(stage == StageType.DEPLOYMENT)
+            return getName() + " < took " + daysFromTo(StageType.BACKLOG, StageType.DEPLOYMENT) + " days >\n" + str.toString();
+
         return getName() + "\n" + str.toString();
     }
 
-    public static Task generateRandomTask(){
+    public int daysFromTo(StageType from, StageType to){
+        if(daysAtStages.containsKey(from) && daysAtStages.containsKey(to))
+            return daysAtStages.get(to) - daysAtStages.get(from);
+        return -1;
+    }
+
+    public static Task generateRandomTask(int day){
         HashMap<StageType, Integer> randomCosts = new HashMap<>();
         for(StageType stage : StageType.workStages){
             randomCosts.put(stage, new Random().nextInt(10));
@@ -100,7 +118,7 @@ public class Task {
         taskCounter++;
 
         //return new Task(RandomStringUtils.random(10, true, false), randomCosts);
-        return new Task(Integer.toString(taskCounter), randomCosts);
+        return new Task(Integer.toString(taskCounter), randomCosts, day);
     }
 
     public String getName() {
