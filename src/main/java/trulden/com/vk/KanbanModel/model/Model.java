@@ -19,6 +19,8 @@ public class Model implements Runnable{
     private static final int   NUMBER_OF_DAYS = 50;
     private double productivityLevel;   // минимум продуктивности
 
+    private int currentDay;
+
     private final int timeToSleep = 50;
 
     public Model(MainWindowController mwc) {
@@ -47,8 +49,8 @@ public class Model implements Runnable{
     public void run(){
         // Прогоняю внешний цикл столько скольно нужно раз.
         // Считаю что цикл выполняется за день
-        for(int day=0; day < NUMBER_OF_DAYS; ++day){
-            System.out.println("\nDay " + day + " have started =========================================================");
+        for(currentDay = 0; currentDay < NUMBER_OF_DAYS; ++currentDay){
+            System.out.println("\nDay " + currentDay + " have started =========================================================");
             outerCycle();
         }
     }
@@ -107,7 +109,7 @@ public class Model implements Runnable{
 
                             // Переношу на следующую
                             stages.get(task.getNextStage()).addTask(task);
-                            task.moveToNextStage();
+                            task.moveToNextStage(currentDay);
                             mwc.addTask(task.toString(), task.getStage());
 
                             Util.sleepMilliseconds(timeToSleep);
@@ -169,7 +171,7 @@ public class Model implements Runnable{
     // Заполнение бэклога
     private void fillBacklog() {
         while (stages.get(StageType.BACKLOG).canAddTask()){
-            Task newTask = Task.generateRandomTask();
+            Task newTask = Task.generateRandomTask(currentDay);
             stages.get(StageType.BACKLOG).addTask(newTask);
             mwc.addTask(newTask.toString(), StageType.BACKLOG);
 
