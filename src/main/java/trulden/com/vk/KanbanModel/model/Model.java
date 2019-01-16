@@ -14,7 +14,7 @@ public class Model implements Runnable{
     private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
 
-    private static int[] DEFAULT_WIP;
+    public  static int[] DEFAULT_WIP;
     private static int   NUMBER_OF_WORKERS;
     private static int   NUMBER_OF_DAYS;
     private static int   timeToSleep;

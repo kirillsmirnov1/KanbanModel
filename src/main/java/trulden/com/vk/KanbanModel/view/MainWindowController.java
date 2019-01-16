@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import trulden.com.vk.KanbanModel.model.Model;
 import trulden.com.vk.KanbanModel.model.StageType;
 import trulden.com.vk.KanbanModel.model.Task;
 
@@ -14,6 +15,22 @@ import java.util.HashMap;
 public class MainWindowController {
 
     // Label'ы с названиями стадий и WIP лимитом
+    @FXML
+    private Label backlogLabel;
+    @FXML
+    private Label analysisLabel;
+    @FXML
+    private Label designLabel;
+    @FXML
+    private Label implementationLabel;
+    @FXML
+    private Label integrationLabel;
+    @FXML
+    private Label documentationLabel;
+    @FXML
+    private Label testingLabel;
+    @FXML
+    private Label deploymentLabel;
 
     // VBox'ы в которых хранятся таски
     @FXML
@@ -33,31 +50,46 @@ public class MainWindowController {
     @FXML
     private VBox deploymentVBox;
 
-    private HashMap<StageType, VBox> stagesHashMap;
+    private HashMap<StageType, VBox> stagesVBoxHashMap;
+    private HashMap<StageType, Label> stagesLabelHashMap;
 
     @FXML
     private void initialize(){
-        stagesHashMap = new HashMap<>();
-        stagesHashMap.put(StageType.BACKLOG, backlogVBox);
-        stagesHashMap.put(StageType.ANALYSIS, analysisVBox);
-        stagesHashMap.put(StageType.DESIGN, designVBox);
-        stagesHashMap.put(StageType.IMPLEMENTATION, implementationVBox);
-        stagesHashMap.put(StageType.INTEGRATION, integrationVBox);
-        stagesHashMap.put(StageType.DOCUMENTATION, documentationVBox);
-        stagesHashMap.put(StageType.TESTING, testingVBox);
-        stagesHashMap.put(StageType.DEPLOYMENT, deploymentVBox);
+        stagesVBoxHashMap = new HashMap<>();
+        stagesVBoxHashMap.put(StageType.BACKLOG, backlogVBox);
+        stagesVBoxHashMap.put(StageType.ANALYSIS, analysisVBox);
+        stagesVBoxHashMap.put(StageType.DESIGN, designVBox);
+        stagesVBoxHashMap.put(StageType.IMPLEMENTATION, implementationVBox);
+        stagesVBoxHashMap.put(StageType.INTEGRATION, integrationVBox);
+        stagesVBoxHashMap.put(StageType.DOCUMENTATION, documentationVBox);
+        stagesVBoxHashMap.put(StageType.TESTING, testingVBox);
+        stagesVBoxHashMap.put(StageType.DEPLOYMENT, deploymentVBox);
+
+        stagesLabelHashMap = new HashMap<>();
+        stagesLabelHashMap.put(StageType.BACKLOG, backlogLabel);
+        stagesLabelHashMap.put(StageType.ANALYSIS, analysisLabel);
+        stagesLabelHashMap.put(StageType.DESIGN, designLabel);
+        stagesLabelHashMap.put(StageType.IMPLEMENTATION, implementationLabel);
+        stagesLabelHashMap.put(StageType.INTEGRATION, integrationLabel);
+        stagesLabelHashMap.put(StageType.DOCUMENTATION, documentationLabel);
+        stagesLabelHashMap.put(StageType.TESTING, testingLabel);
+        stagesLabelHashMap.put(StageType.DEPLOYMENT, deploymentLabel);
     }
 
     public void addTask(String taskText, StageType stage) {
         Label label = new Label(taskText);
         label.setWrapText(true);
         label.setMinHeight(40);
-        Platform.runLater(() -> stagesHashMap.get(stage).getChildren().add(label) ); // лямбды это магия
+        Platform.runLater(() -> stagesVBoxHashMap.get(stage).getChildren().add(label) ); // лямбды это магия
+        if(stage != StageType.DEPLOYMENT)
+            Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesVBoxHashMap.get(stage).getChildren().size() + "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]"));
+        else
+            Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesVBoxHashMap.get(stage).getChildren().size() + "]"));
     }
 
 
     public void updateTask(Task task, StageType stage){
-        ObservableList<Node> labelList = stagesHashMap.get(stage).getChildren();
+        ObservableList<Node> labelList = stagesVBoxHashMap.get(stage).getChildren();
 
         for(int i=0; i < labelList.size(); i++){
             if(((Label)labelList.get(i)).getText().contains(task.getName())){
@@ -69,12 +101,16 @@ public class MainWindowController {
     }
 
     public void removeTask(Task task, StageType stage){
-        ObservableList<Node> labelList = stagesHashMap.get(stage).getChildren();
+        ObservableList<Node> labelList = stagesVBoxHashMap.get(stage).getChildren();
 
         for(int i=0; i < labelList.size(); i++){
             if(((Label)labelList.get(i)).getText().contains(task.getName())){
                 int makingIteratorConstant = i;
                 Platform.runLater(() -> labelList.remove(makingIteratorConstant) );
+                if(stage != StageType.DEPLOYMENT)
+                    Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesVBoxHashMap.get(stage).getChildren().size() + "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]"));
+                else
+                    Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesVBoxHashMap.get(stage).getChildren().size() + "]"));
                 break;
             }
         }
