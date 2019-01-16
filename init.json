@@ -1,4 +1,6 @@
 {
     "NUMBER_OF_DAYS" : 50,
-    "NUMBER_OF_WORKERS": 10
+    "NUMBER_OF_WORKERS": 10,
+    "timeToSleep" : 50,
+    "DEFAULT_WIP" : "[3, 3, 3, 3, 3, 3, 3, 1000000]"
 }
