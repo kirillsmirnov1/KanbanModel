@@ -1,5 +1,6 @@
 package trulden.com.vk.KanbanModel;
 
+import com.oracle.tools.packager.IOUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,11 +9,13 @@ import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.Model;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
+
+import org.json.*;
 
 public class MainApp extends Application{
 
@@ -21,8 +24,6 @@ public class MainApp extends Application{
     public MainWindowController mainWindowController;
 
     public static void main(String[] args) {
-        fillWorkerNames();
-
         launch(args);
     }
 
@@ -36,11 +37,23 @@ public class MainApp extends Application{
         primaryStage.setScene(new Scene(root, 1440, 400));
         primaryStage.setResizable(false);
 
+        
+        parseJson();
+        
+        fillWorkerNames();
+
         mainWindowController = loader.getController();
 
         primaryStage.show();
+        model = new Model(mainWindowController);
+        new Thread(model).start();
+    }
 
-        new Thread(new Model(mainWindowController)).start();
+    private void parseJson() {
+        try {
+            JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
+            int d = obj.getInt("NUMBER_OF_DAYS");
+        } catch (IOException e) {}
     }
 
     static void fillWorkerNames(){
