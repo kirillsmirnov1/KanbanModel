@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 
 public class MainApp extends Application{
 
-    private int sceneW = 1440, sceneH = 400;
+    private int sceneW, sceneH;
 
     static public String[] workerNames;
 
@@ -32,6 +32,9 @@ public class MainApp extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        parseJson();
+        fillWorkerNames();
+
         FXMLLoader loader = new FXMLLoader();
         URL url = getClass().getResource("/trulden/com/vk/KanbanModel/view/MainWindow.fxml");
         loader.setLocation(url);
@@ -39,10 +42,6 @@ public class MainApp extends Application{
         primaryStage.setTitle("Kanban Model");
         primaryStage.setScene(new Scene(root, sceneW, sceneH));
         primaryStage.setResizable(false);
-
-        parseJson();
-        
-        fillWorkerNames();
 
         mainWindowController = loader.getController();
 
@@ -58,6 +57,8 @@ public class MainApp extends Application{
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
             Model.setTimeToSleep(obj.getInt("timeToSleep"));
             Model.setDefaultWip(new Gson().fromJson(obj.getString("DEFAULT_WIP"), int[].class));
+            sceneW = obj.getInt("sceneW");
+            sceneH = obj.getInt("sceneH");
         } catch (IOException e) {}
     }
 
