@@ -16,10 +16,12 @@ import java.util.Random;
 
 public class MainApp extends Application{
 
+    private int sceneW = 1440, sceneH = 400;
+
     static public String[] workerNames = new String[Model.getNumberOfWorkers()];
+
     Model model;
     public MainWindowController mainWindowController;
-
     public static void main(String[] args) {
         fillWorkerNames();
 
@@ -33,7 +35,7 @@ public class MainApp extends Application{
         loader.setLocation(url);
         Parent root = loader.load();
         primaryStage.setTitle("Kanban Model");
-        primaryStage.setScene(new Scene(root, 1440, 400));
+        primaryStage.setScene(new Scene(root, sceneW, sceneH));
         primaryStage.setResizable(false);
 
         mainWindowController = loader.getController();
@@ -65,5 +67,13 @@ public class MainApp extends Application{
         } catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public void setSceneW(int sceneW) {
+        this.sceneW = sceneW;
+    }
+
+    public void setSceneH(int sceneH) {
+        this.sceneH = sceneH;
     }
 }
