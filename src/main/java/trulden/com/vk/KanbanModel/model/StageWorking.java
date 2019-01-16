@@ -19,7 +19,10 @@ public class StageWorking extends Stage {
 
     @Override
     public void addTask(Task task) {
-        tasksInWork.add(task);
+        if(task.getWorkAtStage(TYPE) == 0)
+            finishedTasks.add(task);
+        else
+            tasksInWork.add(task);
     }
 
     public void moveTaskToFinished(Task task){
