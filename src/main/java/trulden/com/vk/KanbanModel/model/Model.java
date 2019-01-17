@@ -19,10 +19,12 @@ public class Model implements Runnable{
     public  static int[] DEFAULT_WIP;
     private static int   NUMBER_OF_WORKERS;
     private static int   NUMBER_OF_DAYS;
-    private static int   timeToSleep;
+    private static int   TIME_TO_SLEEP;
+    private static int   DEPLOYMENT_FREQUENCY;
 
     private DoubleProperty  productivityLevel;   // минимум продуктивности
     private IntegerProperty currentDay;
+    private IntegerProperty tasksDeployed;
 
     public static void setDefaultWip(int[] defaultWip) {
         DEFAULT_WIP = defaultWip;
@@ -37,7 +39,11 @@ public class Model implements Runnable{
     }
 
     public static void setTimeToSleep(int tts) {
-        timeToSleep = tts;
+        TIME_TO_SLEEP = tts;
+    }
+
+    public static void setDeploymentFrequency(int deploymentFrequency) {
+        DEPLOYMENT_FREQUENCY = deploymentFrequency;
     }
 
     public IntegerProperty currentDayProperty() {
@@ -46,6 +52,10 @@ public class Model implements Runnable{
 
     public DoubleProperty productivityLevelProperty() {
         return productivityLevel;
+    }
+
+    public IntegerProperty tasksDeployedProperty(){
+        return tasksDeployed;
     }
 
     public Model(MainWindowController mwc) {
@@ -69,6 +79,7 @@ public class Model implements Runnable{
         Stream.of(workers).forEach(System.out::println);
 
         currentDay = new SimpleIntegerProperty();
+        tasksDeployed = new SimpleIntegerProperty();
         productivityLevel = new SimpleDoubleProperty();
     }
 
@@ -77,9 +88,20 @@ public class Model implements Runnable{
     public void run(){
         // Прогоняю внешний цикл столько скольно нужно раз.
         // Считаю что цикл выполняется за день
-        for(currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get()+1)){
+        for(currentDay.setValue(1); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get()+1)){
             System.out.println("\nDay " + currentDay + " have started =========================================================");
             outerCycle();
+
+            if(currentDay.get() % DEPLOYMENT_FREQUENCY == 0)
+                deploy();
+        }
+    }
+
+    private void deploy() {
+        tasksDeployed.setValue(tasksDeployed.get() + stages.get(StageType.DEPLOYMENT).getNumberOfTasks());
+        for(Task task : stages.get(StageType.DEPLOYMENT).getTasksToRemove()){
+            stages.get(StageType.DEPLOYMENT).removeTask(task);
+            mwc.removeTask(task, StageType.DEPLOYMENT);
         }
     }
 
@@ -140,7 +162,7 @@ public class Model implements Runnable{
                             task.moveToNextStage(currentDay.get());
                             mwc.addTask(task.toString(), task.getStage());
 
-                            Util.sleepMilliseconds(timeToSleep);
+                            Util.sleepMilliseconds(TIME_TO_SLEEP);
 
                             // Записываю, что изменение было
                             tasksMoved = true;
@@ -185,7 +207,7 @@ public class Model implements Runnable{
                             if(workDone > 0){
                                 amountOfWork += workDone;
                                 mwc.updateTask(task, task.getStage());
-                                Util.sleepMilliseconds(timeToSleep);
+                                Util.sleepMilliseconds(TIME_TO_SLEEP);
                             }
                         }
                     }
@@ -203,7 +225,7 @@ public class Model implements Runnable{
             stages.get(StageType.BACKLOG).addTask(newTask);
             mwc.addTask(newTask.toString(), StageType.BACKLOG);
 
-            Util.sleepMilliseconds(timeToSleep);
+            Util.sleepMilliseconds(TIME_TO_SLEEP);
         }
     }
 

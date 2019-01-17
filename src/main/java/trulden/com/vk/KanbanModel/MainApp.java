@@ -56,7 +56,8 @@ public class MainApp extends Application{
             JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
             Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
-            Model.setTimeToSleep(obj.getInt("timeToSleep"));
+            Model.setDeploymentFrequency(obj.getInt("DEPLOYMENT_FREQUENCY"));
+            Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
             Model.setDefaultWip(new Gson().fromJson(obj.getString("DEFAULT_WIP"), int[].class));
             sceneW = obj.getInt("sceneW");
             sceneH = obj.getInt("sceneH");
