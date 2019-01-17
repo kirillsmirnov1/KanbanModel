@@ -1,6 +1,8 @@
 package trulden.com.vk.KanbanModel.model;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
@@ -19,7 +21,7 @@ public class Model implements Runnable{
     private static int   NUMBER_OF_DAYS;
     private static int   timeToSleep;
 
-    private double productivityLevel;   // минимум продуктивности
+    private DoubleProperty  productivityLevel;   // минимум продуктивности
     private IntegerProperty currentDay;
 
     public static void setDefaultWip(int[] defaultWip) {
@@ -40,6 +42,10 @@ public class Model implements Runnable{
 
     public IntegerProperty currentDayProperty() {
         return currentDay;
+    }
+
+    public DoubleProperty productivityLevelProperty() {
+        return productivityLevel;
     }
 
     public Model(MainWindowController mwc) {
@@ -63,6 +69,7 @@ public class Model implements Runnable{
         Stream.of(workers).forEach(System.out::println);
 
         currentDay = new SimpleIntegerProperty();
+        productivityLevel = new SimpleDoubleProperty();
     }
 
     // Запуск модели
@@ -79,15 +86,15 @@ public class Model implements Runnable{
     // Внешний цикл
     private void outerCycle(){
         // Подготовка цикла
-        productivityLevel = 1d;
+        productivityLevel.setValue(1d);
         fillBacklog();
         printStages();
 
         Stream.of(workers).forEach(Worker::refillEnergy);
 
-        while(productivityLevel > 0d && workersHaveEnergy()){
+        while(productivityLevel.get() > 0d && workersHaveEnergy()){
             if(!innerCycle())
-                productivityLevel -= 0.05d;
+                productivityLevel.setValue(productivityLevel.get() - 0.05d);
         }
     }
     private void printStages() {
@@ -157,7 +164,7 @@ public class Model implements Runnable{
 
                         if(taskCanTake > 0                                                      // Если работа еще есть
                                 && worker.getEnergy() > 0                                       // И у работника есть силы
-                                && worker.getProductivityAtStage(stage) >= productivityLevel){  // И он достаточно компетентен
+                                && worker.getProductivityAtStage(stage) >= productivityLevel.get()){  // И он достаточно компетентен
 
                             //Считаю сколько он может наработать
                             int workerCanGive = (int) (worker.getEnergy() * worker.getProductivityAtStage(stage));

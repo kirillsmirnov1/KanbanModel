@@ -132,5 +132,11 @@ public class MainWindowController {
                 (observable, oldValue, newValue) ->
                         Platform.runLater(() ->
                                 dayLabel.setText("Day: " + newValue)));
+
+        model.productivityLevelProperty().addListener(
+                (observable, oldValue, newValue) ->
+                        Platform.runLater(() ->
+                        productivityLabel.setText("Productivity bar: " + (int) (newValue.doubleValue() * 100)))
+        );
     }
 }
