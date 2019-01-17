@@ -1,5 +1,10 @@
 package trulden.com.vk.KanbanModel.model;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import trulden.com.vk.KanbanModel.MainApp;
 import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
@@ -20,7 +25,7 @@ public class Model implements Runnable{
     private static int   timeToSleep;
 
     private double productivityLevel;   // минимум продуктивности
-    private int    currentDay;
+    private IntegerProperty currentDay;
 
     public static void setDefaultWip(int[] defaultWip) {
         DEFAULT_WIP = defaultWip;
@@ -57,6 +62,9 @@ public class Model implements Runnable{
 
         System.out.println("Workers: ");
         Stream.of(workers).forEach(System.out::println);
+
+        currentDay = new SimpleIntegerProperty();
+
     }
 
     // Запуск модели
@@ -64,7 +72,7 @@ public class Model implements Runnable{
     public void run(){
         // Прогоняю внешний цикл столько скольно нужно раз.
         // Считаю что цикл выполняется за день
-        for(currentDay = 0; currentDay < NUMBER_OF_DAYS; ++currentDay){
+        for(currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.add(1)){
             System.out.println("\nDay " + currentDay + " have started =========================================================");
             outerCycle();
         }
@@ -124,7 +132,7 @@ public class Model implements Runnable{
 
                             // Переношу на следующую
                             stages.get(task.getNextStage()).addTask(task);
-                            task.moveToNextStage(currentDay);
+                            task.moveToNextStage(currentDay.get());
                             mwc.addTask(task.toString(), task.getStage());
 
                             Util.sleepMilliseconds(timeToSleep);
@@ -186,7 +194,7 @@ public class Model implements Runnable{
     // Заполнение бэклога
     private void fillBacklog() {
         while (stages.get(StageType.BACKLOG).canAddTask()){
-            Task newTask = Task.generateRandomTask(currentDay);
+            Task newTask = Task.generateRandomTask(currentDay.get());
             stages.get(StageType.BACKLOG).addTask(newTask);
             mwc.addTask(newTask.toString(), StageType.BACKLOG);
 
