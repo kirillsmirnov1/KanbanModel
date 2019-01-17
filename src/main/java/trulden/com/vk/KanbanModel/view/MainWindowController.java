@@ -61,6 +61,8 @@ public class MainWindowController {
     private HashMap<StageType, VBox> stagesVBoxHashMap;
     private HashMap<StageType, Label> stagesLabelHashMap;
 
+    private Model model;
+
     @FXML
     private void initialize(){
         stagesVBoxHashMap = new HashMap<>();
@@ -84,8 +86,6 @@ public class MainWindowController {
         stagesLabelHashMap.put(StageType.DEPLOYMENT, deploymentLabel);
     }
 
-
-
     public void addTask(String taskText, StageType stage) {
         Label label = new Label(taskText);
         label.setWrapText(true);
@@ -96,7 +96,7 @@ public class MainWindowController {
         else
             Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesVBoxHashMap.get(stage).getChildren().size() + "]"));
     }
-    
+
     public void updateTask(Task task, StageType stage){
         ObservableList<Node> labelList = stagesVBoxHashMap.get(stage).getChildren();
 
@@ -123,5 +123,14 @@ public class MainWindowController {
                 break;
             }
         }
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+
+        model.currentDayProperty().addListener(
+                (observable, oldValue, newValue) ->
+                        Platform.runLater(() ->
+                                dayLabel.setText("Day: " + newValue)));
     }
 }

@@ -1,16 +1,11 @@
 package trulden.com.vk.KanbanModel.model;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import trulden.com.vk.KanbanModel.MainApp;
 import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class Model implements Runnable{
@@ -43,6 +38,10 @@ public class Model implements Runnable{
         timeToSleep = tts;
     }
 
+    public IntegerProperty currentDayProperty() {
+        return currentDay;
+    }
+
     public Model(MainWindowController mwc) {
         this.mwc = mwc;
 
@@ -64,7 +63,6 @@ public class Model implements Runnable{
         Stream.of(workers).forEach(System.out::println);
 
         currentDay = new SimpleIntegerProperty();
-
     }
 
     // Запуск модели
@@ -72,7 +70,7 @@ public class Model implements Runnable{
     public void run(){
         // Прогоняю внешний цикл столько скольно нужно раз.
         // Считаю что цикл выполняется за день
-        for(currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.add(1)){
+        for(currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get()+1)){
             System.out.println("\nDay " + currentDay + " have started =========================================================");
             outerCycle();
         }

@@ -1,6 +1,5 @@
 package trulden.com.vk.KanbanModel;
 
-import com.oracle.tools.packager.IOUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -47,6 +46,8 @@ public class MainApp extends Application{
 
         primaryStage.show();
         model = new Model(mainWindowController);
+
+        mainWindowController.setModel(model);
         new Thread(model).start();
     }
 
