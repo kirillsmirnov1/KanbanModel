@@ -50,6 +50,14 @@ public class MainWindowController {
     @FXML
     private VBox deploymentVBox;
 
+    // Label'ы в статус-баре
+    @FXML
+    private Label dayLabel;
+    @FXML
+    private Label productivityLabel;
+    @FXML
+    private Label tasksDeployedLabel;
+
     private HashMap<StageType, VBox> stagesVBoxHashMap;
     private HashMap<StageType, Label> stagesLabelHashMap;
 
@@ -76,6 +84,8 @@ public class MainWindowController {
         stagesLabelHashMap.put(StageType.DEPLOYMENT, deploymentLabel);
     }
 
+
+
     public void addTask(String taskText, StageType stage) {
         Label label = new Label(taskText);
         label.setWrapText(true);
@@ -86,8 +96,7 @@ public class MainWindowController {
         else
             Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesVBoxHashMap.get(stage).getChildren().size() + "]"));
     }
-
-
+    
     public void updateTask(Task task, StageType stage){
         ObservableList<Node> labelList = stagesVBoxHashMap.get(stage).getChildren();
 

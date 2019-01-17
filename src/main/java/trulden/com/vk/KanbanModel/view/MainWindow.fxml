@@ -37,7 +37,7 @@
                   </Menu>
               </menus>
             </MenuBar>
-                <AnchorPane minHeight="400.0" minWidth="1290" prefHeight="398.0">
+                <AnchorPane minHeight="400.0" minWidth="1290">
                      <children>
                         <VBox prefHeight="200.0" prefWidth="1290" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
@@ -73,7 +73,7 @@
                         </VBox>
                      </children>
                   </AnchorPane>
-            <AnchorPane>
+            <AnchorPane minHeight="200.0">
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
@@ -83,21 +83,21 @@
                </children>
             </AnchorPane>
             <Separator prefWidth="200.0" />
-            <HBox prefHeight="20.0">
+            <HBox maxHeight="20.0">
                <children>
-                  <Label text="Day: 0">
+                  <Label fx:id="dayLabel" text="Day: 0">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </Label>
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
-                  <Label text="Productivity bar: 100%">
+                  <Label fx:id="productivityLabel" text="Productivity bar: 100%">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </Label>
                   <Separator orientation="VERTICAL" prefHeight="200.0" />
-                  <Label text="Tasks Deployed: 0" />
+                  <Label fx:id="tasksDeployedLabel" text="Tasks Deployed: 0" />
                </children>
             </HBox>
          </children>

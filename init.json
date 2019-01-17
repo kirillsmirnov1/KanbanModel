@@ -3,6 +3,6 @@
     "NUMBER_OF_WORKERS": 10,
     "timeToSleep" : 50,
     "DEFAULT_WIP" : "[3, 3, 3, 3, 3, 3, 3, 1000000]",
-    "sceneW" : 1440,
-    "sceneH" : 600
+    "sceneW" : 1290,
+    "sceneH" : 645
 }
