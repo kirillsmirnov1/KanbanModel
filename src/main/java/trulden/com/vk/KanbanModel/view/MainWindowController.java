@@ -136,7 +136,13 @@ public class MainWindowController {
         model.productivityLevelProperty().addListener(
                 (observable, oldValue, newValue) ->
                         Platform.runLater(() ->
-                        productivityLabel.setText("Productivity bar: " + (int) (newValue.doubleValue() * 100)))
+                            productivityLabel.setText("Productivity bar: " + (int) (newValue.doubleValue() * 100)))
+        );
+
+        model.tasksDeployedProperty().addListener(
+                (observable, oldValue, newValue) ->
+                        Platform.runLater(() ->
+                            tasksDeployedLabel.setText("Tasks deployed: " + newValue))
         );
     }
 }
