@@ -2,57 +2,105 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import java.lang.Double?>
-
-
-<?import javafx.scene.control.ScrollPane?>
-<AnchorPane minWidth="1290.0" prefHeight="400.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trulden.com.vk.KanbanModel.view.MainWindowController">
-   <fx:define>
-      <Double fx:id="ROW_WIDTH" fx:value="160.0"/>
-      <Double fx:id="STAGES_CONTAINER_WIDTH" fx:value="1290"/>
-      <Double fx:id="STAGE_WIDTH" fx:value="1290"/>
-   </fx:define>
+<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trulden.com.vk.KanbanModel.view.MainWindowController">
    <children>
-          <AnchorPane minHeight="0.0" minWidth="$STAGES_CONTAINER_WIDTH" prefHeight="398.0" >
-               <children>
-                  <VBox prefHeight="200.0" prefWidth="$STAGES_CONTAINER_WIDTH" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" >
+      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="Model">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Start" />
+                        <MenuItem mnemonicParsing="false" text="Pause" />
+                        <MenuItem mnemonicParsing="false" text="Reset" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="Diagrams">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="CFD" />
+                        <MenuItem mnemonicParsing="false" text="WIP/LT/TH/UT" />
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Scenarios">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Set..." />
+                     </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
+                <AnchorPane minHeight="400.0" minWidth="1290" prefHeight="398.0">
                      <children>
-                        <!-- Названия столбцов -->
-                        <HBox minWidth="$STAGES_CONTAINER_WIDTH"  >
+                        <VBox prefHeight="200.0" prefWidth="1290" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Label fx:id="backlogLabel" minWidth="$ROW_WIDTH" text="Backlog" textAlignment="CENTER" />
-                              <Label fx:id="analysisLabel" minWidth="$ROW_WIDTH" text="Analysis" textAlignment="CENTER" />
-                              <Label fx:id="designLabel" minWidth="$ROW_WIDTH" text="Design" textAlignment="CENTER" />
-                              <Label fx:id="implementationLabel" minWidth="$ROW_WIDTH" text="Implementation" textAlignment="CENTER" />
-                              <Label fx:id="integrationLabel" minWidth="$ROW_WIDTH" text="Integration" textAlignment="CENTER" />
-                              <Label fx:id="documentationLabel" minWidth="$ROW_WIDTH" text="Documentation" textAlignment="CENTER" />
-                              <Label fx:id="testingLabel" minWidth="$ROW_WIDTH" text="Testing" textAlignment="CENTER" />
-                              <Label fx:id="deploymentLabel" minWidth="$ROW_WIDTH" text="Deployment" textAlignment="CENTER" />
+                              <!-- Названия столбцов -->
+                              <HBox minWidth="1290">
+                                 <children>
+                                    <Label fx:id="backlogLabel" minWidth="160" text="Backlog" textAlignment="CENTER" />
+                                    <Label fx:id="analysisLabel" minWidth="160" text="Analysis" textAlignment="CENTER" />
+                                    <Label fx:id="designLabel" minWidth="160" text="Design" textAlignment="CENTER" />
+                                    <Label fx:id="implementationLabel" minWidth="160" text="Implementation" textAlignment="CENTER" />
+                                    <Label fx:id="integrationLabel" minWidth="160" text="Integration" textAlignment="CENTER" />
+                                    <Label fx:id="documentationLabel" minWidth="160" text="Documentation" textAlignment="CENTER" />
+                                    <Label fx:id="testingLabel" minWidth="160" text="Testing" textAlignment="CENTER" />
+                                    <Label fx:id="deploymentLabel" minWidth="160" text="Deployment" textAlignment="CENTER" />
+                                 </children>
+                              </HBox>
+                              <ScrollPane hbarPolicy="NEVER" prefHeight="599.0" prefWidth="1290.0">
+                                 <!-- Столбцы -->
+                                 <HBox prefWidth="1290">
+                                 <children>
+                                    <VBox fx:id="backlogVBox" minWidth="160" prefHeight="200.0" />
+                                    <VBox fx:id="analysisVBox" minWidth="160" prefHeight="200.0" />
+                                    <VBox fx:id="designVBox" minWidth="160" prefHeight="200.0" />
+                                    <VBox fx:id="implementationVBox" minWidth="160" prefHeight="200.0" />
+                                    <VBox fx:id="integrationVBox" minWidth="160" prefHeight="200.0" />
+                                    <VBox fx:id="documentationVBox" minWidth="160" prefHeight="200.0" />
+                                    <VBox fx:id="testingVBox" minWidth="160" prefHeight="200.0" />
+                                    <VBox fx:id="deploymentVBox" minWidth="160" prefHeight="200.0" />
+                                 </children>
+                              </HBox>
+                              </ScrollPane>
                            </children>
-                        </HBox>
-                        <ScrollPane hbarPolicy="NEVER" >
-                           <!-- Столбцы -->
-                           <HBox prefWidth="$STAGES_CONTAINER_WIDTH">
-                           <children>
-                              <VBox fx:id="backlogVBox" prefHeight="200.0" minWidth="$ROW_WIDTH"/>
-                              <VBox fx:id="analysisVBox" prefHeight="200.0" minWidth="$ROW_WIDTH" />
-                              <VBox fx:id="designVBox" prefHeight="200.0" minWidth="$ROW_WIDTH" />
-                              <VBox fx:id="implementationVBox" prefHeight="200.0" minWidth="$ROW_WIDTH" />
-                              <VBox fx:id="integrationVBox" prefHeight="200.0" minWidth="$ROW_WIDTH" />
-                              <VBox fx:id="documentationVBox" prefHeight="200.0" minWidth="$ROW_WIDTH" />
-                              <VBox fx:id="testingVBox" prefHeight="200.0" minWidth="$ROW_WIDTH" />
-                              <VBox fx:id="deploymentVBox" prefHeight="200.0" minWidth="$ROW_WIDTH" />
-                           </children>
-                        </HBox>
-                        </ScrollPane>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Workers" />
                      </children>
                   </VBox>
                </children>
             </AnchorPane>
+            <Separator prefWidth="200.0" />
+            <HBox prefHeight="20.0">
+               <children>
+                  <Label text="Day: 0">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <Label text="Productivity bar: 100%">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <Label text="Tasks Deployed: 0" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
