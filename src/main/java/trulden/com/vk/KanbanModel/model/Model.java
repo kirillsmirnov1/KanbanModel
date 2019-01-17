@@ -79,7 +79,7 @@ public class Model implements Runnable{
         Stream.of(workers).forEach(System.out::println);
 
         currentDay = new SimpleIntegerProperty();
-        tasksDeployed = new SimpleIntegerProperty();
+        tasksDeployed = new SimpleIntegerProperty(0);
         productivityLevel = new SimpleDoubleProperty();
     }
 
@@ -102,6 +102,7 @@ public class Model implements Runnable{
         for(Task task : stages.get(StageType.DEPLOYMENT).getTasksToRemove()){
             stages.get(StageType.DEPLOYMENT).removeTask(task);
             mwc.removeTask(task, StageType.DEPLOYMENT);
+            Util.sleepMilliseconds(TIME_TO_SLEEP);
         }
     }
 
