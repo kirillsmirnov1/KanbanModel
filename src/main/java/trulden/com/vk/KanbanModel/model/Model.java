@@ -227,7 +227,7 @@ public class Model implements Runnable{
         while (stages.get(StageType.BACKLOG).canAddTask()){
             Task newTask = Task.generateRandomTask(currentDay.get());
             stages.get(StageType.BACKLOG).addTask(newTask);
-            mwc.addTask(newTask, StageType.BACKLOG, false); // TODO убрать стадию ибо она хранится в карточке
+            mwc.addTask(newTask, StageType.BACKLOG, false); // 
 
             Util.sleepMilliseconds(TIME_TO_SLEEP);
         }

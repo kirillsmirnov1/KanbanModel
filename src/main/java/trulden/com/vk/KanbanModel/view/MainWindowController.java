@@ -107,6 +107,19 @@ public class MainWindowController {
         stagesLabelHashMap.put(StageType.DEPLOYMENT, deploymentLabel);
     }
 
+    private void updateWIPLimit(StageType stage){
+            Platform.runLater(() ->
+                    stagesLabelHashMap.get(stage)
+                            .setText(
+                                    stage.toString()
+                                    + " [" + stagesTodoVBoxHashMap.get(stage).getChildren().size()
+                                    + (stage == StageType.DEPLOYMENT
+                                            ? "]" // Если деплоймент, то скобочки хватит
+                                            : "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]" // Иначе – нужно лимит писать
+                                      )
+                            ));
+    }
+
     public void addTask(Task task, StageType stage, boolean done) {
         Label label = new Label(task.toString());
         label.setWrapText(true);
@@ -117,11 +130,7 @@ public class MainWindowController {
         else
             Platform.runLater(() -> stagesDoneVBoxHashMap.get(stage).getChildren().add(label) );
 
-        // Изменение WIP лимита
-        if(stage != StageType.DEPLOYMENT)//TODO спрятать WIP в функцию
-            Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesTodoVBoxHashMap.get(stage).getChildren().size() + "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]"));
-        else
-            Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesTodoVBoxHashMap.get(stage).getChildren().size() + "]"));
+        updateWIPLimit(stage);
     }
 
     public void updateTask(Task task, StageType stage){
@@ -148,10 +157,8 @@ public class MainWindowController {
             if(((Label)labelList.get(i)).getText().contains(task.getName())){
                 int makingIteratorConstant = i;
                 Platform.runLater(() -> labelList.remove(makingIteratorConstant) );
-                if(stage != StageType.DEPLOYMENT)
-                    Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesTodoVBoxHashMap.get(stage).getChildren().size() + "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]"));
-                else
-                    Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesTodoVBoxHashMap.get(stage).getChildren().size() + "]"));
+
+                updateWIPLimit(stage);
                 break;
             }
         }
