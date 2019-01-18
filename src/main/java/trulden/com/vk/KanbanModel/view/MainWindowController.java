@@ -36,17 +36,29 @@ public class MainWindowController {
     @FXML
     private VBox backlogVBox;
     @FXML
-    private VBox analysisVBox;
+    private VBox analysisTodoVBox;
     @FXML
-    private VBox designVBox;
+    private VBox analysisDoneVBox;
     @FXML
-    private VBox implementationVBox;
+    private VBox designTodoVBox;
     @FXML
-    private VBox integrationVBox;
+    private VBox designDoneVBox;
     @FXML
-    private VBox documentationVBox;
+    private VBox implementationTodoVBox;
     @FXML
-    private VBox testingVBox;
+    private VBox implementationDoneVBox;
+    @FXML
+    private VBox integrationTodoVBox;
+    @FXML
+    private VBox integrationDoneVBox;
+    @FXML
+    private VBox documentationTodoVBox;
+    @FXML
+    private VBox documentationDoneVBox;
+    @FXML
+    private VBox testingTodoVBox;
+    @FXML
+    private VBox testingDoneVBox;
     @FXML
     private VBox deploymentVBox;
 
@@ -58,22 +70,31 @@ public class MainWindowController {
     @FXML
     private Label tasksDeployedLabel;
 
-    private HashMap<StageType, VBox> stagesVBoxHashMap;
+    private HashMap<StageType, VBox> stagesTodoVBoxHashMap;
+    private HashMap<StageType, VBox> stagesDoneVBoxHashMap;
     private HashMap<StageType, Label> stagesLabelHashMap;
 
     private Model model;
 
     @FXML
     private void initialize(){
-        stagesVBoxHashMap = new HashMap<>();
-        stagesVBoxHashMap.put(StageType.BACKLOG, backlogVBox);
-        stagesVBoxHashMap.put(StageType.ANALYSIS, analysisVBox);
-        stagesVBoxHashMap.put(StageType.DESIGN, designVBox);
-        stagesVBoxHashMap.put(StageType.IMPLEMENTATION, implementationVBox);
-        stagesVBoxHashMap.put(StageType.INTEGRATION, integrationVBox);
-        stagesVBoxHashMap.put(StageType.DOCUMENTATION, documentationVBox);
-        stagesVBoxHashMap.put(StageType.TESTING, testingVBox);
-        stagesVBoxHashMap.put(StageType.DEPLOYMENT, deploymentVBox);
+        stagesTodoVBoxHashMap = new HashMap<>();
+        stagesTodoVBoxHashMap.put(StageType.BACKLOG, backlogVBox);
+        stagesTodoVBoxHashMap.put(StageType.ANALYSIS, analysisTodoVBox);
+        stagesTodoVBoxHashMap.put(StageType.DESIGN, designTodoVBox);
+        stagesTodoVBoxHashMap.put(StageType.IMPLEMENTATION, implementationTodoVBox);
+        stagesTodoVBoxHashMap.put(StageType.INTEGRATION, integrationTodoVBox);
+        stagesTodoVBoxHashMap.put(StageType.DOCUMENTATION, documentationTodoVBox);
+        stagesTodoVBoxHashMap.put(StageType.TESTING, testingTodoVBox);
+        stagesTodoVBoxHashMap.put(StageType.DEPLOYMENT, deploymentVBox);
+
+        stagesDoneVBoxHashMap = new HashMap<>();
+        stagesDoneVBoxHashMap.put(StageType.ANALYSIS, analysisDoneVBox);
+        stagesDoneVBoxHashMap.put(StageType.DESIGN, designDoneVBox);
+        stagesDoneVBoxHashMap.put(StageType.IMPLEMENTATION, implementationDoneVBox);
+        stagesDoneVBoxHashMap.put(StageType.INTEGRATION, integrationDoneVBox);
+        stagesDoneVBoxHashMap.put(StageType.DOCUMENTATION, documentationDoneVBox);
+        stagesDoneVBoxHashMap.put(StageType.TESTING, testingDoneVBox);
 
         stagesLabelHashMap = new HashMap<>();
         stagesLabelHashMap.put(StageType.BACKLOG, backlogLabel);
@@ -86,19 +107,25 @@ public class MainWindowController {
         stagesLabelHashMap.put(StageType.DEPLOYMENT, deploymentLabel);
     }
 
-    public void addTask(String taskText, StageType stage) {
-        Label label = new Label(taskText);
+    public void addTask(Task task, StageType stage, boolean done) {
+        Label label = new Label(task.toString());
         label.setWrapText(true);
         label.setMinHeight(40);
-        Platform.runLater(() -> stagesVBoxHashMap.get(stage).getChildren().add(label) ); // лямбды это магия
-        if(stage != StageType.DEPLOYMENT)
-            Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesVBoxHashMap.get(stage).getChildren().size() + "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]"));
+
+        if(stage == StageType.BACKLOG || stage == StageType.DEPLOYMENT || !done)
+            Platform.runLater(() -> stagesTodoVBoxHashMap.get(stage).getChildren().add(label) ); // лямбды это магия
         else
-            Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesVBoxHashMap.get(stage).getChildren().size() + "]"));
+            Platform.runLater(() -> stagesDoneVBoxHashMap.get(stage).getChildren().add(label) );
+
+        // Изменение WIP лимита
+        if(stage != StageType.DEPLOYMENT)//TODO спрятать WIP в функцию
+            Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesTodoVBoxHashMap.get(stage).getChildren().size() + "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]"));
+        else
+            Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesTodoVBoxHashMap.get(stage).getChildren().size() + "]"));
     }
 
     public void updateTask(Task task, StageType stage){
-        ObservableList<Node> labelList = stagesVBoxHashMap.get(stage).getChildren();
+        ObservableList<Node> labelList = stagesTodoVBoxHashMap.get(stage).getChildren();
 
         for(int i=0; i < labelList.size(); i++){
             if(((Label)labelList.get(i)).getText().contains(task.getName())){
@@ -109,20 +136,30 @@ public class MainWindowController {
         }
     }
 
-    public void removeTask(Task task, StageType stage){
-        ObservableList<Node> labelList = stagesVBoxHashMap.get(stage).getChildren();
+    public void removeTask(Task task, StageType stage, boolean done){
+        ObservableList<Node> labelList;
+
+        if(stage == StageType.BACKLOG || stage == StageType.DEPLOYMENT || !done)
+            labelList = stagesTodoVBoxHashMap.get(stage).getChildren();
+        else
+            labelList = stagesDoneVBoxHashMap.get(stage).getChildren();
 
         for(int i=0; i < labelList.size(); i++){
             if(((Label)labelList.get(i)).getText().contains(task.getName())){
                 int makingIteratorConstant = i;
                 Platform.runLater(() -> labelList.remove(makingIteratorConstant) );
                 if(stage != StageType.DEPLOYMENT)
-                    Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesVBoxHashMap.get(stage).getChildren().size() + "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]"));
+                    Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesTodoVBoxHashMap.get(stage).getChildren().size() + "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]"));
                 else
-                    Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesVBoxHashMap.get(stage).getChildren().size() + "]"));
+                    Platform.runLater(() -> stagesLabelHashMap.get(stage).setText(stage.toString() + " [" + stagesTodoVBoxHashMap.get(stage).getChildren().size() + "]"));
                 break;
             }
         }
+    }
+
+    public void moveTaskToFinished(Task task, StageType stage){
+        removeTask(task, stage, false);
+        addTask(task, stage, true);
     }
 
     public void setModel(Model model) {

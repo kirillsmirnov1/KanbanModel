@@ -101,7 +101,7 @@ public class Model implements Runnable{
         tasksDeployed.setValue(tasksDeployed.get() + stages.get(StageType.DEPLOYMENT).getNumberOfTasks());
         for(Task task : stages.get(StageType.DEPLOYMENT).getTasksToRemove()){
             stages.get(StageType.DEPLOYMENT).removeTask(task);
-            mwc.removeTask(task, StageType.DEPLOYMENT);
+            mwc.removeTask(task, StageType.DEPLOYMENT, true);
             Util.sleepMilliseconds(TIME_TO_SLEEP);
         }
     }
@@ -156,12 +156,12 @@ public class Model implements Runnable{
                         if(stages.get(task.getNextStage()).canAddTask()){
                             // Убираю таску с прошлой стадии
                             stages.get(stage).removeTask(task);
-                            mwc.removeTask(task, task.getStage());
+                            mwc.removeTask(task, task.getStage(), true);
 
                             // Переношу на следующую
                             stages.get(task.getNextStage()).addTask(task);
                             task.moveToNextStage(currentDay.get());
-                            mwc.addTask(task.toString(), task.getStage());
+                            mwc.addTask(task, task.getStage(), task.getStage() == StageType.DEPLOYMENT || task.getResumingWorkAtCurrentStage() == 0);
 
                             Util.sleepMilliseconds(TIME_TO_SLEEP);
 
@@ -207,7 +207,10 @@ public class Model implements Runnable{
 
                             if(workDone > 0){
                                 amountOfWork += workDone;
-                                mwc.updateTask(task, task.getStage());
+                                if(task.getResumingWorkAtCurrentStage() == 0)
+                                    mwc.moveTaskToFinished(task, task.getStage());
+                                else
+                                    mwc.updateTask(task, task.getStage());
                                 Util.sleepMilliseconds(TIME_TO_SLEEP);
                             }
                         }
@@ -224,7 +227,7 @@ public class Model implements Runnable{
         while (stages.get(StageType.BACKLOG).canAddTask()){
             Task newTask = Task.generateRandomTask(currentDay.get());
             stages.get(StageType.BACKLOG).addTask(newTask);
-            mwc.addTask(newTask.toString(), StageType.BACKLOG);
+            mwc.addTask(newTask, StageType.BACKLOG, false); // TODO убрать стадию ибо она хранится в карточке
 
             Util.sleepMilliseconds(TIME_TO_SLEEP);
         }

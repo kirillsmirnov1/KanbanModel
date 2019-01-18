@@ -59,12 +59,42 @@
                                  <HBox prefWidth="1290">
                                  <children>
                                     <VBox fx:id="backlogVBox" minWidth="160" prefHeight="200.0" />
-                                    <VBox fx:id="analysisVBox" minWidth="160" prefHeight="200.0" />
-                                    <VBox fx:id="designVBox" minWidth="160" prefHeight="200.0" />
-                                    <VBox fx:id="implementationVBox" minWidth="160" prefHeight="200.0" />
-                                    <VBox fx:id="integrationVBox" minWidth="160" prefHeight="200.0" />
-                                    <VBox fx:id="documentationVBox" minWidth="160" prefHeight="200.0" />
-                                    <VBox fx:id="testingVBox" minWidth="160" prefHeight="200.0" />
+                                    <VBox minWidth="160" prefHeight="200.0">
+                                    <children>
+                                       <VBox fx:id="analysisTodoVBox" prefHeight="200.0" prefWidth="100.0" />
+                                       <Separator prefWidth="200.0" />
+                                       <VBox fx:id="analysisDoneVBox" prefHeight="200.0" prefWidth="100.0" />
+                                    </children></VBox>
+                                    <VBox minWidth="160" prefHeight="200.0">
+                                    <children>
+                                       <VBox fx:id="designTodoVBox" prefHeight="200.0" prefWidth="100.0" />
+                                       <Separator prefWidth="200.0" />
+                                       <VBox fx:id="designDoneVBox" prefHeight="200.0" prefWidth="100.0" />
+                                    </children></VBox>
+                                    <VBox minWidth="160" prefHeight="200.0">
+                                    <children>
+                                       <VBox fx:id="implementationTodoVBox" prefHeight="200.0" prefWidth="100.0" />
+                                       <Separator prefWidth="200.0" />
+                                       <VBox fx:id="implementationDoneVBox" prefHeight="200.0" prefWidth="100.0" />
+                                    </children></VBox>
+                                    <VBox minWidth="160" prefHeight="200.0">
+                                    <children>
+                                       <VBox fx:id="integrationTodoVBox" prefHeight="200.0" prefWidth="100.0" />
+                                       <Separator prefWidth="200.0" />
+                                       <VBox fx:id="integrationDoneVBox" prefHeight="200.0" prefWidth="100.0" />
+                                    </children></VBox>
+                                    <VBox minWidth="160" prefHeight="200.0">
+                                    <children>
+                                       <VBox fx:id="documentationTodoVBox" prefHeight="200.0" prefWidth="100.0" />
+                                       <Separator prefWidth="200.0" />
+                                       <VBox fx:id="documentationDoneVBox" prefHeight="200.0" prefWidth="100.0" />
+                                    </children></VBox>
+                                    <VBox minWidth="160" prefHeight="200.0">
+                                    <children>
+                                       <VBox fx:id="testingTodoVBox" prefHeight="200.0" prefWidth="100.0" />
+                                       <Separator prefWidth="200.0" />
+                                       <VBox fx:id="testingDoneVBox" prefHeight="200.0" prefWidth="100.0" />
+                                    </children></VBox>
                                     <VBox fx:id="deploymentVBox" minWidth="160" prefHeight="200.0" />
                                  </children>
                               </HBox>
