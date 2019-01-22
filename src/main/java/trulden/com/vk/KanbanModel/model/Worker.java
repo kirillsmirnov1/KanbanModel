@@ -11,16 +11,18 @@ public class Worker {
 
     private HashMap<StageType, Double> productivityAtStage;
     private int energy;
+    private final int id;
     private final String name;
 
     private static final int MAX_ENERGY = 10;
 
-    Worker(String name, HashMap<StageType, Double> productivityAtStage){
+    Worker(String name, int id, HashMap<StageType, Double> productivityAtStage){
 
         if(productivityAtStage.size() != StageType.workStages.length)
             throw new IllegalArgumentException("Неправильный размер массива");
 
         this.name = name;
+        this.id = id;
         this.productivityAtStage = productivityAtStage;
     }
 
@@ -31,13 +33,13 @@ public class Worker {
         }
 
         //return new Task(RandomStringUtils.random(10, true, false), randomCosts);
-        return new Worker(MainApp.workerNames[workerCounter++], randomProductivity);
+        return new Worker(MainApp.workerNames[workerCounter], workerCounter++, randomProductivity);
     }
 
 
     @Override
     public String toString(){
-        return "W: " + name + " pr: " + Arrays.toString(StageType.toSortedStringArray(productivityAtStage));
+        return "W " + id + " : " + name + " pr: " + Arrays.toString(StageType.toSortedStringArray(productivityAtStage));
     }
 
     public void refillEnergy(){
