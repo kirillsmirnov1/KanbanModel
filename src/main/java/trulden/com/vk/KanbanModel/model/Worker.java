@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
+import static trulden.com.vk.KanbanModel.model.StageType.workStages;
+
 public class Worker {
     private static int workerCounter = 0;
 
@@ -18,7 +20,7 @@ public class Worker {
 
     Worker(String name, int id, HashMap<StageType, Double> productivityAtStage){
 
-        if(productivityAtStage.size() != StageType.workStages.length)
+        if(productivityAtStage.size() != workStages.length)
             throw new IllegalArgumentException("Неправильный размер массива");
 
         this.name = name;
@@ -28,7 +30,7 @@ public class Worker {
 
     public static Worker generateRandomWorker() {
         HashMap<StageType, Double> randomProductivity = new HashMap<>();
-        for (StageType stage : StageType.workStages) {
+        for (StageType stage : workStages) {
             randomProductivity.put(stage, new Random().nextDouble());
         }
 
@@ -39,7 +41,17 @@ public class Worker {
 
     @Override
     public String toString(){
-        return "W " + id + " : " + name + " pr: " + Arrays.toString(StageType.toSortedStringArray(productivityAtStage));
+        return "W " + id + " : " + name + "\npr: " + Arrays.toString(StageType.toSortedStringArray(productivityAsPercents()));
+    }
+
+    private HashMap<StageType, Integer> productivityAsPercents(){
+        HashMap<StageType, Integer> percents = new HashMap<>();
+
+        for(StageType stage : workStages){
+            percents.put(stage, (int)(productivityAtStage.get(stage) * 100));
+        }
+
+        return percents;
     }
 
     public void refillEnergy(){
