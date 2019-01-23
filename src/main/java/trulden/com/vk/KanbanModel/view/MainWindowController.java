@@ -205,6 +205,11 @@ public class MainWindowController {
             label.setMinWidth(150);
             workersGrid.add(label, worker.getID() % workersGridX, worker.getID() / workersGridX);
             // TODO обновлять энергию
+
+            worker.energyProperty().addListener(
+                    ((observable, oldValue, newValue) ->
+                    Platform.runLater(() ->
+                        label.setText(worker.toString()))));
         }
 
     }
