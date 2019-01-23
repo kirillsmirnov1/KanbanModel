@@ -130,56 +130,6 @@ public class MainWindowController {
                             ));
     }
 
-    public void addTask(Task task, StageType stage, boolean done) {
-        Label label = new Label(task.toString());
-        label.setWrapText(true);
-        label.setMinHeight(40);
-
-        if(stage == BACKLOG || stage == DEPLOYMENT || !done)
-            Platform.runLater(() -> stagesUpVBoxHashMap.get(stage).getChildren().add(label) ); // лямбды это магия
-        else
-            Platform.runLater(() -> stagesDownVBoxHashMap.get(stage).getChildren().add(label) );
-
-        updateWIPLimit(stage);
-    }
-
-    public void updateTask(Task task, StageType stage){
-        ObservableList<Node> labelList = stagesUpVBoxHashMap.get(stage).getChildren();
-
-        for(int i=0; i < labelList.size(); i++){
-            if(((Label)labelList.get(i)).getText().contains(task.getName())){
-                int makingIteratorConstant = i;
-                Platform.runLater(() -> ((Label) labelList.get(makingIteratorConstant)).setText(task.toString()) );
-                break;
-            }
-        }
-    }
-
-    public void removeTask(Task task, StageType stage, boolean done){
-        ObservableList<Node> labelList;
-
-        if(stage == BACKLOG || stage == DEPLOYMENT || !done)
-            labelList = stagesUpVBoxHashMap.get(stage).getChildren();
-        else
-            labelList = stagesDownVBoxHashMap.get(stage).getChildren();
-
-        for(int i=0; i < labelList.size(); i++){
-            if(((Label)labelList.get(i)).getText().contains(task.getName())){
-                int makingIteratorConstant = i;
-                Platform.runLater(() -> labelList.remove(makingIteratorConstant) );
-
-                updateWIPLimit(stage);
-                break;
-            }
-        }
-    }
-
-    public void moveTaskToFinished(Task task, StageType stage){
-        removeTask(task, stage, false);
-        addTask(task, stage, true);
-    }
-
-
     public void watchTask(Task task){
         Label label = new Label(task.toString());
         label.setWrapText(true);

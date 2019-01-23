@@ -110,7 +110,6 @@ public class Model implements Runnable{
         for(Task task : stages.get(StageType.DEPLOYMENT).getTasksToRemove()){
             task.deploy();
             stages.get(StageType.DEPLOYMENT).removeTask(task);
-            mwc.removeTask(task, StageType.DEPLOYMENT, true);
             Util.sleepMilliseconds(TIME_TO_SLEEP);
         }
     }
@@ -167,12 +166,10 @@ public class Model implements Runnable{
                         if(stages.get(task.getNextStage()).canAddTask()){
                             // Убираю таску с прошлой стадии
                             stages.get(stage).removeTask(task);
-                            mwc.removeTask(task, task.getStage(), true);
 
                             // Переношу на следующую
                             stages.get(task.getNextStage()).addTask(task);
                             task.moveToNextStage(currentDay.get());
-                            mwc.addTask(task, task.getStage(), task.getStage() == StageType.DEPLOYMENT || task.getResumingWorkAtCurrentStage() == 0);
 
                             Util.sleepMilliseconds(TIME_TO_SLEEP);
 
@@ -218,10 +215,6 @@ public class Model implements Runnable{
 
                             if(workDone > 0){
                                 amountOfWork += workDone;
-                                if(task.getResumingWorkAtCurrentStage() == 0)
-                                    mwc.moveTaskToFinished(task, task.getStage());
-//                                else
-//                                    mwc.updateTask(task, task.getStage());
                                 Util.sleepMilliseconds(TIME_TO_SLEEP);
                             }
                         }
@@ -238,7 +231,6 @@ public class Model implements Runnable{
         while (stages.get(StageType.BACKLOG).canAddTask()){
             Task newTask = Task.generateRandomTask(currentDay.get());
             stages.get(StageType.BACKLOG).addTask(newTask);
-            mwc.addTask(newTask, StageType.BACKLOG, false); //
             mwc.watchTask(newTask);
 
             Util.sleepMilliseconds(TIME_TO_SLEEP);
