@@ -185,11 +185,30 @@ public class MainWindowController {
         label.setWrapText(true);
         label.setMinHeight(40);
 
-        //Platform.runLater(() -> stagesUpVBoxHashMap.get(BACKLOG).getChildren().add(label));
+        Platform.runLater(() -> stagesUpVBoxHashMap.get(BACKLOG).getChildren().add(label));
 
+        // Обновление величины выполнения таски
         task.totalAdvanceProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
             label.setText(task.toString());
-            System.out.println("updated task text");
+            //System.out.println("updated task text");
+        }));
+
+        // Изменение стадии таски
+        task.stageProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+            ObservableList<Node> labelList;
+
+            if(oldValue == BACKLOG )
+                labelList = stagesUpVBoxHashMap.get(oldValue).getChildren(); //TODO сократи
+            else
+                labelList = stagesDownVBoxHashMap.get(oldValue).getChildren();
+
+            if(labelList.contains(label))
+                labelList.remove(label);
+
+            if(!task.doneAtCurrentStageProperty().get())                   // Тут может быть дедлок
+                stagesUpVBoxHashMap.get(newValue).getChildren().add(label);
+            else
+                stagesDownVBoxHashMap.get(newValue).getChildren().add(label);
         }));
     }
 
