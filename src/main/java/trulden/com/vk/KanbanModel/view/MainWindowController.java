@@ -199,8 +199,11 @@ public class MainWindowController {
         );
 
         for(Worker worker : model.getWorkers()){
-            workersGrid.add(new Label(worker.toString()), worker.getID() % workersGridX, worker.getID() / workersGridY);
-            // TODO лэйблы должны раздвигать сетку
+            Label label = new Label(worker.toString());
+            label.setWrapText(true);
+            label.setMinHeight(60);
+            label.setMinWidth(150);
+            workersGrid.add(label, worker.getID() % workersGridX, worker.getID() / workersGridX);
             // TODO обновлять энергию
         }
 
