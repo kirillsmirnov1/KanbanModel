@@ -44,7 +44,7 @@ public class Worker {
 
     @Override
     public String toString(){
-        return "W " + id + " : " + name + " [" + energy +  "]\npr: " + Arrays.toString(StageType.toSortedStringArray(productivityAsPercents()));
+        return "W " + id + " : " + name + " [" + energy.get() +  "]\npr: " + Arrays.toString(StageType.toSortedStringArray(productivityAsPercents()));
     }
 
     private HashMap<StageType, Integer> productivityAsPercents(){
