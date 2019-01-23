@@ -1,5 +1,7 @@
 package trulden.com.vk.KanbanModel.model;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import trulden.com.vk.KanbanModel.MainApp;
 
 import java.util.Arrays;
@@ -12,7 +14,12 @@ public class Worker {
     private static int workerCounter = 0;
 
     private HashMap<StageType, Double> productivityAtStage;
-    private int energy;
+
+    public IntegerProperty energyProperty() {
+        return energy;
+    }
+
+    private IntegerProperty energy;
     private final int id;
     private final String name;
 
@@ -22,6 +29,8 @@ public class Worker {
 
         if(productivityAtStage.size() != workStages.length)
             throw new IllegalArgumentException("Неправильный размер массива");
+
+        energy = new SimpleIntegerProperty(0);
 
         this.name = name;
         this.id = id;
@@ -34,14 +43,13 @@ public class Worker {
             randomProductivity.put(stage, new Random().nextDouble());
         }
 
-        //return new Task(RandomStringUtils.random(10, true, false), randomCosts);
         return new Worker(MainApp.workerNames[workerCounter], workerCounter++, randomProductivity);
     }
 
 
     @Override
     public String toString(){
-        return "W " + id + " : " + name + "\npr: " + Arrays.toString(StageType.toSortedStringArray(productivityAsPercents()));
+        return "W " + id + " : " + name + " [" + energy.get() +  "]\npr: " + Arrays.toString(StageType.toSortedStringArray(productivityAsPercents()));
     }
 
     private HashMap<StageType, Integer> productivityAsPercents(){
@@ -55,18 +63,22 @@ public class Worker {
     }
 
     public void refillEnergy(){
-        energy = MAX_ENERGY;
+        energy.setValue(MAX_ENERGY);
     }
 
     public int getEnergy() {
-        return energy;
+        return energy.get();
     }
 
     public void deductEnergy(int deductedEnergy){
-        energy -= deductedEnergy;
+        energy.setValue(energy.get() - deductedEnergy);
     }
 
     public double getProductivityAtStage(StageType stage) {
         return productivityAtStage.get(stage);
+    }
+
+    public int getID() {
+        return id;
     }
 }

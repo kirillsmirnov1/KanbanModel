@@ -5,10 +5,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import trulden.com.vk.KanbanModel.model.Model;
 import trulden.com.vk.KanbanModel.model.StageType;
 import trulden.com.vk.KanbanModel.model.Task;
+import trulden.com.vk.KanbanModel.model.Worker;
 
 import java.util.HashMap;
 
@@ -70,6 +72,10 @@ public class MainWindowController {
     @FXML
     private Label tasksDeployedLabel;
 
+    @FXML
+    private GridPane workersGrid;
+    private int workersGridX;
+
     private HashMap<StageType, VBox> stagesTodoVBoxHashMap;
     private HashMap<StageType, VBox> stagesDoneVBoxHashMap;
     private HashMap<StageType, Label> stagesLabelHashMap;
@@ -105,6 +111,8 @@ public class MainWindowController {
         stagesLabelHashMap.put(StageType.DOCUMENTATION, documentationLabel);
         stagesLabelHashMap.put(StageType.TESTING, testingLabel);
         stagesLabelHashMap.put(StageType.DEPLOYMENT, deploymentLabel);
+
+        workersGridX = workersGrid.getColumnCount();
     }
 
     private void updateWIPLimit(StageType stage){
@@ -188,5 +196,19 @@ public class MainWindowController {
                         Platform.runLater(() ->
                             tasksDeployedLabel.setText("Tasks deployed: " + newValue))
         );
+
+        for(Worker worker : model.getWorkers()){
+            Label label = new Label(worker.toString());
+            label.setWrapText(true);
+            label.setMinHeight(60);
+            label.setMinWidth(150);
+            workersGrid.add(label, worker.getID() % workersGridX, worker.getID() / workersGridX);
+
+            worker.energyProperty().addListener(
+                    ((observable, oldValue, newValue) ->
+                    Platform.runLater(() ->
+                        label.setText(worker.toString()))));
+        }
+
     }
 }
