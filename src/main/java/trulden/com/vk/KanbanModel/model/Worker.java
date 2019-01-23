@@ -72,4 +72,8 @@ public class Worker {
     public double getProductivityAtStage(StageType stage) {
         return productivityAtStage.get(stage);
     }
+
+    public int getID() {
+        return id;
+    }
 }

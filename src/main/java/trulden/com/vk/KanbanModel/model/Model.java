@@ -26,6 +26,8 @@ public class Model implements Runnable{
     private IntegerProperty currentDay;
     private IntegerProperty tasksDeployed;
 
+    public Worker[] getWorkers(){return workers;}
+
     public static void setDefaultWip(int[] defaultWip) {
         DEFAULT_WIP = defaultWip;
     }

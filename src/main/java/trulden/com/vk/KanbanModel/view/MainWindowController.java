@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import trulden.com.vk.KanbanModel.model.Model;
 import trulden.com.vk.KanbanModel.model.StageType;
 import trulden.com.vk.KanbanModel.model.Task;
+import trulden.com.vk.KanbanModel.model.Worker;
 
 import java.util.HashMap;
 
@@ -73,6 +74,7 @@ public class MainWindowController {
 
     @FXML
     private GridPane workersGrid;
+    private int workersGridX, workersGridY;
 
     private HashMap<StageType, VBox> stagesTodoVBoxHashMap;
     private HashMap<StageType, VBox> stagesDoneVBoxHashMap;
@@ -109,6 +111,9 @@ public class MainWindowController {
         stagesLabelHashMap.put(StageType.DOCUMENTATION, documentationLabel);
         stagesLabelHashMap.put(StageType.TESTING, testingLabel);
         stagesLabelHashMap.put(StageType.DEPLOYMENT, deploymentLabel);
+
+        workersGridX = workersGrid.getColumnCount();
+        workersGridY = workersGrid.getRowCount();
     }
 
     private void updateWIPLimit(StageType stage){
@@ -192,5 +197,12 @@ public class MainWindowController {
                         Platform.runLater(() ->
                             tasksDeployedLabel.setText("Tasks deployed: " + newValue))
         );
+
+        for(Worker worker : model.getWorkers()){
+            workersGrid.add(new Label(worker.toString()), worker.getID() % workersGridX, worker.getID() / workersGridY);
+            // TODO лэйблы должны раздвигать сетку
+            // TODO обновлять энергию
+        }
+
     }
 }
