@@ -74,7 +74,7 @@ public class MainWindowController {
 
     @FXML
     private GridPane workersGrid;
-    private int workersGridX, workersGridY;
+    private int workersGridX;
 
     private HashMap<StageType, VBox> stagesTodoVBoxHashMap;
     private HashMap<StageType, VBox> stagesDoneVBoxHashMap;
@@ -113,7 +113,6 @@ public class MainWindowController {
         stagesLabelHashMap.put(StageType.DEPLOYMENT, deploymentLabel);
 
         workersGridX = workersGrid.getColumnCount();
-        workersGridY = workersGrid.getRowCount();
     }
 
     private void updateWIPLimit(StageType stage){
@@ -204,7 +203,6 @@ public class MainWindowController {
             label.setMinHeight(60);
             label.setMinWidth(150);
             workersGrid.add(label, worker.getID() % workersGridX, worker.getID() / workersGridX);
-            // TODO обновлять энергию
 
             worker.energyProperty().addListener(
                     ((observable, oldValue, newValue) ->
