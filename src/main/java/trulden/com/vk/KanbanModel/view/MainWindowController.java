@@ -185,7 +185,10 @@ public class MainWindowController {
         label.setWrapText(true);
         label.setMinHeight(40);
 
-        Platform.runLater(() -> stagesUpVBoxHashMap.get(BACKLOG).getChildren().add(label));
+        Platform.runLater(() -> {
+            if(!stagesUpVBoxHashMap.get(BACKLOG).getChildren().contains(label))
+                stagesUpVBoxHashMap.get(BACKLOG).getChildren().add(label);
+        });
 
         // Обновление величины выполнения таски
         task.totalAdvanceProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
@@ -193,22 +196,46 @@ public class MainWindowController {
             //System.out.println("updated task text");
         }));
 
+        // Изменение готовности таски в столбце
+        task.doneAtCurrentStageProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+
+            StageType currentStage = task.getStage();
+
+            // Если таска готова
+            if(newValue) {
+                if(task.stageProperty().get() == DEPLOYMENT)
+                    stagesUpVBoxHashMap.get(DEPLOYMENT).getChildren().remove(label);
+                else{
+                    stagesUpVBoxHashMap.get(currentStage).getChildren().remove(label);
+
+                    if(!stagesDownVBoxHashMap.get(currentStage).getChildren().contains(label))
+                        stagesDownVBoxHashMap.get(currentStage).getChildren().add(label);
+                }
+
+                updateWIPLimit(task.stageProperty().get());
+            }
+            // С другим случаем должна справляться следующая функция
+        }));
+
         // Изменение стадии таски
         task.stageProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
             ObservableList<Node> labelList;
 
-            if(oldValue == BACKLOG )
-                labelList = stagesUpVBoxHashMap.get(oldValue).getChildren(); //TODO сократи
-            else
-                labelList = stagesDownVBoxHashMap.get(oldValue).getChildren();
+            labelList = (oldValue == BACKLOG) ? stagesUpVBoxHashMap.get(oldValue).getChildren() : stagesDownVBoxHashMap.get(oldValue).getChildren();
 
-            if(labelList.contains(label))
-                labelList.remove(label);
+            labelList.remove(label);
 
-            if(!task.doneAtCurrentStageProperty().get())                   // Тут может быть дедлок
-                stagesUpVBoxHashMap.get(newValue).getChildren().add(label);
-            else
-                stagesDownVBoxHashMap.get(newValue).getChildren().add(label);
+            if(!task.doneAtCurrentStageProperty().get()) {               // Тут может быть дедлок (((
+                if(!stagesUpVBoxHashMap.get(newValue).getChildren().contains(label))
+                    stagesUpVBoxHashMap.get(newValue).getChildren().add(label);
+            }
+            else {
+                if(!stagesDownVBoxHashMap.get(newValue).getChildren().contains(label))
+                    stagesDownVBoxHashMap.get(newValue).getChildren().add(label);
+            }
+
+            updateWIPLimit(oldValue);
+            updateWIPLimit(newValue);
         }));
     }
 
