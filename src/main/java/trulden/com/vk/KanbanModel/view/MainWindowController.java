@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import trulden.com.vk.KanbanModel.model.Model;
 import trulden.com.vk.KanbanModel.model.StageType;
@@ -69,6 +70,9 @@ public class MainWindowController {
     private Label productivityLabel;
     @FXML
     private Label tasksDeployedLabel;
+
+    @FXML
+    private GridPane workersGrid;
 
     private HashMap<StageType, VBox> stagesTodoVBoxHashMap;
     private HashMap<StageType, VBox> stagesDoneVBoxHashMap;
