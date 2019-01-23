@@ -162,4 +162,11 @@ public class Task {
     public String getName() {
         return namePrefix + name;
     }
+
+    public void deploy(){
+        if(stage.get() == DEPLOYMENT)
+            doneAtCurrentStage.setValue(true);
+        else
+            throw new IllegalArgumentException("Can't deploy not finished task");
+    }
 }

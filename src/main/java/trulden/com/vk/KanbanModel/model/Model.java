@@ -108,6 +108,7 @@ public class Model implements Runnable{
     private void deploy() {
         tasksDeployed.setValue(tasksDeployed.get() + stages.get(StageType.DEPLOYMENT).getNumberOfTasks());
         for(Task task : stages.get(StageType.DEPLOYMENT).getTasksToRemove()){
+            task.deploy();
             stages.get(StageType.DEPLOYMENT).removeTask(task);
             mwc.removeTask(task, StageType.DEPLOYMENT, true);
             Util.sleepMilliseconds(TIME_TO_SLEEP);
