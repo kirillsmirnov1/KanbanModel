@@ -1,7 +1,13 @@
 package trulden.com.vk.KanbanModel.model;
 
+import javafx.beans.property.*;
+
 import java.util.HashMap;
 import java.util.Random;
+
+import static trulden.com.vk.KanbanModel.model.StageType.BACKLOG;
+import static trulden.com.vk.KanbanModel.model.StageType.DEPLOYMENT;
+import static trulden.com.vk.KanbanModel.model.StageType.workStages;
 
 // Задача
 public class Task {
@@ -13,14 +19,29 @@ public class Task {
     private final String namePrefix = "T: ";
     private final String name;       // Название задачи
 
-    private StageType stage;        // Текущая стадия
+    private ObjectProperty<StageType> stage;        // Текущая стадия
     private StageType nextStage;    // Следующая стадия
 
+    private BooleanProperty doneAtCurrentStage;
 
-    private HashMap<StageType, Integer> daysAtStages; // Дни в котороые карточка прибывала на стадии
+    public ObjectProperty<StageType> stageProperty() {
+        return stage;
+    }
+
+    public BooleanProperty doneAtCurrentStageProperty() {
+        return doneAtCurrentStage;
+    }
+
+    public IntegerProperty totalAdvanceProperty() {
+        return totalAdvance;
+    }
+
+    private IntegerProperty totalAdvance;
+
+    private HashMap<StageType, Integer> daysAtStages; // Дни в которые карточка прибывала на стадии
 
     // Карточка конструируется при добавлении в бэклог
-    Task(String name, HashMap<StageType, Integer> stageCosts, int day) throws IllegalArgumentException{
+    private Task(String name, HashMap<StageType, Integer> stageCosts, int day) throws IllegalArgumentException{
 
         if(stageCosts.size() != StageType.values().length-2)
             throw new IllegalArgumentException("Неправильный размер массива");
@@ -34,17 +55,20 @@ public class Task {
 
         daysAtStages = new HashMap<>();
 
-        stage = StageType.BACKLOG;
+        stage = new SimpleObjectProperty<>(StageType.BACKLOG);
 
-        daysAtStages.put(stage, day);
+        daysAtStages.put(stage.get(), day);
 
-        nextStage = stage;
+        nextStage = stage.get();
         calculateNextStage(); // Это нужно для сценария с непоследовательной сменой стадий
+
+        doneAtCurrentStage = new SimpleBooleanProperty(false);
+        totalAdvance = new SimpleIntegerProperty(0);
     }
 
     // Возвращает стадию на которой сейчас находится карточка
     public StageType getStage() {
-        return stage;
+        return stage.get();
     }
     public StageType getNextStage() { return nextStage; }
 
@@ -53,24 +77,38 @@ public class Task {
     }
 
     public int getResumingWorkAtCurrentStage(){
-        return stagesCosts.get(stage) - stagesAdvance.get(stage);
+        if(stage.get() == BACKLOG || stage.get() == DEPLOYMENT)
+            throw new IllegalArgumentException("Backlog and Deployment have no work");
+
+        return stagesCosts.get(stage.get()) - stagesAdvance.get(stage.get());
     }
     public int getWorkAtStage(StageType stage) { return stagesCosts.get(stage); }
 
     public void makeSomeWork(int work){
-        stagesAdvance.replace(stage, stagesAdvance.get(stage) + work);
+        stagesAdvance.replace(stage.get(), stagesAdvance.get(stage.get()) + work);
+
+        totalAdvance.set(totalAdvance.get() + work);
+
+        if(getResumingWorkAtCurrentStage() == 0)
+            doneAtCurrentStage.setValue(true);
     }
 
     public void moveToNextStage(int day){
-        if(stage != StageType.DEPLOYMENT) {
+        if(stage.get() != StageType.DEPLOYMENT) {
             daysAtStages.put(nextStage, day);
-            stage = nextStage;
+            stage.setValue(nextStage);
             calculateNextStage();
+            if(stage.get() == DEPLOYMENT)
+                doneAtCurrentStage.setValue(false);
+            else
+                doneAtCurrentStage.setValue(getResumingWorkAtCurrentStage() == 0);
+        } else {
+            doneAtCurrentStage.setValue(false);
         }
     }
 
     private void calculateNextStage(){
-            nextStage = stage.nextStage();
+            nextStage = stage.get().nextStage();
 
         // Вариант когда задача сразу переходит на нужную стадию
         // Потом нужно сделать это одной из опций
@@ -97,7 +135,7 @@ public class Task {
         str.append("]");
 
         //return namePrefix + name + ", costs: " + str.toString();
-        if(stage == StageType.DEPLOYMENT)
+        if(stage.get() == StageType.DEPLOYMENT)
             return getName() + " < took " + daysFromTo(StageType.BACKLOG, StageType.DEPLOYMENT) + " days >\n" + str.toString();
 
         return getName() + "\n" + str.toString();
@@ -111,7 +149,7 @@ public class Task {
 
     public static Task generateRandomTask(int day){
         HashMap<StageType, Integer> randomCosts = new HashMap<>();
-        for(StageType stage : StageType.workStages){
+        for(StageType stage : workStages){
             randomCosts.put(stage, new Random().nextInt(10));
         }
 
@@ -123,5 +161,12 @@ public class Task {
 
     public String getName() {
         return namePrefix + name;
+    }
+
+    public void deploy(){
+        if(stage.get() == DEPLOYMENT)
+            doneAtCurrentStage.setValue(true);
+        else
+            throw new IllegalArgumentException("Can't deploy not finished task");
     }
 }
