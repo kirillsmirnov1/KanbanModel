@@ -78,7 +78,7 @@ public class Task {
 
     public int getResumingWorkAtCurrentStage(){
         if(stage.get() == BACKLOG || stage.get() == DEPLOYMENT)
-            return 0;
+            throw new IllegalArgumentException("Backlog and Deployment have no work");
 
         return stagesCosts.get(stage.get()) - stagesAdvance.get(stage.get());
     }
@@ -98,9 +98,13 @@ public class Task {
             daysAtStages.put(nextStage, day);
             stage.setValue(nextStage);
             calculateNextStage();
+            if(stage.get() == DEPLOYMENT)
+                doneAtCurrentStage.setValue(false);
+            else
+                doneAtCurrentStage.setValue(getResumingWorkAtCurrentStage() == 0);
+        } else {
+            doneAtCurrentStage.setValue(false);
         }
-
-        doneAtCurrentStage.setValue(getResumingWorkAtCurrentStage() == 0);
     }
 
     private void calculateNextStage(){
