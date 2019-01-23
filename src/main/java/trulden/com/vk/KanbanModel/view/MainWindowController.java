@@ -14,6 +14,8 @@ import trulden.com.vk.KanbanModel.model.Worker;
 
 import java.util.HashMap;
 
+import static trulden.com.vk.KanbanModel.model.StageType.*;
+
 public class MainWindowController {
 
     // Label'ы с названиями стадий и WIP лимитом
@@ -76,41 +78,41 @@ public class MainWindowController {
     private GridPane workersGrid;
     private int workersGridX;
 
-    private HashMap<StageType, VBox> stagesTodoVBoxHashMap;
-    private HashMap<StageType, VBox> stagesDoneVBoxHashMap;
+    private HashMap<StageType, VBox> stagesUpVBoxHashMap;
+    private HashMap<StageType, VBox> stagesDownVBoxHashMap;
     private HashMap<StageType, Label> stagesLabelHashMap;
 
     private Model model;
 
     @FXML
     private void initialize(){
-        stagesTodoVBoxHashMap = new HashMap<>();
-        stagesTodoVBoxHashMap.put(StageType.BACKLOG, backlogVBox);
-        stagesTodoVBoxHashMap.put(StageType.ANALYSIS, analysisTodoVBox);
-        stagesTodoVBoxHashMap.put(StageType.DESIGN, designTodoVBox);
-        stagesTodoVBoxHashMap.put(StageType.IMPLEMENTATION, implementationTodoVBox);
-        stagesTodoVBoxHashMap.put(StageType.INTEGRATION, integrationTodoVBox);
-        stagesTodoVBoxHashMap.put(StageType.DOCUMENTATION, documentationTodoVBox);
-        stagesTodoVBoxHashMap.put(StageType.TESTING, testingTodoVBox);
-        stagesTodoVBoxHashMap.put(StageType.DEPLOYMENT, deploymentVBox);
+        stagesUpVBoxHashMap = new HashMap<>();
+        stagesUpVBoxHashMap.put(BACKLOG, backlogVBox);
+        stagesUpVBoxHashMap.put(ANALYSIS, analysisTodoVBox);
+        stagesUpVBoxHashMap.put(DESIGN, designTodoVBox);
+        stagesUpVBoxHashMap.put(IMPLEMENTATION, implementationTodoVBox);
+        stagesUpVBoxHashMap.put(INTEGRATION, integrationTodoVBox);
+        stagesUpVBoxHashMap.put(DOCUMENTATION, documentationTodoVBox);
+        stagesUpVBoxHashMap.put(TESTING, testingTodoVBox);
+        stagesUpVBoxHashMap.put(DEPLOYMENT, deploymentVBox);
 
-        stagesDoneVBoxHashMap = new HashMap<>();
-        stagesDoneVBoxHashMap.put(StageType.ANALYSIS, analysisDoneVBox);
-        stagesDoneVBoxHashMap.put(StageType.DESIGN, designDoneVBox);
-        stagesDoneVBoxHashMap.put(StageType.IMPLEMENTATION, implementationDoneVBox);
-        stagesDoneVBoxHashMap.put(StageType.INTEGRATION, integrationDoneVBox);
-        stagesDoneVBoxHashMap.put(StageType.DOCUMENTATION, documentationDoneVBox);
-        stagesDoneVBoxHashMap.put(StageType.TESTING, testingDoneVBox);
+        stagesDownVBoxHashMap = new HashMap<>();
+        stagesDownVBoxHashMap.put(ANALYSIS, analysisDoneVBox);
+        stagesDownVBoxHashMap.put(DESIGN, designDoneVBox);
+        stagesDownVBoxHashMap.put(IMPLEMENTATION, implementationDoneVBox);
+        stagesDownVBoxHashMap.put(INTEGRATION, integrationDoneVBox);
+        stagesDownVBoxHashMap.put(DOCUMENTATION, documentationDoneVBox);
+        stagesDownVBoxHashMap.put(TESTING, testingDoneVBox);
 
         stagesLabelHashMap = new HashMap<>();
-        stagesLabelHashMap.put(StageType.BACKLOG, backlogLabel);
-        stagesLabelHashMap.put(StageType.ANALYSIS, analysisLabel);
-        stagesLabelHashMap.put(StageType.DESIGN, designLabel);
-        stagesLabelHashMap.put(StageType.IMPLEMENTATION, implementationLabel);
-        stagesLabelHashMap.put(StageType.INTEGRATION, integrationLabel);
-        stagesLabelHashMap.put(StageType.DOCUMENTATION, documentationLabel);
-        stagesLabelHashMap.put(StageType.TESTING, testingLabel);
-        stagesLabelHashMap.put(StageType.DEPLOYMENT, deploymentLabel);
+        stagesLabelHashMap.put(BACKLOG, backlogLabel);
+        stagesLabelHashMap.put(ANALYSIS, analysisLabel);
+        stagesLabelHashMap.put(DESIGN, designLabel);
+        stagesLabelHashMap.put(IMPLEMENTATION, implementationLabel);
+        stagesLabelHashMap.put(INTEGRATION, integrationLabel);
+        stagesLabelHashMap.put(DOCUMENTATION, documentationLabel);
+        stagesLabelHashMap.put(TESTING, testingLabel);
+        stagesLabelHashMap.put(DEPLOYMENT, deploymentLabel);
 
         workersGridX = workersGrid.getColumnCount();
     }
@@ -120,8 +122,8 @@ public class MainWindowController {
                     stagesLabelHashMap.get(stage)
                             .setText(
                                     stage.toString()
-                                    + " [" + stagesTodoVBoxHashMap.get(stage).getChildren().size()
-                                    + (stage == StageType.DEPLOYMENT
+                                    + " [" + stagesUpVBoxHashMap.get(stage).getChildren().size()
+                                    + (stage == DEPLOYMENT
                                             ? "]" // Если деплоймент, то скобочки хватит
                                             : "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]" // Иначе – нужно лимит писать
                                       )
@@ -133,16 +135,16 @@ public class MainWindowController {
         label.setWrapText(true);
         label.setMinHeight(40);
 
-        if(stage == StageType.BACKLOG || stage == StageType.DEPLOYMENT || !done)
-            Platform.runLater(() -> stagesTodoVBoxHashMap.get(stage).getChildren().add(label) ); // лямбды это магия
+        if(stage == BACKLOG || stage == DEPLOYMENT || !done)
+            Platform.runLater(() -> stagesUpVBoxHashMap.get(stage).getChildren().add(label) ); // лямбды это магия
         else
-            Platform.runLater(() -> stagesDoneVBoxHashMap.get(stage).getChildren().add(label) );
+            Platform.runLater(() -> stagesDownVBoxHashMap.get(stage).getChildren().add(label) );
 
         updateWIPLimit(stage);
     }
 
     public void updateTask(Task task, StageType stage){
-        ObservableList<Node> labelList = stagesTodoVBoxHashMap.get(stage).getChildren();
+        ObservableList<Node> labelList = stagesUpVBoxHashMap.get(stage).getChildren();
 
         for(int i=0; i < labelList.size(); i++){
             if(((Label)labelList.get(i)).getText().contains(task.getName())){
@@ -156,10 +158,10 @@ public class MainWindowController {
     public void removeTask(Task task, StageType stage, boolean done){
         ObservableList<Node> labelList;
 
-        if(stage == StageType.BACKLOG || stage == StageType.DEPLOYMENT || !done)
-            labelList = stagesTodoVBoxHashMap.get(stage).getChildren();
+        if(stage == BACKLOG || stage == DEPLOYMENT || !done)
+            labelList = stagesUpVBoxHashMap.get(stage).getChildren();
         else
-            labelList = stagesDoneVBoxHashMap.get(stage).getChildren();
+            labelList = stagesDownVBoxHashMap.get(stage).getChildren();
 
         for(int i=0; i < labelList.size(); i++){
             if(((Label)labelList.get(i)).getText().contains(task.getName())){
