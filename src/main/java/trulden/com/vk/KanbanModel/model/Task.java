@@ -19,16 +19,16 @@ public class Task {
     private final String namePrefix = "T: ";
     private final String name;       // Название задачи
 
-    private StageType stage;        // Текущая стадия
+    private ObjectProperty<StageType> stage;        // Текущая стадия
     private StageType nextStage;    // Следующая стадия
 
     private BooleanProperty doneAtCurrentStage;
     private IntegerProperty totalAdvance;
-    
+
     private HashMap<StageType, Integer> daysAtStages; // Дни в которые карточка прибывала на стадии
 
     // Карточка конструируется при добавлении в бэклог
-    Task(String name, HashMap<StageType, Integer> stageCosts, int day) throws IllegalArgumentException{
+    private Task(String name, HashMap<StageType, Integer> stageCosts, int day) throws IllegalArgumentException{
 
         if(stageCosts.size() != StageType.values().length-2)
             throw new IllegalArgumentException("Неправильный размер массива");
@@ -42,11 +42,11 @@ public class Task {
 
         daysAtStages = new HashMap<>();
 
-        stage = StageType.BACKLOG;
+        stage = new SimpleObjectProperty<>(StageType.BACKLOG);
 
-        daysAtStages.put(stage, day);
+        daysAtStages.put(stage.get(), day);
 
-        nextStage = stage;
+        nextStage = stage.get();
         calculateNextStage(); // Это нужно для сценария с непоследовательной сменой стадий
 
         doneAtCurrentStage = new SimpleBooleanProperty(false);
@@ -55,7 +55,7 @@ public class Task {
 
     // Возвращает стадию на которой сейчас находится карточка
     public StageType getStage() {
-        return stage;
+        return stage.get();
     }
     public StageType getNextStage() { return nextStage; }
 
@@ -64,15 +64,15 @@ public class Task {
     }
 
     public int getResumingWorkAtCurrentStage(){
-        if(stage == BACKLOG || stage == DEPLOYMENT)
+        if(stage.get() == BACKLOG || stage.get() == DEPLOYMENT)
             return 0;
 
-        return stagesCosts.get(stage) - stagesAdvance.get(stage);
+        return stagesCosts.get(stage.get()) - stagesAdvance.get(stage.get());
     }
     public int getWorkAtStage(StageType stage) { return stagesCosts.get(stage); }
 
     public void makeSomeWork(int work){
-        stagesAdvance.replace(stage, stagesAdvance.get(stage) + work);
+        stagesAdvance.replace(stage.get(), stagesAdvance.get(stage.get()) + work);
 
         totalAdvance.set(totalAdvance.get() + work);
 
@@ -81,9 +81,9 @@ public class Task {
     }
 
     public void moveToNextStage(int day){
-        if(stage != StageType.DEPLOYMENT) {
+        if(stage.get() != StageType.DEPLOYMENT) {
             daysAtStages.put(nextStage, day);
-            stage = nextStage;
+            stage.setValue(nextStage);
             calculateNextStage();
         }
 
@@ -91,7 +91,7 @@ public class Task {
     }
 
     private void calculateNextStage(){
-            nextStage = stage.nextStage();
+            nextStage = stage.get().nextStage();
 
         // Вариант когда задача сразу переходит на нужную стадию
         // Потом нужно сделать это одной из опций
@@ -118,7 +118,7 @@ public class Task {
         str.append("]");
 
         //return namePrefix + name + ", costs: " + str.toString();
-        if(stage == StageType.DEPLOYMENT)
+        if(stage.get() == StageType.DEPLOYMENT)
             return getName() + " < took " + daysFromTo(StageType.BACKLOG, StageType.DEPLOYMENT) + " days >\n" + str.toString();
 
         return getName() + "\n" + str.toString();
