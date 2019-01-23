@@ -14,6 +14,11 @@ public class Worker {
     private static int workerCounter = 0;
 
     private HashMap<StageType, Double> productivityAtStage;
+
+    public IntegerProperty energyProperty() {
+        return energy;
+    }
+
     private IntegerProperty energy;
     private final int id;
     private final String name;
