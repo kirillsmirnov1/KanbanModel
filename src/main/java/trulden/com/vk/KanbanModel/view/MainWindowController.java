@@ -143,7 +143,6 @@ public class MainWindowController {
         // Обновление величины выполнения таски
         task.totalAdvanceProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
             label.setText(task.toString());
-            //System.out.println("updated task text");
         }));
 
         // Изменение готовности таски в столбце
@@ -167,13 +166,15 @@ public class MainWindowController {
             // С другим случаем должна справляться следующая функция
         }));
 
-        // Изменение стадии таски
+        // Изменение StageType таски
         task.stageProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
             ObservableList<Node> labelList;
 
             labelList = (oldValue == BACKLOG) ? stagesUpVBoxHashMap.get(oldValue).getChildren() : stagesDownVBoxHashMap.get(oldValue).getChildren();
-
             labelList.remove(label);
+
+            if(newValue == DEPLOYMENT)
+                label.setText(task.toString());
 
             if(!task.doneAtCurrentStageProperty().get()) {               // Тут может быть дедлок (((
                 if(!stagesUpVBoxHashMap.get(newValue).getChildren().contains(label))
