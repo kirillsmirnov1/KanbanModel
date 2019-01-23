@@ -179,6 +179,20 @@ public class MainWindowController {
         addTask(task, stage, true);
     }
 
+
+    public void watchTask(Task task){
+        Label label = new Label(task.toString());
+        label.setWrapText(true);
+        label.setMinHeight(40);
+
+        //Platform.runLater(() -> stagesUpVBoxHashMap.get(BACKLOG).getChildren().add(label));
+
+        task.totalAdvanceProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+            label.setText(task.toString());
+            System.out.println("updated task text");
+        }));
+    }
+
     public void setModel(Model model) {
         this.model = model;
 
