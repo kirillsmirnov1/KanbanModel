@@ -1,7 +1,13 @@
 package trulden.com.vk.KanbanModel.model;
 
+import javafx.beans.property.*;
+
 import java.util.HashMap;
 import java.util.Random;
+
+import static trulden.com.vk.KanbanModel.model.StageType.BACKLOG;
+import static trulden.com.vk.KanbanModel.model.StageType.DEPLOYMENT;
+import static trulden.com.vk.KanbanModel.model.StageType.workStages;
 
 // Задача
 public class Task {
@@ -16,8 +22,10 @@ public class Task {
     private StageType stage;        // Текущая стадия
     private StageType nextStage;    // Следующая стадия
 
-
-    private HashMap<StageType, Integer> daysAtStages; // Дни в котороые карточка прибывала на стадии
+    private BooleanProperty doneAtCurrentStage;
+    private IntegerProperty totalAdvance;
+    
+    private HashMap<StageType, Integer> daysAtStages; // Дни в которые карточка прибывала на стадии
 
     // Карточка конструируется при добавлении в бэклог
     Task(String name, HashMap<StageType, Integer> stageCosts, int day) throws IllegalArgumentException{
@@ -40,6 +48,9 @@ public class Task {
 
         nextStage = stage;
         calculateNextStage(); // Это нужно для сценария с непоследовательной сменой стадий
+
+        doneAtCurrentStage = new SimpleBooleanProperty(false);
+        totalAdvance = new SimpleIntegerProperty(0);
     }
 
     // Возвращает стадию на которой сейчас находится карточка
@@ -53,12 +64,20 @@ public class Task {
     }
 
     public int getResumingWorkAtCurrentStage(){
+        if(stage == BACKLOG || stage == DEPLOYMENT)
+            return 0;
+
         return stagesCosts.get(stage) - stagesAdvance.get(stage);
     }
     public int getWorkAtStage(StageType stage) { return stagesCosts.get(stage); }
 
     public void makeSomeWork(int work){
         stagesAdvance.replace(stage, stagesAdvance.get(stage) + work);
+
+        totalAdvance.set(totalAdvance.get() + work);
+
+        if(getResumingWorkAtCurrentStage() == 0)
+            doneAtCurrentStage.setValue(true);
     }
 
     public void moveToNextStage(int day){
@@ -67,6 +86,8 @@ public class Task {
             stage = nextStage;
             calculateNextStage();
         }
+
+        doneAtCurrentStage.setValue(getResumingWorkAtCurrentStage() == 0);
     }
 
     private void calculateNextStage(){
@@ -111,7 +132,7 @@ public class Task {
 
     public static Task generateRandomTask(int day){
         HashMap<StageType, Integer> randomCosts = new HashMap<>();
-        for(StageType stage : StageType.workStages){
+        for(StageType stage : workStages){
             randomCosts.put(stage, new Random().nextInt(10));
         }
 
