@@ -26,6 +26,8 @@ public class Model implements Runnable{
     private IntegerProperty currentDay;
     private IntegerProperty tasksDeployed;
 
+    private static final boolean CONSOLE_LOG = false;
+
     public Worker[] getWorkers(){return workers;}
 
     public static void setDefaultWip(int[] defaultWip) {
@@ -77,8 +79,10 @@ public class Model implements Runnable{
             workers[i] = Worker.generateRandomWorker();
         }
 
-        System.out.println("Workers: ");
-        Stream.of(workers).forEach(System.out::println);
+        if(CONSOLE_LOG) {
+            System.out.println("Workers: ");
+            Stream.of(workers).forEach(System.out::println);
+        }
 
         currentDay = new SimpleIntegerProperty();
         tasksDeployed = new SimpleIntegerProperty(0);
@@ -91,7 +95,9 @@ public class Model implements Runnable{
         // Прогоняю внешний цикл столько скольно нужно раз.
         // Считаю что цикл выполняется за день
         for(currentDay.setValue(1); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get()+1)){
-            System.out.println("\nDay " + currentDay + " have started =========================================================");
+            if(CONSOLE_LOG)
+                System.out.println("\nDay " + currentDay + " have started =========================================================");
+
             outerCycle();
 
             if(currentDay.get() % DEPLOYMENT_FREQUENCY == 0)
@@ -113,7 +119,9 @@ public class Model implements Runnable{
         // Подготовка цикла
         productivityLevel.setValue(1d);
         fillBacklog();
-        printStages();
+
+        if(CONSOLE_LOG)
+            printStages();
 
         Stream.of(workers).forEach(Worker::refillEnergy);
 
@@ -211,8 +219,8 @@ public class Model implements Runnable{
                                 amountOfWork += workDone;
                                 if(task.getResumingWorkAtCurrentStage() == 0)
                                     mwc.moveTaskToFinished(task, task.getStage());
-                                else
-                                    mwc.updateTask(task, task.getStage());
+//                                else
+//                                    mwc.updateTask(task, task.getStage());
                                 Util.sleepMilliseconds(TIME_TO_SLEEP);
                             }
                         }
@@ -229,7 +237,8 @@ public class Model implements Runnable{
         while (stages.get(StageType.BACKLOG).canAddTask()){
             Task newTask = Task.generateRandomTask(currentDay.get());
             stages.get(StageType.BACKLOG).addTask(newTask);
-            mwc.addTask(newTask, StageType.BACKLOG, false); // 
+            mwc.addTask(newTask, StageType.BACKLOG, false); //
+            mwc.watchTask(newTask);
 
             Util.sleepMilliseconds(TIME_TO_SLEEP);
         }
