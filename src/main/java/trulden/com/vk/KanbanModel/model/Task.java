@@ -23,6 +23,19 @@ public class Task {
     private StageType nextStage;    // Следующая стадия
 
     private BooleanProperty doneAtCurrentStage;
+
+    public ObjectProperty<StageType> stageProperty() {
+        return stage;
+    }
+
+    public BooleanProperty doneAtCurrentStageProperty() {
+        return doneAtCurrentStage;
+    }
+
+    public IntegerProperty totalAdvanceProperty() {
+        return totalAdvance;
+    }
+
     private IntegerProperty totalAdvance;
 
     private HashMap<StageType, Integer> daysAtStages; // Дни в которые карточка прибывала на стадии
