@@ -42,6 +42,8 @@ public class MainApp extends Application{
         primaryStage.setScene(new Scene(root, sceneW, sceneH));
         primaryStage.setResizable(false);
 
+        primaryStage.setOnCloseRequest( event -> System.exit(0));
+
         mainWindowController = loader.getController();
 
         primaryStage.show();
