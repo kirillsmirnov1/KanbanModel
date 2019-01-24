@@ -5,6 +5,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.fxml.FXML;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.XYChart;
+import trulden.com.vk.KanbanModel.model.StageType;
 
 import java.util.HashMap;
 
@@ -22,8 +23,12 @@ public class CFDController {
 
         for(int i=0; i < numberOfSeries; ++i){
             CFDSeries[i] = new XYChart.Series();
-            CFDSeries[i].setName(Integer.toString(i));
-            // TODO задать нормальные имена сериям
+
+            if(i < numberOfSeries - 1)
+                CFDSeries[i].setName(StageType.values()[i].toString());
+            else
+                CFDSeries[i].setName("DEPLOYED");
+            
             CFDChart.getData().addAll(CFDSeries[i]);
         }
 
