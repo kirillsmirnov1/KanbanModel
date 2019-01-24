@@ -6,6 +6,8 @@ public class Util {
     public static void sleepMilliseconds(int millisecondsToSleep){
         try{
             TimeUnit.MILLISECONDS.sleep(millisecondsToSleep);
-        } catch (InterruptedException e){}
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
     }
 }

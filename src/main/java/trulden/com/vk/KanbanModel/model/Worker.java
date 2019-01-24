@@ -25,7 +25,7 @@ public class Worker {
 
     private static final int MAX_ENERGY = 10;
 
-    Worker(String name, int id, HashMap<StageType, Double> productivityAtStage){
+    private Worker(String name, int id, HashMap<StageType, Double> productivityAtStage){
 
         if(productivityAtStage.size() != workStages.length)
             throw new IllegalArgumentException("Неправильный размер массива");

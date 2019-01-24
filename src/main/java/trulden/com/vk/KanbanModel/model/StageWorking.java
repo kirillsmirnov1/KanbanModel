@@ -6,7 +6,7 @@ public class StageWorking extends Stage {
     private ArrayList<Task> tasksInWork;
     private ArrayList<Task> finishedTasks;
 
-    public StageWorking(StageType type, int WIPLimit) {
+    StageWorking(StageType type, int WIPLimit) {
         super(type, WIPLimit);
         tasksInWork   = new ArrayList<>();
         finishedTasks = new ArrayList<>();

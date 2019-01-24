@@ -16,7 +16,6 @@ public class Task {
     private HashMap<StageType, Integer> stagesCosts;   // Стоимость выполнения каждой стадии
     private HashMap<StageType, Integer> stagesAdvance; // Остаток до выполнения каждой стадии
 
-    private final String namePrefix = "T: ";
     private final String name;       // Название задачи
 
     private ObjectProperty<StageType> stage;        // Текущая стадия
@@ -71,10 +70,6 @@ public class Task {
         return stage.get();
     }
     public StageType getNextStage() { return nextStage; }
-
-    public boolean canGoToNextStage(){
-       return (getResumingWorkAtCurrentStage() == 0);
-    }
 
     public int getResumingWorkAtCurrentStage(){
         if(stage.get() == BACKLOG || stage.get() == DEPLOYMENT)
@@ -141,7 +136,7 @@ public class Task {
         return getName() + "\n" + str.toString();
     }
 
-    public int daysFromTo(StageType from, StageType to){
+    private int daysFromTo(StageType from, StageType to){
         if(daysAtStages.containsKey(from) && daysAtStages.containsKey(to))
             return daysAtStages.get(to) - daysAtStages.get(from);
         return -1;
@@ -159,8 +154,8 @@ public class Task {
         return new Task(Integer.toString(taskCounter), randomCosts, day);
     }
 
-    public String getName() {
-        return namePrefix + name;
+    private String getName() {
+        return "T: " + name;
     }
 
     public void deploy(){

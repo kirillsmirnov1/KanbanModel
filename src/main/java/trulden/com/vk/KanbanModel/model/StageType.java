@@ -34,7 +34,7 @@ public enum StageType {
         return values()[this.ordinal()+1];
     }
 
-    static public String[] toSortedStringArray(HashMap<StageType, ? extends Object> stages){
+    static public String[] toSortedStringArray(HashMap<StageType, ?> stages){
         ArrayList<String> strings = new ArrayList<>();
         for(int i=0; i < values().length; ++i){
             if(stages.containsKey(StageType.values()[i]))

@@ -82,8 +82,6 @@ public class MainWindowController {
     private HashMap<StageType, VBox> stagesDownVBoxHashMap;
     private HashMap<StageType, Label> stagesLabelHashMap;
 
-    private Model model;
-
     @FXML
     private void initialize(){
         stagesUpVBoxHashMap = new HashMap<>();
@@ -141,9 +139,9 @@ public class MainWindowController {
         });
 
         // Обновление величины выполнения таски
-        task.totalAdvanceProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
-            label.setText(task.toString());
-        }));
+        task.totalAdvanceProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() ->
+            label.setText(task.toString())
+        ));
 
         // Изменение готовности таски в столбце
         task.doneAtCurrentStageProperty().addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
@@ -191,7 +189,6 @@ public class MainWindowController {
     }
 
     public void setModel(Model model) {
-        this.model = model;
 
         model.currentDayProperty().addListener(
                 (observable, oldValue, newValue) ->

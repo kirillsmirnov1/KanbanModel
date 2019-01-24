@@ -23,8 +23,8 @@ public class MainApp extends Application{
 
     static public String[] workerNames;
 
-    Model model;
-    public MainWindowController mainWindowController;
+    private Model model;
+    private MainWindowController mainWindowController;
     public static void main(String[] args) {
         launch(args);
     }
@@ -63,10 +63,12 @@ public class MainApp extends Application{
             Model.setDefaultWip(new Gson().fromJson(obj.getString("DEFAULT_WIP"), int[].class));
             sceneW = obj.getInt("sceneW");
             sceneH = obj.getInt("sceneH");
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    static void fillWorkerNames(){
+    private static void fillWorkerNames(){
         int[] lineNumbers;
         int numberOfLines;
         int lineCounter = 1;
@@ -90,13 +92,5 @@ public class MainApp extends Application{
         } catch (IOException e){
             e.printStackTrace();
         }
-    }
-
-    public void setSceneW(int sceneW) {
-        this.sceneW = sceneW;
-    }
-
-    public void setSceneH(int sceneH) {
-        this.sceneH = sceneH;
     }
 }

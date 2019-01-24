@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class Model implements Runnable{
-   MainWindowController mwc;
+    private MainWindowController mwc;
 
     private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
