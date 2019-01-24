@@ -16,6 +16,8 @@ public class Model implements Runnable{
     private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
 
+    private HashMap<Integer, int[]> CFD;
+
     public  static int[] DEFAULT_WIP;
     private static int   NUMBER_OF_WORKERS;
     private static int   NUMBER_OF_DAYS;
@@ -87,6 +89,8 @@ public class Model implements Runnable{
         currentDay = new SimpleIntegerProperty();
         tasksDeployed = new SimpleIntegerProperty(0);
         productivityLevel = new SimpleDoubleProperty();
+
+        CFD = new HashMap<>();
     }
 
     // Запуск модели
@@ -102,7 +106,20 @@ public class Model implements Runnable{
 
             if(currentDay.get() % DEPLOYMENT_FREQUENCY == 0)
                 deploy();
+
+            calculateCFDForToday();
         }
+    }
+
+    private void calculateCFDForToday() {
+        int[] CFDForToday = new int[StageType.values().length + 1];
+        CFDForToday[StageType.values().length] = tasksDeployed.get();
+
+        for(int i=StageType.values().length-1; i>=0; --i){
+            CFDForToday[i] = CFDForToday[i+1] + stages.get(StageType.values()[i]).getNumberOfTasks();
+        }
+
+        CFD.put(currentDay.getValue(), CFDForToday);
     }
 
     private void deploy() {
