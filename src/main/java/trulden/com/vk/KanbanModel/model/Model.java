@@ -98,7 +98,7 @@ public class Model implements Runnable{
     public void run(){
         // Прогоняю внешний цикл столько скольно нужно раз.
         // Считаю что цикл выполняется за день
-        for(currentDay.setValue(1); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get()+1)){
+        for(currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get()+1)){
             if(CONSOLE_LOG)
                 System.out.println("\nDay " + currentDay + " have started =========================================================");
 
@@ -256,5 +256,9 @@ public class Model implements Runnable{
 
     public static int getNumberOfWorkers() {
         return NUMBER_OF_WORKERS;
+    }
+
+    public HashMap<Integer,int[]> getCFD() {
+        return CFD;
     }
 }

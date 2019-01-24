@@ -111,7 +111,7 @@ public class MainApp extends Application{
             // Set the persons into the controller.
             CFDController controller = loader.getController();
 
-            controller.setDayTracking(model.currentDayProperty());
+            controller.setDayTracking(model.currentDayProperty(), model.getCFD());
 
             CFDStage.show();
 
