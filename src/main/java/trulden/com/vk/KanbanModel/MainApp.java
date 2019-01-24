@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.Model;
+import trulden.com.vk.KanbanModel.view.CFDController;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
 import java.io.*;
@@ -25,12 +26,15 @@ public class MainApp extends Application{
 
     private Model model;
     private MainWindowController mainWindowController;
+    private Stage primaryStage;
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        this.primaryStage = primaryStage;
+
         parseJson();
         fillWorkerNames();
 
@@ -90,6 +94,28 @@ public class MainApp extends Application{
                 lineCounter++;
             }
         } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void showCFD() {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("/trulden/com/vk/KanbanModel/view/CFD.fxml"));
+
+        try {
+            Stage CFDStage = new Stage();
+            CFDStage.setTitle("CFD");
+            CFDStage.initOwner(primaryStage);
+            CFDStage.setScene(new Scene(loader.load()));
+
+            // Set the persons into the controller.
+            CFDController controller = loader.getController();
+
+            controller.setDayTracking(model.currentDayProperty());
+
+            CFDStage.show();
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

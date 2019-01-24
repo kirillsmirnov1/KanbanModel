@@ -226,4 +226,9 @@ public class MainWindowController {
         }
 
     }
+
+    @FXML
+    private void handleShowCFD(){
+        mainApp.showCFD();
+    }
 }
