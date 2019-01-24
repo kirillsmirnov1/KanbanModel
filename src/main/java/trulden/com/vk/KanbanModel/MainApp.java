@@ -49,7 +49,7 @@ public class MainApp extends Application{
         primaryStage.show();
         model = new Model(mainWindowController);
 
-        mainWindowController.setModel(model);
+        mainWindowController.setModelAndMainApp(model, this);
         new Thread(model).start();
     }
 

@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import trulden.com.vk.KanbanModel.MainApp;
 import trulden.com.vk.KanbanModel.model.Model;
 import trulden.com.vk.KanbanModel.model.StageType;
 import trulden.com.vk.KanbanModel.model.Task;
@@ -81,6 +82,8 @@ public class MainWindowController {
     private HashMap<StageType, VBox> stagesUpVBoxHashMap;
     private HashMap<StageType, VBox> stagesDownVBoxHashMap;
     private HashMap<StageType, Label> stagesLabelHashMap;
+
+    private MainApp mainApp;
 
     @FXML
     private void initialize(){
@@ -188,7 +191,9 @@ public class MainWindowController {
         }));
     }
 
-    public void setModel(Model model) {
+    public void setModelAndMainApp(Model model, MainApp mainApp) {
+
+        this.mainApp = mainApp;
 
         model.currentDayProperty().addListener(
                 (observable, oldValue, newValue) ->
