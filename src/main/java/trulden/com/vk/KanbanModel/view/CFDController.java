@@ -37,9 +37,9 @@ public class CFDController {
 
         // Установка слежки за изменением дня
         currentDay.addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
-            int[] CFDForToday = CFD.get(newValue.intValue()-1); // TODO это норм что я тут вычитаю?
+            int[] CFDForToday = CFD.get(oldValue); 
             for(int seriesIterator=0; seriesIterator < numberOfSeries; ++seriesIterator){
-                CFDSeries[seriesIterator].getData().add(new XYChart.Data(newValue, CFDForToday[seriesIterator]));
+                CFDSeries[seriesIterator].getData().add(new XYChart.Data(oldValue, CFDForToday[seriesIterator]));
             }
         }));
     }
