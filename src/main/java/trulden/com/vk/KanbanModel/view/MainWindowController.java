@@ -231,4 +231,20 @@ public class MainWindowController {
     private void handleShowCFD(){
         mainApp.showCFD();
     }
+
+    @FXML
+    private void handleRestart() {
+        mainApp.stopModel();
+        clearEverything();
+        mainApp.startModel();
+    }
+
+    private void clearEverything(){
+        for(StageType stage : StageType.values()){
+            stagesUpVBoxHashMap.get(stage).getChildren().clear();
+            if(stage != BACKLOG && stage != DEPLOYMENT)
+                stagesDownVBoxHashMap.get(stage).getChildren().clear();
+        }
+        workersGrid.getChildren().clear();
+    }
 }

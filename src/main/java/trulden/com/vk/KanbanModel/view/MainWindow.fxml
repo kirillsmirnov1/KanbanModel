@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trulden.com.vk.KanbanModel.view.MainWindowController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trulden.com.vk.KanbanModel.view.MainWindowController">
    <children>
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -25,6 +25,7 @@
                     <MenuItem mnemonicParsing="false" text="Start" />
                         <MenuItem mnemonicParsing="false" text="Pause" />
                         <MenuItem mnemonicParsing="false" text="Reset" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleRestart" text="Restart" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="Diagrams">

@@ -1,9 +1,6 @@
 package trulden.com.vk.KanbanModel.model;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
@@ -32,6 +29,8 @@ public class Model implements Runnable{
     private int tasksInitiated = 0;
 
     private static final boolean CONSOLE_LOG = false;
+
+    private BooleanProperty timeToStop = new SimpleBooleanProperty(false);
 
     public static int getNumberOfDays() {
         return NUMBER_OF_DAYS;
@@ -71,6 +70,7 @@ public class Model implements Runnable{
         return tasksDeployed;
     }
 
+
     public Model(MainWindowController mwc, Worker[] workers, Task[] tasks) {
         this.mwc = mwc;
         this.workers = workers;
@@ -102,6 +102,10 @@ public class Model implements Runnable{
     // Запуск модели
     @Override
     public void run(){
+        timeToStop.addListener((observable, oldValue, newValue) -> {
+            if(newValue)
+                return;
+        });
         // Прогоняю внешний цикл столько скольно нужно раз.
         // Считаю что цикл выполняется за день
         for(currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get()+1)){
@@ -267,5 +271,9 @@ public class Model implements Runnable{
 
     public HashMap<Integer,int[]> getCFD() {
         return CFD;
+    }
+
+    public void timeToStop() {
+        timeToStop.setValue(true);
     }
 }

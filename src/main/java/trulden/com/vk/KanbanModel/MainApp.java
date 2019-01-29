@@ -26,6 +26,7 @@ public class MainApp extends Application{
     private int sceneW, sceneH;
 
     private Model    model;
+    private Thread   modelThread;
     private Worker[] workers;
     private Task[]   tasks;
     private MainWindowController mainWindowController;
@@ -61,11 +62,19 @@ public class MainApp extends Application{
 
     }
 
+    public void stopModel(){
+        if(model != null){
+            model.timeToStop();
+            modelThread.stop(); // TODO это не хорошо, переделай
+        }
+    }
+
     public void startModel(){
         model = new Model(mainWindowController, workers, Arrays.stream(tasks).map(Task::new).toArray(Task[]::new));
 
         mainWindowController.setModelAndMainApp(model, this);
-        new Thread(model).start();
+        modelThread = new Thread(model);
+        modelThread.start();
     }
 
     private void generateTasks() {
