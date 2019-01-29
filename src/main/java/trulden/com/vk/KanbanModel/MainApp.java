@@ -55,7 +55,7 @@ public class MainApp extends Application{
         mainWindowController = loader.getController();
 
         primaryStage.show();
-        model = new Model(mainWindowController, workers);
+        model = new Model(mainWindowController, workers, tasks);
 
         mainWindowController.setModelAndMainApp(model, this);
         new Thread(model).start();

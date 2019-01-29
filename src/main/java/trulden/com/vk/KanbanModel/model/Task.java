@@ -56,14 +56,15 @@ public class Task {
 
         stage = new SimpleObjectProperty<>(StageType.BACKLOG);
 
-        //TODO переделать
-        //daysAtStages.put(stage.get(), day);
-
         nextStage = stage.get();
         calculateNextStage(); // Это нужно для сценария с непоследовательной сменой стадий
 
         doneAtCurrentStage = new SimpleBooleanProperty(false);
         totalAdvance = new SimpleIntegerProperty(0);
+    }
+
+    public void setBackLogDay(int day){
+        daysAtStages.put(BACKLOG, day);
     }
 
     // Возвращает стадию на которой сейчас находится карточка

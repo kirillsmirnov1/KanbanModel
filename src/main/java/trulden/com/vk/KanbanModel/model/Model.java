@@ -15,6 +15,7 @@ public class Model implements Runnable{
 
     private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
+    private Task[]   bigPileOfTasks;
 
     private HashMap<Integer, int[]> CFD;
 
@@ -70,19 +71,21 @@ public class Model implements Runnable{
         return tasksDeployed;
     }
 
-    public Model(MainWindowController mwc, Worker[] workers) {
+    public Model(MainWindowController mwc, Worker[] workers, Task[] tasks) {
         this.mwc = mwc;
+        this.workers = workers;
+        bigPileOfTasks = tasks;
 
         stages  = new HashMap<>();
 
         for(StageType stage : StageType.values()){
-            if(stage == StageType.BACKLOG || stage == StageType.DEPLOYMENT)
+            if(stage == StageType.BACKLOG || stage == StageType.DEPLOYMENT) {
                 stages.put(stage, new StageStorage(stage, DEFAULT_WIP[stage.ordinal()]));
-            else
+            }
+            else {
                 stages.put(stage, new StageWorking(stage, DEFAULT_WIP[stage.ordinal()]));
+            }
         }
-
-        this.workers = workers;
 
         if(CONSOLE_LOG) {
             System.out.println("Workers: ");
@@ -249,7 +252,8 @@ public class Model implements Runnable{
     // Заполнение бэклога
     private void fillBacklog() {
         while (stages.get(StageType.BACKLOG).canAddTask()){
-            Task newTask = tasksFromMainApp[tasksInitiated];
+            Task newTask = bigPileOfTasks[tasksInitiated++];
+            newTask.setBackLogDay(currentDay.get());
             stages.get(StageType.BACKLOG).addTask(newTask);
             mwc.watchTask(newTask);
 
