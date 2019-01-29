@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.Model;
+import trulden.com.vk.KanbanModel.model.Task;
 import trulden.com.vk.KanbanModel.model.Worker;
 import trulden.com.vk.KanbanModel.view.CFDController;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
@@ -22,10 +23,12 @@ import com.google.gson.Gson;
 public class MainApp extends Application{
 
     private int sceneW, sceneH;
-    
-    private Model model;
+
+    private Model    model;
     private Worker[] workers;
+    private Task[]   tasks;
     private MainWindowController mainWindowController;
+
     private Stage primaryStage;
     public static void main(String[] args) {
         launch(args);
@@ -37,6 +40,7 @@ public class MainApp extends Application{
 
         parseJson();
         generateWorkers();
+        generateTasks();
 
         FXMLLoader loader = new FXMLLoader();
         URL url = getClass().getResource("/trulden/com/vk/KanbanModel/view/MainWindow.fxml");
@@ -55,6 +59,13 @@ public class MainApp extends Application{
 
         mainWindowController.setModelAndMainApp(model, this);
         new Thread(model).start();
+    }
+
+    private void generateTasks() {
+        tasks = new Task[5 * Model.getNumberOfDays()];
+        for(int i = 0; i < tasks.length; ++i){
+            tasks[i] = Task.generateRandomTask();
+        }
     }
 
     private void generateWorkers(){

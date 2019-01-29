@@ -40,7 +40,7 @@ public class Task {
     private HashMap<StageType, Integer> daysAtStages; // Дни в которые карточка прибывала на стадии
 
     // Карточка конструируется при добавлении в бэклог
-    private Task(String name, HashMap<StageType, Integer> stageCosts, int day) throws IllegalArgumentException{
+    private Task(String name, HashMap<StageType, Integer> stageCosts) throws IllegalArgumentException{
 
         if(stageCosts.size() != StageType.values().length-2)
             throw new IllegalArgumentException("Неправильный размер массива");
@@ -56,7 +56,8 @@ public class Task {
 
         stage = new SimpleObjectProperty<>(StageType.BACKLOG);
 
-        daysAtStages.put(stage.get(), day);
+        //TODO переделать
+        //daysAtStages.put(stage.get(), day);
 
         nextStage = stage.get();
         calculateNextStage(); // Это нужно для сценария с непоследовательной сменой стадий
@@ -142,7 +143,7 @@ public class Task {
         return -1;
     }
 
-    public static Task generateRandomTask(int day){
+    public static Task generateRandomTask(){
         HashMap<StageType, Integer> randomCosts = new HashMap<>();
         for(StageType stage : workStages){
             randomCosts.put(stage, new Random().nextInt(10));
@@ -151,7 +152,7 @@ public class Task {
         taskCounter++;
 
         //return new Task(RandomStringUtils.random(10, true, false), randomCosts);
-        return new Task(Integer.toString(taskCounter), randomCosts, day);
+        return new Task(Integer.toString(taskCounter), randomCosts);
     }
 
     private String getName() {

@@ -28,7 +28,13 @@ public class Model implements Runnable{
     private IntegerProperty currentDay;
     private IntegerProperty tasksDeployed;
 
+    private int tasksInitiated = 0;
+
     private static final boolean CONSOLE_LOG = false;
+
+    public static int getNumberOfDays() {
+        return NUMBER_OF_DAYS;
+    }
 
     public Worker[] getWorkers(){return workers;}
 
@@ -243,7 +249,7 @@ public class Model implements Runnable{
     // Заполнение бэклога
     private void fillBacklog() {
         while (stages.get(StageType.BACKLOG).canAddTask()){
-            Task newTask = Task.generateRandomTask(currentDay.get());
+            Task newTask = tasksFromMainApp[tasksInitiated];
             stages.get(StageType.BACKLOG).addTask(newTask);
             mwc.watchTask(newTask);
 
