@@ -27,7 +27,7 @@ public class CFDController {
             if(i < numberOfSeries - 1)
                 CFDSeries[i].setName(StageType.values()[i].toString());
             else
-                CFDSeries[i].setName("DEPLOYED");
+                CFDSeries[i].setName("Поставлено");
 
             CFDChart.getData().addAll(CFDSeries[i]);
         }

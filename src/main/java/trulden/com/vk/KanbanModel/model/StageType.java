@@ -43,4 +43,19 @@ public enum StageType {
 
         return strings.toArray(new String[1]);
     }
+
+    @Override
+    public String toString(){
+        switch (this){
+            case BACKLOG:           return "Очередь";
+            case ANALYSIS:          return "Анализ";
+            case DESIGN:            return "Проектирование";
+            case IMPLEMENTATION:    return "Реализация";
+            case INTEGRATION:       return "Интеграция";
+            case DOCUMENTATION:     return "Документация";
+            case TESTING:           return "Тестирование";
+            case DEPLOYMENT:        return "Поставка";
+            default:                return super.toString();
+        }
+    }
 }
