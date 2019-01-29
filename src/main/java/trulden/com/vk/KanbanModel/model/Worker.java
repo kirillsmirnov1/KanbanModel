@@ -37,13 +37,13 @@ public class Worker {
         this.productivityAtStage = productivityAtStage;
     }
 
-    public static Worker generateRandomWorker() {
+    public static Worker generateRandomWorker(String name) {
         HashMap<StageType, Double> randomProductivity = new HashMap<>();
         for (StageType stage : workStages) {
             randomProductivity.put(stage, new Random().nextDouble());
         }
 
-        return new Worker(MainApp.workerNames[workerCounter], workerCounter++, randomProductivity);
+        return new Worker(name, workerCounter++, randomProductivity);
     }
 
 

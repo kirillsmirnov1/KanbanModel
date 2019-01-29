@@ -64,11 +64,10 @@ public class Model implements Runnable{
         return tasksDeployed;
     }
 
-    public Model(MainWindowController mwc) {
+    public Model(MainWindowController mwc, Worker[] workers) {
         this.mwc = mwc;
 
         stages  = new HashMap<>();
-        workers = new Worker[NUMBER_OF_WORKERS];
 
         for(StageType stage : StageType.values()){
             if(stage == StageType.BACKLOG || stage == StageType.DEPLOYMENT)
@@ -77,9 +76,7 @@ public class Model implements Runnable{
                 stages.put(stage, new StageWorking(stage, DEFAULT_WIP[stage.ordinal()]));
         }
 
-        for(int i = 0; i < workers.length; ++i){
-            workers[i] = Worker.generateRandomWorker();
-        }
+        this.workers = workers;
 
         if(CONSOLE_LOG) {
             System.out.println("Workers: ");

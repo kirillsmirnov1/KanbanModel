@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.Model;
+import trulden.com.vk.KanbanModel.model.Worker;
 import trulden.com.vk.KanbanModel.view.CFDController;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
@@ -21,10 +22,9 @@ import com.google.gson.Gson;
 public class MainApp extends Application{
 
     private int sceneW, sceneH;
-
-    static public String[] workerNames;
-
+    
     private Model model;
+    private Worker[] workers;
     private MainWindowController mainWindowController;
     private Stage primaryStage;
     public static void main(String[] args) {
@@ -36,7 +36,7 @@ public class MainApp extends Application{
         this.primaryStage = primaryStage;
 
         parseJson();
-        fillWorkerNames();
+        generateWorkers();
 
         FXMLLoader loader = new FXMLLoader();
         URL url = getClass().getResource("/trulden/com/vk/KanbanModel/view/MainWindow.fxml");
@@ -51,10 +51,18 @@ public class MainApp extends Application{
         mainWindowController = loader.getController();
 
         primaryStage.show();
-        model = new Model(mainWindowController);
+        model = new Model(mainWindowController, workers);
 
         mainWindowController.setModelAndMainApp(model, this);
         new Thread(model).start();
+    }
+
+    private void generateWorkers(){
+        String[] workerNames = readWorkerNames();
+        workers = new Worker[Model.getNumberOfWorkers()];
+        for(int i=0; i < workers.length; ++i){
+            workers[i] = Worker.generateRandomWorker(workerNames[i]);
+        }
     }
 
     private void parseJson() {
@@ -72,12 +80,12 @@ public class MainApp extends Application{
         }
     }
 
-    private static void fillWorkerNames(){
+    private static String[] readWorkerNames(){
         int[] lineNumbers;
         int numberOfLines;
         int lineCounter = 1;
 
-        workerNames = new String[Model.getNumberOfWorkers()];
+        String[] workerNames = new String[Model.getNumberOfWorkers()];
 
         try {
             BufferedReader br = new BufferedReader(new FileReader("shortAnimals.txt"));
@@ -96,6 +104,8 @@ public class MainApp extends Application{
         } catch (IOException e){
             e.printStackTrace();
         }
+
+        return workerNames;
     }
 
     public void showCFD() {
