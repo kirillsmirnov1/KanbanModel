@@ -63,6 +63,14 @@ public class Task {
         totalAdvance = new SimpleIntegerProperty(0);
     }
 
+    public Task(Task task){
+        this(task.name, task.getStagesCosts());
+    }
+
+    private HashMap<StageType, Integer> getStagesCosts() {
+        return stagesCosts;
+    }
+
     public void setBackLogDay(int day){
         daysAtStages.put(BACKLOG, day);
     }

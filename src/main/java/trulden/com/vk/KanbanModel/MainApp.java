@@ -15,6 +15,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Random;
 
 import org.json.*;
@@ -55,7 +56,13 @@ public class MainApp extends Application{
         mainWindowController = loader.getController();
 
         primaryStage.show();
-        model = new Model(mainWindowController, workers, tasks);
+
+        startModel();
+
+    }
+
+    public void startModel(){
+        model = new Model(mainWindowController, workers, Arrays.stream(tasks).map(Task::new).toArray(Task[]::new));
 
         mainWindowController.setModelAndMainApp(model, this);
         new Thread(model).start();
