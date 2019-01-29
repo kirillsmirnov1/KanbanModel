@@ -62,7 +62,7 @@ public class MainApp extends Application{
     }
 
     private void generateTasks() {
-        tasks = new Task[5 * Model.getNumberOfDays()];
+        tasks = new Task[15 * Model.getNumberOfDays() / Model.getNumberOfWorkers()];
         for(int i = 0; i < tasks.length; ++i){
             tasks[i] = Task.generateRandomTask();
         }
