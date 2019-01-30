@@ -31,6 +31,14 @@ public class Scenario {
         this.deploymentFrequency = deploymentFrequency;
     }
 
+    public int[] getDefaultWIP() {
+        return defaultWIP;
+    }
+
+    public void setDefaultWIP(int[] defaultWIP) {
+        this.defaultWIP = defaultWIP;
+    }
+
     // Приоритет выбора карточки для выполнения
 
 //    public enum  CardPriority {
