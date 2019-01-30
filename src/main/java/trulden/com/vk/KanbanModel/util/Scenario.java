@@ -3,13 +3,15 @@ package trulden.com.vk.KanbanModel.util;
 
 public class Scenario {
     //private boolean allRoundEmployees   = true;     // TODO
-    private boolean linearTasksMovement = true;     // TODO
+    private boolean linearTasksMovement = true;     // TODO чтение
     //private boolean workersNeedToRest   = false;    // TODO
     //private boolean performCardsFromRightToLeft = true; // TODO
 
     //private CardPriority cardPriority = CardPriority.OLD; // TODO
 
-    private int deploymentFrequency = 7; // TODO
+    private int   deploymentFrequency = 7; // TODO чтение
+    //private int numberOfWorkers = 6; // TODO
+    private int[] defaultWIP = {3, 3, 3, 3, 3, 3, 3, 1000000}; //TODO чтение
 
     // Зона геттеров и сеттеров
 
