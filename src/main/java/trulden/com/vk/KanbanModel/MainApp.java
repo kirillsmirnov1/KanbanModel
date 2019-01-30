@@ -65,10 +65,13 @@ public class MainApp extends Application{
 
         primaryStage.show();
 
-        startModel();
+        for(Scenario scenario : scenarios) {
+            startModel(scenario);
+        }
     }
 
     private void readScenarioJson() {
+        scenarios = new ArrayList<>();
         try {
             JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("scenarios.json"))));
             JSONArray  arr = new JSONArray(obj.get("scenarios").toString());
@@ -93,8 +96,11 @@ public class MainApp extends Application{
         }
     }
 
-    public void startModel(){
-        model = new Model(mainWindowController, workers, Arrays.stream(tasks).map(Task::new).toArray(Task[]::new));
+    public void startModel(Scenario scenario){
+        model = new Model(mainWindowController,
+                          scenario,
+                          workers,
+                          Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
 
         mainWindowController.setModelAndMainApp(model, this);
         modelThread = new Thread(model);
@@ -121,9 +127,7 @@ public class MainApp extends Application{
             JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
             Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
-            Model.setDeploymentFrequency(obj.getInt("DEPLOYMENT_FREQUENCY"));
             Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
-            Model.setDefaultWip(new Gson().fromJson(obj.getString("DEFAULT_WIP"), int[].class));
             sceneW = obj.getInt("sceneW");
             sceneH = obj.getInt("sceneH");
         } catch (IOException e) {

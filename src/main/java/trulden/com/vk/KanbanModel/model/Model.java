@@ -1,6 +1,7 @@
 package trulden.com.vk.KanbanModel.model;
 
 import javafx.beans.property.*;
+import trulden.com.vk.KanbanModel.util.Scenario;
 import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class Model implements Runnable{
+    private final Scenario scenario;
     private MainWindowController mwc;
 
     private HashMap<StageType, Stage>  stages;
@@ -16,11 +18,12 @@ public class Model implements Runnable{
 
     private HashMap<Integer, int[]> CFD;
 
-    public  static int[] DEFAULT_WIP;
     private static int   NUMBER_OF_WORKERS;
     private static int   NUMBER_OF_DAYS;
     private static int   TIME_TO_SLEEP;
-    private static int   DEPLOYMENT_FREQUENCY;
+
+    private int   deploymentFrequency;
+    public  int[] defaultWip;
 
     private DoubleProperty  productivityLevel;   // минимум продуктивности
     private IntegerProperty currentDay;
@@ -38,10 +41,6 @@ public class Model implements Runnable{
 
     public Worker[] getWorkers(){return workers;}
 
-    public static void setDefaultWip(int[] defaultWip) {
-        DEFAULT_WIP = defaultWip;
-    }
-
     public static void setNumberOfWorkers(int numberOfWorkers) {
         NUMBER_OF_WORKERS = numberOfWorkers;
     }
@@ -52,10 +51,6 @@ public class Model implements Runnable{
 
     public static void setTimeToSleep(int tts) {
         TIME_TO_SLEEP = tts;
-    }
-
-    public static void setDeploymentFrequency(int deploymentFrequency) {
-        DEPLOYMENT_FREQUENCY = deploymentFrequency;
     }
 
     public IntegerProperty currentDayProperty() {
@@ -71,19 +66,22 @@ public class Model implements Runnable{
     }
 
 
-    public Model(MainWindowController mwc, Worker[] workers, Task[] tasks) {
+    public Model(MainWindowController mwc, Scenario scenario, Worker[] workers, Task[] tasks) {
         this.mwc = mwc;
         this.workers = workers;
         bigPileOfTasks = tasks;
+        this.scenario = scenario;
+        defaultWip = scenario.getDefaultWIP();
+        deploymentFrequency = scenario.getDeploymentFrequency();
 
         stages  = new HashMap<>();
 
         for(StageType stage : StageType.values()){
             if(stage == StageType.BACKLOG || stage == StageType.DEPLOYMENT) {
-                stages.put(stage, new StageStorage(stage, DEFAULT_WIP[stage.ordinal()]));
+                stages.put(stage, new StageStorage(stage, defaultWip[stage.ordinal()]));
             }
             else {
-                stages.put(stage, new StageWorking(stage, DEFAULT_WIP[stage.ordinal()]));
+                stages.put(stage, new StageWorking(stage, defaultWip[stage.ordinal()]));
             }
         }
 
@@ -114,7 +112,7 @@ public class Model implements Runnable{
 
             outerCycle();
 
-            if(currentDay.get() % DEPLOYMENT_FREQUENCY == 0)
+            if(currentDay.get() % deploymentFrequency == 0)
                 deploy();
 
             calculateCFDForToday();
@@ -275,5 +273,9 @@ public class Model implements Runnable{
 
     public void timeToStop() {
         timeToStop.setValue(true);
+    }
+
+    public Scenario getScenario() {
+        return scenario;
     }
 }

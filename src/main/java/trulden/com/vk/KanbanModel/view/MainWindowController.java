@@ -84,6 +84,9 @@ public class MainWindowController {
     private HashMap<StageType, Label> stagesLabelHashMap;
 
     private MainApp mainApp;
+    private Model   model;
+
+    private int[] WIPLimit;
 
     @FXML
     private void initialize(){
@@ -126,7 +129,7 @@ public class MainWindowController {
                                     + " [" + stagesUpVBoxHashMap.get(stage).getChildren().size()
                                     + (stage == DEPLOYMENT
                                             ? "]" // Если деплоймент, то скобочки хватит
-                                            : "/" + Model.DEFAULT_WIP[stage.ordinal()] + "]" // Иначе – нужно лимит писать
+                                            : "/" + WIPLimit[stage.ordinal()] + "]" // Иначе – нужно лимит писать
                                       )
                             ));
     }
@@ -194,6 +197,9 @@ public class MainWindowController {
     public void setModelAndMainApp(Model model, MainApp mainApp) {
 
         this.mainApp = mainApp;
+        this.model = model;
+
+        this.WIPLimit = model.defaultWip;
 
         model.currentDayProperty().addListener(
                 (observable, oldValue, newValue) ->
@@ -236,7 +242,7 @@ public class MainWindowController {
     private void handleRestart() {
         mainApp.stopModel();
         clearEverything();
-        mainApp.startModel();
+        mainApp.startModel(model.getScenario());
     }
 
     private void clearEverything(){
