@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 public class Model implements Runnable{
     private final Scenario scenario;
     private MainWindowController mwc;
+    private BooleanProperty currentModelFinished = new SimpleBooleanProperty(false);
 
     private HashMap<StageType, Stage>  stages;
     private Worker[] workers;
@@ -117,6 +118,7 @@ public class Model implements Runnable{
 
             calculateCFDForToday();
         }
+        currentModelFinished.setValue(true);
     }
 
     private void calculateCFDForToday() {
@@ -277,5 +279,9 @@ public class Model implements Runnable{
 
     public Scenario getScenario() {
         return scenario;
+    }
+
+    public BooleanProperty currentModelFinishedProperty() {
+        return currentModelFinished;
     }
 }

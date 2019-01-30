@@ -245,7 +245,7 @@ public class MainWindowController {
         mainApp.startModel(model.getScenario());
     }
 
-    private void clearEverything(){
+    public void clearEverything(){
         for(StageType stage : StageType.values()){
             stagesUpVBoxHashMap.get(stage).getChildren().clear();
             if(stage != BACKLOG && stage != DEPLOYMENT)

@@ -1,6 +1,7 @@
 package trulden.com.vk.KanbanModel;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -65,9 +66,7 @@ public class MainApp extends Application{
 
         primaryStage.show();
 
-        for(Scenario scenario : scenarios) {
-            startModel(scenario);
-        }
+        startModel(scenarios.iterator().next());
     }
 
     private void readScenarioJson() {
@@ -105,6 +104,15 @@ public class MainApp extends Application{
         mainWindowController.setModelAndMainApp(model, this);
         modelThread = new Thread(model);
         modelThread.start();
+
+        model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue)
+                if(scenarios.iterator().hasNext()){
+                    stopModel();
+                    Platform.runLater(() -> mainWindowController.clearEverything());
+                    startModel(scenarios.iterator().next());
+                }
+        });
     }
 
     private void generateTasks() {

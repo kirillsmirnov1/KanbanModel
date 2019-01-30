@@ -1,9 +1,7 @@
 {
-    "NUMBER_OF_DAYS" : 50,
-    "NUMBER_OF_WORKERS": 6,
-    "TIME_TO_SLEEP" : 50,
-    "DEPLOYMENT_FREQUENCY" : 7,
-    "DEFAULT_WIP" : "[3, 3, 3, 3, 3, 3, 3, 1000000]",
+    "NUMBER_OF_DAYS" : 10,
+    "NUMBER_OF_WORKERS": 5,
+    "TIME_TO_SLEEP" : 5,
     "sceneW" : 1290,
     "sceneH" : 645
 }
