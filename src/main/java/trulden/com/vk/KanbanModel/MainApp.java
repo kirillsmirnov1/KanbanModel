@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.Model;
 import trulden.com.vk.KanbanModel.model.Task;
 import trulden.com.vk.KanbanModel.model.Worker;
+import trulden.com.vk.KanbanModel.util.Scenario;
 import trulden.com.vk.KanbanModel.view.CFDController;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
@@ -15,6 +16,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -25,13 +27,17 @@ public class MainApp extends Application{
 
     private int sceneW, sceneH;
 
+    private ArrayList<Scenario> scenarios;
+
     private Model    model;
     private Thread   modelThread;
+
     private Worker[] workers;
     private Task[]   tasks;
-    private MainWindowController mainWindowController;
 
+    private MainWindowController mainWindowController;
     private Stage primaryStage;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -40,7 +46,8 @@ public class MainApp extends Application{
     public void start(Stage primaryStage) throws Exception{
         this.primaryStage = primaryStage;
 
-        parseJson();
+        parseInitJson();
+        readScenarioJson();
         generateWorkers();
         generateTasks();
 
@@ -59,7 +66,24 @@ public class MainApp extends Application{
         primaryStage.show();
 
         startModel();
+    }
 
+    private void readScenarioJson() {
+        try {
+            JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("scenarios.json"))));
+            JSONArray  arr = new JSONArray(obj.get("scenarios").toString());
+            for(int i=0; i < arr.length(); ++i){
+                Scenario sc = new Scenario();
+
+                sc.setLinearTasksMovement(arr.getJSONObject(i).getBoolean("linearTasksMovement"));
+                sc.setDefaultWIP(new Gson().fromJson(arr.getJSONObject(i).getString("defaultWIP"), int[].class));
+                sc.setDeploymentFrequency(arr.getJSONObject(i).getInt("deploymentFrequency"));
+
+                scenarios.add(sc);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopModel(){
@@ -92,7 +116,7 @@ public class MainApp extends Application{
         }
     }
 
-    private void parseJson() {
+    private void parseInitJson() {
         try {
             JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
             Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
