@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Random;
 
 import org.json.*;
@@ -29,6 +30,7 @@ public class MainApp extends Application{
     private int sceneW, sceneH;
 
     private ArrayList<Scenario> scenarios;
+    private Iterator<Scenario> scenarioIterator;
 
     private Model    model;
     private Thread   modelThread;
@@ -66,7 +68,7 @@ public class MainApp extends Application{
 
         primaryStage.show();
 
-        startModel(scenarios.iterator().next());
+        startModel(scenarioIterator.next());
     }
 
     private void readScenarioJson() {
@@ -83,6 +85,9 @@ public class MainApp extends Application{
 
                 scenarios.add(sc);
             }
+
+            scenarioIterator = scenarios.iterator();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -108,9 +113,8 @@ public class MainApp extends Application{
         model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue)
                 if(scenarios.iterator().hasNext()){
-                    stopModel();
                     Platform.runLater(() -> mainWindowController.clearEverything());
-                    startModel(scenarios.iterator().next());
+                    startModel(scenarioIterator.next());
                 }
         });
     }

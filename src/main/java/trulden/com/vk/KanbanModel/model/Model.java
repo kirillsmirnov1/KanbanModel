@@ -1,5 +1,6 @@
 package trulden.com.vk.KanbanModel.model;
 
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import trulden.com.vk.KanbanModel.util.Scenario;
 import trulden.com.vk.KanbanModel.util.Util;
@@ -102,8 +103,9 @@ public class Model implements Runnable{
     @Override
     public void run(){
         timeToStop.addListener((observable, oldValue, newValue) -> {
-            if(newValue)
+            if(newValue) { // Для рестарта
                 return;
+            }
         });
         // Прогоняю внешний цикл столько скольно нужно раз.
         // Считаю что цикл выполняется за день
@@ -118,7 +120,7 @@ public class Model implements Runnable{
 
             calculateCFDForToday();
         }
-        currentModelFinished.setValue(true);
+        Platform.runLater(() -> currentModelFinished.setValue(true));
     }
 
     private void calculateCFDForToday() {
