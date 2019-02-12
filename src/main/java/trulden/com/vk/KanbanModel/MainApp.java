@@ -3,19 +3,13 @@ package trulden.com.vk.KanbanModel;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import trulden.com.vk.KanbanModel.model.Model;
-import trulden.com.vk.KanbanModel.model.ResultOfModel;
-import trulden.com.vk.KanbanModel.model.Task;
-import trulden.com.vk.KanbanModel.model.Worker;
+import trulden.com.vk.KanbanModel.model.*;
 import trulden.com.vk.KanbanModel.util.Scenario;
-import trulden.com.vk.KanbanModel.view.CFDController;
-import trulden.com.vk.KanbanModel.view.MainWindowController;
+import trulden.com.vk.KanbanModel.view.*;
 
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -44,8 +38,11 @@ public class MainApp extends Application{
 
     private MainWindowController mainWindowController;
     private ScenarioComparisonController scenarioComparisonController;
+    private CFDController cfdController;
+
     private Stage primaryStage;
     private Stage scenarioComparisonStage;
+    private Stage cfdStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -62,9 +59,27 @@ public class MainApp extends Application{
         generateTasks();
 
         loadMainWindow();
+        loadCFDWindow();
         loadScenariosWindow();
 
         startModel(scenarioIterator.next());
+    }
+
+    private void loadCFDWindow() {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("/trulden/com/vk/KanbanModel/view/CFD.fxml"));
+
+        try {
+            cfdStage = new Stage();
+            cfdStage.setTitle("CFD");
+            cfdStage.initOwner(primaryStage);
+            cfdStage.setScene(new Scene(loader.load()));
+
+            cfdController = loader.getController();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadScenariosWindow() {
@@ -129,8 +144,12 @@ public class MainApp extends Application{
     }
 
     public void startModel(Scenario scenario){
+
+        cfdController.clear();
+
         model = new Model(this,
                           mainWindowController,
+                          cfdController,
                           scenario,
                           workers,
                           Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
@@ -205,25 +224,7 @@ public class MainApp extends Application{
     }
 
     public void showCFD() {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(MainApp.class.getResource("/trulden/com/vk/KanbanModel/view/CFD.fxml"));
-
-        try {
-            Stage CFDStage = new Stage();
-            CFDStage.setTitle("CFD");
-            CFDStage.initOwner(primaryStage);
-            CFDStage.setScene(new Scene(loader.load()));
-
-            // Set the persons into the controller.
-            CFDController controller = loader.getController();
-
-            controller.setDayTracking(model.currentDayProperty(), model.getCFD());
-
-            CFDStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        cfdStage.show();
     }
 
     public void addModelResult(ResultOfModel result){

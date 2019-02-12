@@ -17,7 +17,7 @@ public class CFDController {
     AreaChart CFDChart;
 
     public void setDayTracking(IntegerProperty currentDay, HashMap<Integer, int[]> CFD) {
-        int numberOfSeries = CFD.get(0).length;
+        int numberOfSeries = StageType.values().length + 1;
 
         CFDSeries = new XYChart.Series[numberOfSeries];
 
@@ -45,5 +45,9 @@ public class CFDController {
                 CFDSeries[seriesIterator].getData().add(new XYChart.Data(oldValue, CFD.get(oldValue)[seriesIterator]));
             }
         }));
+    }
+
+    public void clear() {
+        CFDChart.getData().clear();
     }
 }

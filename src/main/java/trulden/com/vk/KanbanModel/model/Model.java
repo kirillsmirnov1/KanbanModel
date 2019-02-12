@@ -5,6 +5,7 @@ import javafx.beans.property.*;
 import trulden.com.vk.KanbanModel.MainApp;
 import trulden.com.vk.KanbanModel.util.Scenario;
 import trulden.com.vk.KanbanModel.util.Util;
+import trulden.com.vk.KanbanModel.view.CFDController;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class Model implements Runnable{
     }
 
 
-    public Model(MainApp mainApp, MainWindowController mwc, Scenario scenario, Worker[] workers, Task[] tasks) {
+    public Model(MainApp mainApp, MainWindowController mwc, CFDController cfdController, Scenario scenario, Worker[] workers, Task[] tasks) {
         this.mainApp = mainApp;
         this.mwc = mwc;
         this.workers = workers;
@@ -106,6 +107,8 @@ public class Model implements Runnable{
         CFD = new HashMap<>();
         leadTime = new ArrayList<>();
         cycleTime = new ArrayList<>();
+
+        cfdController.setDayTracking(currentDay, CFD);
     }
 
     // Запуск модели
