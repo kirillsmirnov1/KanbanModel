@@ -112,7 +112,7 @@ public class MainApp extends Application{
 
         model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue)
-                if(scenarios.iterator().hasNext()){
+                if(scenarioIterator.hasNext()){
                     Platform.runLater(() -> mainWindowController.clearEverything());
                     startModel(scenarioIterator.next());
                 }
@@ -120,7 +120,7 @@ public class MainApp extends Application{
     }
 
     private void generateTasks() {
-        tasks = new Task[15 * Model.getNumberOfDays() / Model.getNumberOfWorkers()];
+        tasks = new Task[20 * Model.getNumberOfDays() / Model.getNumberOfWorkers()];
         for(int i = 0; i < tasks.length; ++i){
             tasks[i] = Task.generateRandomTask();
         }
