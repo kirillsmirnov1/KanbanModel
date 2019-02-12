@@ -21,6 +21,7 @@ public class Model implements Runnable{
 
     private HashMap<Integer, int[]> CFD;
     private ArrayList<Integer> leadTime;
+    private ArrayList<Integer> cycleTime;
 
     private static int   NUMBER_OF_WORKERS;
     private static int   NUMBER_OF_DAYS;
@@ -100,6 +101,7 @@ public class Model implements Runnable{
 
         CFD = new HashMap<>();
         leadTime = new ArrayList<>();
+        cycleTime = new ArrayList<>();
     }
 
     // Запуск модели
@@ -142,6 +144,7 @@ public class Model implements Runnable{
         tasksDeployed.setValue(tasksDeployed.get() + stages.get(StageType.DEPLOYMENT).getNumberOfTasks());
         for(Task task : stages.get(StageType.DEPLOYMENT).getTasksToRemove()){
             leadTime.add(currentDay.get() - task.addedToStage(StageType.BACKLOG));
+            cycleTime.add(task.addedToStage(StageType.DEPLOYMENT) - task.addedToStage(StageType.ANALYSIS));
             task.deploy();
             stages.get(StageType.DEPLOYMENT).removeTask(task);
             Util.sleepMilliseconds(TIME_TO_SLEEP);
