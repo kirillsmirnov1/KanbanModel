@@ -2,16 +2,19 @@ package trulden.com.vk.KanbanModel.model;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
+import trulden.com.vk.KanbanModel.MainApp;
 import trulden.com.vk.KanbanModel.util.Scenario;
 import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class Model implements Runnable{
     private final Scenario scenario;
+    private final MainApp mainApp;
     private MainWindowController mwc;
     private BooleanProperty currentModelFinished = new SimpleBooleanProperty(false);
 
@@ -71,7 +74,8 @@ public class Model implements Runnable{
     }
 
 
-    public Model(MainWindowController mwc, Scenario scenario, Worker[] workers, Task[] tasks) {
+    public Model(MainApp mainApp, MainWindowController mwc, Scenario scenario, Worker[] workers, Task[] tasks) {
+        this.mainApp = mainApp;
         this.mwc = mwc;
         this.workers = workers;
         bigPileOfTasks = tasks;
@@ -125,6 +129,12 @@ public class Model implements Runnable{
 
             calculateCFDForToday();
         }
+
+        mainApp.addModelResult(
+                new ResultOfModel(
+                        leadTime.stream().mapToInt(i -> i.intValue()).sum()*1d/leadTime.size(),
+                        cycleTime.stream().mapToInt(i -> i.intValue()).sum()*1d/cycleTime.size(),
+                        tasksDeployed.get()));
         Platform.runLater(() -> currentModelFinished.setValue(true));
     }
 

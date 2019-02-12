@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.Model;
+import trulden.com.vk.KanbanModel.model.ResultOfModel;
 import trulden.com.vk.KanbanModel.model.Task;
 import trulden.com.vk.KanbanModel.model.Worker;
 import trulden.com.vk.KanbanModel.util.Scenario;
@@ -32,6 +33,8 @@ public class MainApp extends Application{
     private ArrayList<Scenario> scenarios;
     private Iterator<Scenario> scenarioIterator;
 
+    private ArrayList<ResultOfModel> resultsOfModel;
+
     private Model    model;
     private Thread   modelThread;
 
@@ -48,6 +51,7 @@ public class MainApp extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception{
         this.primaryStage = primaryStage;
+        resultsOfModel = new ArrayList<>();
 
         parseInitJson();
         readScenarioJson();
@@ -101,7 +105,8 @@ public class MainApp extends Application{
     }
 
     public void startModel(Scenario scenario){
-        model = new Model(mainWindowController,
+        model = new Model(this,
+                          mainWindowController,
                           scenario,
                           workers,
                           Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
@@ -114,7 +119,7 @@ public class MainApp extends Application{
             if(newValue)
                 if(scenarios.iterator().hasNext()){
                     Platform.runLater(() -> mainWindowController.clearEverything());
-                    startModel(scenarioIterator.next());
+                    startModel(scenarioIterator.next()); // Выдается ошибка NoSuchElementException (но я же проверяю на следующий элемент, втф?)
                 }
         });
     }
@@ -195,5 +200,9 @@ public class MainApp extends Application{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void addModelResult(ResultOfModel result){
+        resultsOfModel.add(result);
     }
 }
