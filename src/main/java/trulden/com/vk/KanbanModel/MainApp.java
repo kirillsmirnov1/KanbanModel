@@ -25,6 +25,7 @@ import java.util.Random;
 
 import org.json.*;
 import com.google.gson.Gson;
+import trulden.com.vk.KanbanModel.view.ScenarioComparisonController;
 
 public class MainApp extends Application{
 
@@ -42,7 +43,9 @@ public class MainApp extends Application{
     private Task[]   tasks;
 
     private MainWindowController mainWindowController;
+    private ScenarioComparisonController scenarioComparisonController;
     private Stage primaryStage;
+    private Stage scenarioComparisonStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -58,12 +61,34 @@ public class MainApp extends Application{
         generateWorkers();
         generateTasks();
 
+        loadMainWindow();
+        loadScenariosWindow();
+
+        startModel(scenarioIterator.next());
+    }
+
+    private void loadScenariosWindow() {
         FXMLLoader loader = new FXMLLoader();
-        URL url = getClass().getResource("/trulden/com/vk/KanbanModel/view/MainWindow.fxml");
-        loader.setLocation(url);
-        Parent root = loader.load();
+        loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/ScenarioComparison.fxml"));
+
+        try {
+            scenarioComparisonStage = new Stage();
+            scenarioComparisonStage.setTitle("Scenarios result");
+            scenarioComparisonStage.initOwner(primaryStage);
+            scenarioComparisonStage.setScene(new Scene(loader.load()));
+            // Set the persons into the controller.
+            scenarioComparisonController = loader.getController();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadMainWindow() throws Exception {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/MainWindow.fxml"));
         primaryStage.setTitle("Kanban Model");
-        primaryStage.setScene(new Scene(root, sceneW, sceneH));
+        primaryStage.setScene(new Scene(loader.load(), sceneW, sceneH));
         primaryStage.setResizable(false);
 
         primaryStage.setOnCloseRequest( event -> System.exit(0));
@@ -71,8 +96,6 @@ public class MainApp extends Application{
         mainWindowController = loader.getController();
 
         primaryStage.show();
-
-        startModel(scenarioIterator.next());
     }
 
     private void readScenarioJson() {
@@ -125,7 +148,7 @@ public class MainApp extends Application{
     }
 
     private void generateTasks() {
-        tasks = new Task[15 * Model.getNumberOfDays() / Model.getNumberOfWorkers()];
+        tasks = new Task[20 * Model.getNumberOfDays() / Model.getNumberOfWorkers()];
         for(int i = 0; i < tasks.length; ++i){
             tasks[i] = Task.generateRandomTask();
         }
@@ -203,6 +226,11 @@ public class MainApp extends Application{
     }
 
     public void addModelResult(ResultOfModel result){
+        scenarioComparisonController.addResult(resultsOfModel.size(), result);
         resultsOfModel.add(result);
+    }
+
+    public void showScenariosResults() {
+        scenarioComparisonStage.show();
     }
 }

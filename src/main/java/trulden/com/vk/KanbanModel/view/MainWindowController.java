@@ -176,7 +176,7 @@ public class MainWindowController {
 
             labelList = (oldValue == BACKLOG) ? stagesUpVBoxHashMap.get(oldValue).getChildren() : stagesDownVBoxHashMap.get(oldValue).getChildren();
             labelList.remove(label);
-
+            
             if(newValue == DEPLOYMENT)
                 label.setText(task.toString());
 
@@ -236,6 +236,11 @@ public class MainWindowController {
     @FXML
     private void handleShowCFD(){
         mainApp.showCFD();
+    }
+
+    @FXML
+    private void handleShowScenariosResults(){
+        mainApp.showScenariosResults();
     }
 
     @FXML
