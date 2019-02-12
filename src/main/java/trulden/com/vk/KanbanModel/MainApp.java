@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.Model;
+import trulden.com.vk.KanbanModel.model.ResultOfModel;
 import trulden.com.vk.KanbanModel.model.Task;
 import trulden.com.vk.KanbanModel.model.Worker;
 import trulden.com.vk.KanbanModel.util.Scenario;
@@ -24,6 +25,7 @@ import java.util.Random;
 
 import org.json.*;
 import com.google.gson.Gson;
+import trulden.com.vk.KanbanModel.view.ScenarioComparisonController;
 
 public class MainApp extends Application{
 
@@ -32,6 +34,8 @@ public class MainApp extends Application{
     private ArrayList<Scenario> scenarios;
     private Iterator<Scenario> scenarioIterator;
 
+    private ArrayList<ResultOfModel> resultsOfModel;
+
     private Model    model;
     private Thread   modelThread;
 
@@ -39,7 +43,9 @@ public class MainApp extends Application{
     private Task[]   tasks;
 
     private MainWindowController mainWindowController;
+    private ScenarioComparisonController scenarioComparisonController;
     private Stage primaryStage;
+    private Stage scenarioComparisonStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -48,18 +54,41 @@ public class MainApp extends Application{
     @Override
     public void start(Stage primaryStage) throws Exception{
         this.primaryStage = primaryStage;
+        resultsOfModel = new ArrayList<>();
 
         parseInitJson();
         readScenarioJson();
         generateWorkers();
         generateTasks();
 
+        loadMainWindow();
+        loadScenariosWindow();
+
+        startModel(scenarioIterator.next());
+    }
+
+    private void loadScenariosWindow() {
         FXMLLoader loader = new FXMLLoader();
-        URL url = getClass().getResource("/trulden/com/vk/KanbanModel/view/MainWindow.fxml");
-        loader.setLocation(url);
-        Parent root = loader.load();
+        loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/ScenarioComparison.fxml"));
+
+        try {
+            scenarioComparisonStage = new Stage();
+            scenarioComparisonStage.setTitle("Scenarios result");
+            scenarioComparisonStage.initOwner(primaryStage);
+            scenarioComparisonStage.setScene(new Scene(loader.load()));
+            // Set the persons into the controller.
+            scenarioComparisonController = loader.getController();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadMainWindow() throws Exception {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/MainWindow.fxml"));
         primaryStage.setTitle("Kanban Model");
-        primaryStage.setScene(new Scene(root, sceneW, sceneH));
+        primaryStage.setScene(new Scene(loader.load(), sceneW, sceneH));
         primaryStage.setResizable(false);
 
         primaryStage.setOnCloseRequest( event -> System.exit(0));
@@ -67,8 +96,6 @@ public class MainApp extends Application{
         mainWindowController = loader.getController();
 
         primaryStage.show();
-
-        startModel(scenarioIterator.next());
     }
 
     private void readScenarioJson() {
@@ -101,7 +128,8 @@ public class MainApp extends Application{
     }
 
     public void startModel(Scenario scenario){
-        model = new Model(mainWindowController,
+        model = new Model(this,
+                          mainWindowController,
                           scenario,
                           workers,
                           Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
@@ -114,7 +142,7 @@ public class MainApp extends Application{
             if(newValue)
                 if(scenarioIterator.hasNext()){
                     Platform.runLater(() -> mainWindowController.clearEverything());
-                    startModel(scenarioIterator.next());
+                    startModel(scenarioIterator.next()); 
                 }
         });
     }
@@ -195,5 +223,14 @@ public class MainApp extends Application{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void addModelResult(ResultOfModel result){
+        scenarioComparisonController.addResult(resultsOfModel.size(), result);
+        resultsOfModel.add(result);
+    }
+
+    public void showScenariosResults() {
+        scenarioComparisonStage.show();
     }
 }

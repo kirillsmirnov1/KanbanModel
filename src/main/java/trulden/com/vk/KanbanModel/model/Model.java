@@ -2,15 +2,19 @@ package trulden.com.vk.KanbanModel.model;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
+import trulden.com.vk.KanbanModel.MainApp;
 import trulden.com.vk.KanbanModel.util.Scenario;
 import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class Model implements Runnable{
     private final Scenario scenario;
+    private final MainApp mainApp;
     private MainWindowController mwc;
     private BooleanProperty currentModelFinished = new SimpleBooleanProperty(false);
 
@@ -19,6 +23,8 @@ public class Model implements Runnable{
     private Task[]   bigPileOfTasks;
 
     private HashMap<Integer, int[]> CFD;
+    private ArrayList<Integer> leadTime;
+    private ArrayList<Integer> cycleTime;
 
     private static int   NUMBER_OF_WORKERS;
     private static int   NUMBER_OF_DAYS;
@@ -68,7 +74,8 @@ public class Model implements Runnable{
     }
 
 
-    public Model(MainWindowController mwc, Scenario scenario, Worker[] workers, Task[] tasks) {
+    public Model(MainApp mainApp, MainWindowController mwc, Scenario scenario, Worker[] workers, Task[] tasks) {
+        this.mainApp = mainApp;
         this.mwc = mwc;
         this.workers = workers;
         bigPileOfTasks = tasks;
@@ -97,6 +104,8 @@ public class Model implements Runnable{
         productivityLevel = new SimpleDoubleProperty();
 
         CFD = new HashMap<>();
+        leadTime = new ArrayList<>();
+        cycleTime = new ArrayList<>();
     }
 
     // Запуск модели
@@ -120,6 +129,12 @@ public class Model implements Runnable{
 
             calculateCFDForToday();
         }
+
+        mainApp.addModelResult(
+                new ResultOfModel(
+                        leadTime.stream().mapToInt(i -> i.intValue()).sum()*1d/leadTime.size(),
+                        cycleTime.stream().mapToInt(i -> i.intValue()).sum()*1d/cycleTime.size(),
+                        tasksDeployed.get()));
         Platform.runLater(() -> currentModelFinished.setValue(true));
     }
 
@@ -134,9 +149,12 @@ public class Model implements Runnable{
         CFD.put(currentDay.getValue(), CFDForToday);
     }
 
+    // Поставка выполненных задач
     private void deploy() {
         tasksDeployed.setValue(tasksDeployed.get() + stages.get(StageType.DEPLOYMENT).getNumberOfTasks());
         for(Task task : stages.get(StageType.DEPLOYMENT).getTasksToRemove()){
+            leadTime.add(currentDay.get() - task.addedToStage(StageType.BACKLOG));
+            cycleTime.add(task.addedToStage(StageType.DEPLOYMENT) - task.addedToStage(StageType.ANALYSIS));
             task.deploy();
             stages.get(StageType.DEPLOYMENT).removeTask(task);
             Util.sleepMilliseconds(TIME_TO_SLEEP);
