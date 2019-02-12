@@ -6,6 +6,7 @@ import trulden.com.vk.KanbanModel.util.Scenario;
 import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.MainWindowController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
@@ -19,6 +20,7 @@ public class Model implements Runnable{
     private Task[]   bigPileOfTasks;
 
     private HashMap<Integer, int[]> CFD;
+    private ArrayList<Integer> leadTime;
 
     private static int   NUMBER_OF_WORKERS;
     private static int   NUMBER_OF_DAYS;
@@ -97,6 +99,7 @@ public class Model implements Runnable{
         productivityLevel = new SimpleDoubleProperty();
 
         CFD = new HashMap<>();
+        leadTime = new ArrayList<>();
     }
 
     // Запуск модели
@@ -134,9 +137,11 @@ public class Model implements Runnable{
         CFD.put(currentDay.getValue(), CFDForToday);
     }
 
+    // Поставка выполненных задач
     private void deploy() {
         tasksDeployed.setValue(tasksDeployed.get() + stages.get(StageType.DEPLOYMENT).getNumberOfTasks());
         for(Task task : stages.get(StageType.DEPLOYMENT).getTasksToRemove()){
+            leadTime.add(currentDay.get() - task.addedToStage(StageType.BACKLOG));
             task.deploy();
             stages.get(StageType.DEPLOYMENT).removeTask(task);
             Util.sleepMilliseconds(TIME_TO_SLEEP);

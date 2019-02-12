@@ -39,6 +39,10 @@ public class Task {
 
     private HashMap<StageType, Integer> daysAtStages; // Дни в которые карточка прибывала на стадии
 
+    public int addedToStage(StageType stageType){
+        return daysAtStages.get(stageType);
+    }
+
     // Карточка конструируется при добавлении в бэклог
     private Task(String name, HashMap<StageType, Integer> stageCosts) throws IllegalArgumentException{
 
