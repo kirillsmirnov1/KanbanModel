@@ -76,6 +76,7 @@ public class MainApp extends Application{
             scenarioComparisonStage.setTitle("Scenarios result");
             scenarioComparisonStage.initOwner(primaryStage);
             scenarioComparisonStage.setScene(new Scene(loader.load()));
+            scenarioComparisonStage.setMinHeight(200);
             // Set the persons into the controller.
             scenarioComparisonController = loader.getController();
 

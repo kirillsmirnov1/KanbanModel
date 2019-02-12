@@ -2,11 +2,22 @@
 
 <?import javafx.scene.chart.AreaChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trulden.com.vk.KanbanModel.view.ScenarioComparisonController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trulden.com.vk.KanbanModel.view.ScenarioComparisonController">
     <children>
-        <AreaChart fx:id="scenariosChart" layoutX="38.0" layoutY="-14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <ToolBar prefHeight="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <items>
+            <CheckBox fx:id="leadTimeCheckbox" mnemonicParsing="false" onAction="#onLeadTimeCheckboxAction" selected="true" text="Lead time" />
+            <CheckBox fx:id="cycleTimeCheckbox" mnemonicParsing="false" onAction="#onCycleTimeCheckboxAction" selected="true" text="Cycle time" />
+            <CheckBox fx:id="tasksFinishedCheckbox" mnemonicParsing="false" onAction="#onTasksFinishedCheckboxAction" selected="true" text="Завершенные задачи" />
+         </items>
+      </ToolBar>
+        <AreaChart fx:id="scenariosChart" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
             <xAxis>
                 <NumberAxis side="BOTTOM" />
             </xAxis>
