@@ -187,6 +187,7 @@ public class MainApp extends Application{
             JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
             Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
+            Worker.setMaxEnergy(obj.getInt("MAX_WORKER_ENERGY"));
             Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
             sceneW = obj.getInt("sceneW");
             sceneH = obj.getInt("sceneH");
