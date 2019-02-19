@@ -23,7 +23,11 @@ public class Worker {
     private final int id;
     private final String name;
 
-    private static final int MAX_ENERGY = 10;
+    private static int MAX_ENERGY; 
+
+    public static void setMaxEnergy(int me){
+        MAX_ENERGY = me;
+    }
 
     private Worker(String name, int id, HashMap<StageType, Double> productivityAtStage){
 
