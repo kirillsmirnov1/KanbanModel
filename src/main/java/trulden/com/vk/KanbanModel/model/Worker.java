@@ -23,10 +23,15 @@ public class Worker {
     private final int id;
     private final String name;
 
-    private static int MAX_ENERGY; 
+    private static int MAX_ENERGY; // Максимальное количество энергии
+    private static double TASK_CHANGE_PENALTY;  // Штраф за смену задачи (энергия которая тратится на то чтобы войти в курс дела)
 
     public static void setMaxEnergy(int me){
         MAX_ENERGY = me;
+    }
+
+    public static void setTaskChangePenalty(double tcp){
+        TASK_CHANGE_PENALTY = tcp;
     }
 
     private Worker(String name, int id, HashMap<StageType, Double> productivityAtStage){
