@@ -168,7 +168,7 @@ public class Task {
         return new Task(Integer.toString(taskCounter), randomCosts);
     }
 
-    private String getName() {
+    public String getName() {
         return "T: " + name;
     }
 

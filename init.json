@@ -1,5 +1,5 @@
 {
-    "NUMBER_OF_DAYS" : 10,
+    "NUMBER_OF_DAYS" : 50,
     "NUMBER_OF_WORKERS": 5,
     "MAX_WORKER_ENERGY" : 8,
     "TASK_CHANGE_PENALTY" : 0.2,

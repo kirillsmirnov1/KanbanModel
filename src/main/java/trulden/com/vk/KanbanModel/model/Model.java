@@ -244,8 +244,10 @@ public class Model implements Runnable{
 
 
                         if(taskCanTake > 0                                                      // Если работа еще есть
-                                && worker.getEnergy() > 0                                       // И у работника есть силы
+                                && (worker.getEnergy() - worker.calculatePenalty(task)) > 0     // И у работника есть силы
                                 && worker.getProductivityAtStage(stage) >= productivityLevel.get()){  // И он достаточно компетентен
+
+                            worker.applyPenalty(task); // Если работник раньше не занимался этой задачей, ему нужно в ней разобраться
 
                             //Считаю сколько он может наработать
                             int workerCanGive = (int) (worker.getEnergy() * worker.getProductivityAtStage(stage));

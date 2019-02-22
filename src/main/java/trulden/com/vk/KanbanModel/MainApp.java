@@ -188,6 +188,7 @@ public class MainApp extends Application{
             Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
             Worker.setMaxEnergy(obj.getInt("MAX_WORKER_ENERGY"));
+            Worker.setTaskChangePenalty(obj.getDouble("TASK_CHANGE_PENALTY"));
             Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
             sceneW = obj.getInt("sceneW");
             sceneH = obj.getInt("sceneH");
