@@ -39,10 +39,12 @@ public class MainApp extends Application{
     private KanbanBoardController kanbanBoardController;
     private ScenarioComparisonController scenarioComparisonController;
     private CFDController cfdController;
+    private SettingsController settingsController;
 
     private Stage kanbanBoardStage;
     private Stage scenarioComparisonStage;
     private Stage cfdStage;
+    private Stage settingsStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -50,7 +52,7 @@ public class MainApp extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        this.kanbanBoardStage = primaryStage;
+        this.settingsStage = primaryStage;
         resultsOfModel = new ArrayList<>();
 
         parseInitJson();
@@ -58,11 +60,32 @@ public class MainApp extends Application{
         generateWorkers();
         generateTasks();
 
+        loadSettingsWindow();
         loadKanbanBoardWindow();
         loadCFDWindow();
         loadScenariosWindow();
 
-        startModel(scenarioIterator.next());
+        //startModel(scenarioIterator.next());
+    }
+
+    private void loadSettingsWindow() {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(MainApp.class.getResource("/trulden/com/vk/KanbanModel/view/Settings.fxml"));
+
+        try {
+            settingsStage = new Stage();
+            settingsStage.setTitle("Kanban Model Settings");
+            settingsStage.setScene(new Scene(loader.load()));
+
+            settingsController = loader.getController();
+
+            settingsStage.show();
+
+            settingsStage.setOnCloseRequest(event -> System.exit(0));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadCFDWindow() {
@@ -72,7 +95,7 @@ public class MainApp extends Application{
         try {
             cfdStage = new Stage();
             cfdStage.setTitle("CFD");
-            cfdStage.initOwner(kanbanBoardStage);
+            cfdStage.initOwner(settingsStage);
             cfdStage.setScene(new Scene(loader.load()));
 
             cfdController = loader.getController();
@@ -89,7 +112,7 @@ public class MainApp extends Application{
         try {
             scenarioComparisonStage = new Stage();
             scenarioComparisonStage.setTitle("Scenarios result");
-            scenarioComparisonStage.initOwner(kanbanBoardStage);
+            scenarioComparisonStage.initOwner(settingsStage);
             scenarioComparisonStage.setScene(new Scene(loader.load()));
             scenarioComparisonStage.setMinHeight(200);
             // Set the persons into the controller.
@@ -103,15 +126,14 @@ public class MainApp extends Application{
     private void loadKanbanBoardWindow() throws Exception {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/KanbanBoard.fxml"));
+        kanbanBoardStage = new Stage();
         kanbanBoardStage.setTitle("Kanban Model");
         kanbanBoardStage.setScene(new Scene(loader.load(), sceneW, sceneH));
         kanbanBoardStage.setResizable(false);
 
-        kanbanBoardStage.setOnCloseRequest(event -> System.exit(0));
+        kanbanBoardStage.initOwner(settingsStage);
 
         kanbanBoardController = loader.getController();
-
-        kanbanBoardStage.show();
     }
 
     private void readScenarioJson() {
