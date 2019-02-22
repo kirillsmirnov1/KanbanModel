@@ -1,9 +1,7 @@
 {
     "NUMBER_OF_DAYS" : 50,
     "NUMBER_OF_WORKERS": 5,
-    "MAX_WORKER_ENERGY" : 8,
-    "TASK_CHANGE_PENALTY" : 0.2,
-    "TIME_TO_SLEEP" : 15,
+    "TIME_TO_SLEEP" : 5,
     "sceneW" : 1290,
     "sceneH" : 645
 }

@@ -125,6 +125,8 @@ public class MainApp extends Application{
                 sc.setLinearTasksMovement(arr.getJSONObject(i).getBoolean("linearTasksMovement"));
                 sc.setDefaultWIP(new Gson().fromJson(arr.getJSONObject(i).getString("defaultWIP"), int[].class));
                 sc.setDeploymentFrequency(arr.getJSONObject(i).getInt("deploymentFrequency"));
+                sc.setMaxWorkerEnergy(arr.getJSONObject(i).getInt("maxWorkerEnergy"));
+                sc.setTaskChangePenalty(arr.getJSONObject(i).getDouble("taskChangePenalty"));
 
                 scenarios.add(sc);
             }
@@ -187,8 +189,6 @@ public class MainApp extends Application{
             JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
             Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
-            Worker.setMaxEnergy(obj.getInt("MAX_WORKER_ENERGY"));
-            Worker.setTaskChangePenalty(obj.getDouble("TASK_CHANGE_PENALTY"));
             Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
             sceneW = obj.getInt("sceneW");
             sceneH = obj.getInt("sceneH");

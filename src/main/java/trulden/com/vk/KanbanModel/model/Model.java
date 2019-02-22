@@ -81,8 +81,11 @@ public class Model implements Runnable{
         this.workers = workers;
         bigPileOfTasks = tasks;
         this.scenario = scenario;
+
         defaultWip = scenario.getDefaultWIP();
         deploymentFrequency = scenario.getDeploymentFrequency();
+        Worker.setMaxEnergy(scenario.getMaxWorkerEnergy());
+        Worker.setTaskChangePenalty(scenario.getTaskChangePenalty());
 
         stages  = new HashMap<>();
 
