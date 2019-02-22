@@ -17,7 +17,7 @@
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Label minWidth="170.0" text="Количество дней: " />
-                  <TextField prefWidth="300.0" />
+                  <TextField fx:id="numberOfDaysTextField" prefWidth="300.0" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -26,7 +26,7 @@
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Label minWidth="170.0" text="Количество работников: " />
-                  <TextField prefWidth="300.0" />
+                  <TextField fx:id="numberOfWorkersTextField" prefWidth="300.0" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -40,7 +40,7 @@
                         <Label text="(не меньше 5 для UI)" />
                      </children>
                   </VBox>
-                  <TextField prefWidth="300.0" />
+                  <TextField fx:id="UISleepTimeTextField" prefWidth="300.0" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -49,7 +49,7 @@
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Label minWidth="170.0" text="Сценарии: " />
-                  <TextField prefWidth="300.0" />
+                  <TextField fx:id="scenariosPathTextField" prefWidth="300.0" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -57,7 +57,7 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
-                  <CheckBox mnemonicParsing="false" text="Отображать доску" />
+                  <CheckBox fx:id="showBoardCheckBox" mnemonicParsing="false" text="Отображать доску" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -65,8 +65,8 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
-                  <Button mnemonicParsing="false" text="Запуск модели" />
-                  <Button mnemonicParsing="false" text="График с результатами" />
+                  <Button fx:id="startModelButton" mnemonicParsing="false" text="Запуск модели" />
+                  <Button fx:id="resultsGraphicButton" mnemonicParsing="false" text="График с результатами" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
