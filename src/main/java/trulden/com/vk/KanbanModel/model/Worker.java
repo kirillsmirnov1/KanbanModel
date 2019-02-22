@@ -23,8 +23,27 @@ public class Worker {
     private final int id;
     private final String name;
 
+    private String lastTask = "";
+
     private static int MAX_ENERGY; // Максимальное количество энергии
     private static double TASK_CHANGE_PENALTY;  // Штраф за смену задачи (энергия которая тратится на то чтобы войти в курс дела)
+
+    public void applyPenalty(Task task){
+        energy.set(energy.get() - calculatePenalty(task));
+        setLastTask(task);
+    }
+
+    public int calculatePenalty(Task task){
+        return sameTaskAsLastOne(task) ? 0 : (int) (MAX_ENERGY * TASK_CHANGE_PENALTY);
+    }
+
+    private boolean sameTaskAsLastOne(Task task){
+        return lastTask.equals(task.getName());
+    }
+
+    private void setLastTask(Task task){
+        lastTask = task.getName();
+    }
 
     public static void setMaxEnergy(int me){
         MAX_ENERGY = me;
