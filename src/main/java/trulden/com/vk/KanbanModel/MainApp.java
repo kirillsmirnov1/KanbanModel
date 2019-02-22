@@ -24,6 +24,7 @@ import trulden.com.vk.KanbanModel.view.ScenarioComparisonController;
 public class MainApp extends Application{
 
     private int sceneW, sceneH;
+    private boolean showBoard = true;
 
     private ArrayList<Scenario> scenarios;
     private Iterator<Scenario> scenarioIterator;
@@ -65,7 +66,14 @@ public class MainApp extends Application{
         loadCFDWindow();
         loadScenariosWindow();
 
-        //startModel(scenarioIterator.next());
+
+    }
+
+    public void startModel() {
+        if(showBoard)
+            kanbanBoardStage.show();
+
+        startModel(scenarioIterator.next());
     }
 
     private void loadSettingsWindow() {
@@ -82,6 +90,8 @@ public class MainApp extends Application{
             settingsStage.show();
 
             settingsStage.setOnCloseRequest(event -> System.exit(0));
+
+            settingsController.setMainApp(this);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -186,7 +196,7 @@ public class MainApp extends Application{
             if(newValue)
                 if(scenarioIterator.hasNext()){
                     Platform.runLater(() -> kanbanBoardController.clearEverything());
-                    startModel(scenarioIterator.next()); 
+                    startModel(scenarioIterator.next());
                 }
         });
     }
