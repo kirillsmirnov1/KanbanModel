@@ -17,7 +17,7 @@ import java.util.HashMap;
 
 import static trulden.com.vk.KanbanModel.model.StageType.*;
 
-public class MainWindowController {
+public class KanbanBoardController {
 
     // Label'ы с названиями стадий и WIP лимитом
     @FXML

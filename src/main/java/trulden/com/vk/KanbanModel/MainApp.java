@@ -36,11 +36,11 @@ public class MainApp extends Application{
     private Worker[] workers;
     private Task[]   tasks;
 
-    private MainWindowController mainWindowController;
+    private KanbanBoardController kanbanBoardController;
     private ScenarioComparisonController scenarioComparisonController;
     private CFDController cfdController;
 
-    private Stage primaryStage;
+    private Stage kanbanBoardStage;
     private Stage scenarioComparisonStage;
     private Stage cfdStage;
 
@@ -50,7 +50,7 @@ public class MainApp extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        this.primaryStage = primaryStage;
+        this.kanbanBoardStage = primaryStage;
         resultsOfModel = new ArrayList<>();
 
         parseInitJson();
@@ -58,7 +58,7 @@ public class MainApp extends Application{
         generateWorkers();
         generateTasks();
 
-        loadMainWindow();
+        loadKanbanBoardWindow();
         loadCFDWindow();
         loadScenariosWindow();
 
@@ -72,7 +72,7 @@ public class MainApp extends Application{
         try {
             cfdStage = new Stage();
             cfdStage.setTitle("CFD");
-            cfdStage.initOwner(primaryStage);
+            cfdStage.initOwner(kanbanBoardStage);
             cfdStage.setScene(new Scene(loader.load()));
 
             cfdController = loader.getController();
@@ -89,7 +89,7 @@ public class MainApp extends Application{
         try {
             scenarioComparisonStage = new Stage();
             scenarioComparisonStage.setTitle("Scenarios result");
-            scenarioComparisonStage.initOwner(primaryStage);
+            scenarioComparisonStage.initOwner(kanbanBoardStage);
             scenarioComparisonStage.setScene(new Scene(loader.load()));
             scenarioComparisonStage.setMinHeight(200);
             // Set the persons into the controller.
@@ -100,18 +100,18 @@ public class MainApp extends Application{
         }
     }
 
-    private void loadMainWindow() throws Exception {
+    private void loadKanbanBoardWindow() throws Exception {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/MainWindow.fxml"));
-        primaryStage.setTitle("Kanban Model");
-        primaryStage.setScene(new Scene(loader.load(), sceneW, sceneH));
-        primaryStage.setResizable(false);
+        loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/KanbanBoard.fxml"));
+        kanbanBoardStage.setTitle("Kanban Model");
+        kanbanBoardStage.setScene(new Scene(loader.load(), sceneW, sceneH));
+        kanbanBoardStage.setResizable(false);
 
-        primaryStage.setOnCloseRequest( event -> System.exit(0));
+        kanbanBoardStage.setOnCloseRequest(event -> System.exit(0));
 
-        mainWindowController = loader.getController();
+        kanbanBoardController = loader.getController();
 
-        primaryStage.show();
+        kanbanBoardStage.show();
     }
 
     private void readScenarioJson() {
@@ -150,20 +150,20 @@ public class MainApp extends Application{
         cfdController.clear();
 
         model = new Model(this,
-                          mainWindowController,
+                kanbanBoardController,
                           cfdController,
                           scenario,
                           workers,
                           Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
 
-        mainWindowController.setModelAndMainApp(model, this);
+        kanbanBoardController.setModelAndMainApp(model, this);
         modelThread = new Thread(model);
         modelThread.start();
 
         model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue)
                 if(scenarioIterator.hasNext()){
-                    Platform.runLater(() -> mainWindowController.clearEverything());
+                    Platform.runLater(() -> kanbanBoardController.clearEverything());
                     startModel(scenarioIterator.next()); 
                 }
         });
