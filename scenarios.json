@@ -2,14 +2,32 @@
   "scenarios" : [
     {
       "linearTasksMovement" : true,
-      "defaultWIP" : "[3, 3, 3, 3, 3, 3, 3, 1000000]",
-      "deploymentFrequency" : 7
+      "defaultWIP" : "[1, 1, 1, 1, 1, 1, 1, 1000000]",
+      "deploymentFrequency" : 1
     },
 
     {
       "linearTasksMovement" : true,
       "defaultWIP" : "[2, 2, 2, 2, 2, 2, 2, 1000000]",
-      "deploymentFrequency" : 2
+      "deploymentFrequency" : 1
+    },
+
+    {
+      "linearTasksMovement" : true,
+      "defaultWIP" : "[3, 3, 3, 3, 3, 3, 3, 1000000]",
+      "deploymentFrequency" : 1
+    },
+
+    {
+      "linearTasksMovement" : true,
+      "defaultWIP" : "[4, 4, 4, 4, 4, 4, 4, 1000000]",
+      "deploymentFrequency" : 1
+    },
+
+    {
+      "linearTasksMovement" : true,
+      "defaultWIP" : "[5, 5, 5, 5, 5, 5, 5, 1000000]",
+      "deploymentFrequency" : 1
     }
   ]
 
