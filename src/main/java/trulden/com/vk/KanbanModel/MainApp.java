@@ -24,7 +24,7 @@ import trulden.com.vk.KanbanModel.view.ScenarioComparisonController;
 public class MainApp extends Application{
 
     private int sceneW, sceneH;
-    private boolean showBoard = true;
+    private boolean showBoard = false; // TODO считывать из инишника
 
     private ArrayList<Scenario> scenarios;
     private Iterator<Scenario> scenarioIterator;
@@ -69,9 +69,11 @@ public class MainApp extends Application{
 
     }
 
-    public void startModel() {
+    public void startModel() { // TODO рестарт
         if(showBoard)
             kanbanBoardStage.show();
+        else
+            Model.setTimeToSleep(0);
 
         startModel(scenarioIterator.next());
     }
@@ -188,14 +190,17 @@ public class MainApp extends Application{
                           workers,
                           Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
 
-        kanbanBoardController.setModelAndMainApp(model, this);
+        if(showBoard)
+            kanbanBoardController.setModelAndMainApp(model, this);
+
         modelThread = new Thread(model);
         modelThread.start();
 
         model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue)
                 if(scenarioIterator.hasNext()){
-                    Platform.runLater(() -> kanbanBoardController.clearEverything());
+                    if(showBoard)
+                        Platform.runLater(() -> kanbanBoardController.clearEverything());
                     startModel(scenarioIterator.next());
                 }
         });
@@ -257,16 +262,20 @@ public class MainApp extends Application{
         return workerNames;
     }
 
-    public void showCFD() {
-        cfdStage.show();
-    }
-
     public void addModelResult(ResultOfModel result){
         scenarioComparisonController.addResult(resultsOfModel.size(), result);
         resultsOfModel.add(result);
     }
 
+    public void showCFD() {
+        cfdStage.show();
+    }
+
     public void showScenariosResults() {
         scenarioComparisonStage.show();
+    }
+
+    public boolean getShowBoard(){
+        return showBoard;
     }
 }

@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 public class Model implements Runnable{
     private final Scenario scenario;
     private final MainApp mainApp;
-    private KanbanBoardController mwc;
+    private KanbanBoardController kanbanBoardController;
     private BooleanProperty currentModelFinished = new SimpleBooleanProperty(false);
 
     private HashMap<StageType, Stage>  stages;
@@ -74,9 +74,9 @@ public class Model implements Runnable{
     }
 
 
-    public Model(MainApp mainApp, KanbanBoardController mwc, CFDController cfdController, Scenario scenario, Worker[] workers, Task[] tasks) {
+    public Model(MainApp mainApp, KanbanBoardController kanbanBoardController, CFDController cfdController, Scenario scenario, Worker[] workers, Task[] tasks) {
         this.mainApp = mainApp;
-        this.mwc = mwc;
+        this.kanbanBoardController = kanbanBoardController;
         this.workers = workers;
         bigPileOfTasks = tasks;
         this.scenario = scenario;
@@ -97,7 +97,7 @@ public class Model implements Runnable{
             }
         }
 
-        if(CONSOLE_LOG) {
+        if(CONSOLE_LOG) {// TODO в инишник
             System.out.println("Workers: ");
             Stream.of(workers).forEach(System.out::println);
         }
@@ -182,6 +182,7 @@ public class Model implements Runnable{
                 productivityLevel.setValue(productivityLevel.get() - 0.05d);
         }
     }
+
     private void printStages() {
         for(StageType stage : StageType.values()){
             System.out.println("\nIn " + stage.toString() + ": [" + stages.get(stage).getNumberOfTasks() + "/" + stages.get(stage).getWIPLimit() + "]");
@@ -286,7 +287,9 @@ public class Model implements Runnable{
             Task newTask = bigPileOfTasks[tasksInitiated++];
             newTask.setBackLogDay(currentDay.get());
             stages.get(StageType.BACKLOG).addTask(newTask);
-            mwc.watchTask(newTask);
+
+            if(mainApp.getShowBoard())
+                kanbanBoardController.watchTask(newTask);
 
             Util.sleepMilliseconds(TIME_TO_SLEEP);
         }

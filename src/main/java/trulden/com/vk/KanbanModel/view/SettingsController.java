@@ -33,4 +33,9 @@ public class SettingsController {
     private void onStartModelButtonPress(){
         mainApp.startModel();
     }
+
+    @FXML
+    private void onShowResults(){
+        mainApp.showScenariosResults();
+    }
 }
