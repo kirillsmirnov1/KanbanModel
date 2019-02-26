@@ -65,8 +65,6 @@ public class MainApp extends Application{
         loadKanbanBoardWindow();
         loadCFDWindow();
         loadScenariosWindow();
-
-
     }
 
     public void startModel() { // TODO рестарт
@@ -211,8 +209,9 @@ public class MainApp extends Application{
     }
 
     private void generateTasks() {
-        tasks = new Task[20 * Model.getNumberOfDays() / Model.getNumberOfWorkers()];
-        for(int i = 0; i < tasks.length; ++i){
+        int numberOfTasks = 50 * Model.getNumberOfDays() / Model.getNumberOfWorkers(); // TODO учитывать WIP лимиты ?
+        tasks = new Task[numberOfTasks];
+        for(int i = 0; i < numberOfTasks; ++i){
             tasks[i] = Task.generateRandomTask();
         }
     }
@@ -290,5 +289,9 @@ public class MainApp extends Application{
 
     public String getScenariosPathAsString() {
         return scenariosPath.toString();
+    }
+
+    public void setScenariosPath(String scenariosPath) {
+        this.scenariosPath = Paths.get(scenariosPath);
     }
 }
