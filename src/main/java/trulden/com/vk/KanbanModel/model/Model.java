@@ -47,6 +47,10 @@ public class Model implements Runnable{
         return NUMBER_OF_DAYS;
     }
 
+    public static int getTimeToSleep() {
+        return TIME_TO_SLEEP;
+    }
+
     public Worker[] getWorkers(){return workers;}
 
     public static void setNumberOfWorkers(int numberOfWorkers) {

@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import trulden.com.vk.KanbanModel.MainApp;
+import trulden.com.vk.KanbanModel.model.Model;
 
 public class SettingsController {
 
@@ -28,6 +29,10 @@ public class SettingsController {
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
         showBoardCheckBox.setSelected(mainApp.getShowBoard());
+        numberOfDaysTextField.setText(Integer.toString(Model.getNumberOfDays()));
+        numberOfWorkersTextField.setText(Integer.toString(Model.getNumberOfWorkers()));
+        UISleepTimeTextField.setText(Integer.toString(Model.getTimeToSleep()));
+        scenariosPathTextField.setText(mainApp.getScenariosPathAsString());
     }
 
     @FXML
