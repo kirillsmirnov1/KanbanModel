@@ -11,6 +11,7 @@ import trulden.com.vk.KanbanModel.view.*;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +48,8 @@ public class MainApp extends Application{
     private Stage cfdStage;
     private Stage settingsStage;
 
+    private Path scenariosPath = Paths.get("scenarios.json");
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -57,9 +60,6 @@ public class MainApp extends Application{
         resultsOfModel = new ArrayList<>();
 
         parseInitJson();
-        readScenarioJson();
-        generateWorkers();
-        generateTasks();
 
         loadSettingsWindow();
         loadKanbanBoardWindow();
@@ -70,12 +70,16 @@ public class MainApp extends Application{
     }
 
     public void startModel() { // TODO рестарт
+        readScenarioJson();// TODO перенести отдельно
+        generateWorkers();
+        generateTasks();
+
         if(showBoard)
             kanbanBoardStage.show();
         else
             Model.setTimeToSleep(0);
 
-        startModel(scenarioIterator.next());
+        startNextScenario(scenarioIterator.next());
     }
 
     private void loadSettingsWindow() {
@@ -151,7 +155,7 @@ public class MainApp extends Application{
     private void readScenarioJson() {
         scenarios = new ArrayList<>();
         try {
-            JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("scenarios.json"))));
+            JSONObject obj = new JSONObject(new String(Files.readAllBytes(scenariosPath)));
             JSONArray  arr = new JSONArray(obj.get("scenarios").toString());
             for(int i=0; i < arr.length(); ++i){
                 Scenario sc = new Scenario();
@@ -179,7 +183,7 @@ public class MainApp extends Application{
         }
     }
 
-    public void startModel(Scenario scenario){
+    public void startNextScenario(Scenario scenario){
 
         cfdController.clear();
 
@@ -201,7 +205,7 @@ public class MainApp extends Application{
                 if(scenarioIterator.hasNext()){
                     if(showBoard)
                         Platform.runLater(() -> kanbanBoardController.clearEverything());
-                    startModel(scenarioIterator.next());
+                    startNextScenario(scenarioIterator.next());
                 }
         });
     }
@@ -282,5 +286,9 @@ public class MainApp extends Application{
 
     public void setShowBoard(boolean showBoard) {
         this.showBoard = showBoard;
+    }
+
+    public String getScenariosPathAsString() {
+        return scenariosPath.toString();
     }
 }
