@@ -4,6 +4,6 @@
     "TIME_TO_SLEEP" : 5,
     "scenariosPath" : "scenarios.json",
     "showBoard" : false,
-    "sceneW" : 1290,
-    "sceneH" : 645
+    "kanbanBoardW" : 1290,
+    "kanbanBoardH" : 645
 }

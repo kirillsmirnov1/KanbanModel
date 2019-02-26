@@ -22,32 +22,47 @@ import org.json.*;
 import com.google.gson.Gson;
 import trulden.com.vk.KanbanModel.view.ScenarioComparisonController;
 
+// Класс главного приложения
+// Грузит формы, читает инишни, сценарии, генерит сотрудников и задачи
+// Запускает моделирование с указанными параметрами
 public class MainApp extends Application{
 
-    private int sceneW, sceneH;
-    private boolean showBoard;
+    // Ширина и высота окна канбан-доски
+    private int kanbanBoardW, kanbanBoardH;
+    // Отображать канбан-доску?
+    private boolean showKanbanBoard;
 
+    // Массив сценариев модели
     private ArrayList<Scenario> scenarios;
+    // Итератор сценариев
     private Iterator<Scenario> scenarioIterator;
 
+    // Результаты моделирования. Сохраняются для отображения на соответствующем графике
     private ArrayList<ResultOfModel> resultsOfModel;
 
+    // Текущая модель
     private Model    model;
+    // Поток модели
     private Thread   modelThread;
 
+    // Соотрудники
     private Worker[] workers;
+    // Задачи
     private Task[]   tasks;
 
+    // Контроллеры форм
     private KanbanBoardController kanbanBoardController;
     private ScenarioComparisonController scenarioComparisonController;
     private CFDController cfdController;
     private SettingsController settingsController;
 
+    // Стэйджы форм
     private Stage kanbanBoardStage;
     private Stage scenarioComparisonStage;
     private Stage cfdStage;
     private Stage settingsStage;
 
+    // Путь к сценариям
     private Path scenariosPath = Paths.get("scenarios.json");
 
     public static void main(String[] args) {
@@ -61,7 +76,7 @@ public class MainApp extends Application{
 
         parseInitJson();
 
-        loadSettingsWindow();
+        loadSettingsWindow(); // TODO грузить только то что нужно
         loadKanbanBoardWindow();
         loadCFDWindow();
         loadScenariosWindow();
@@ -72,7 +87,7 @@ public class MainApp extends Application{
         generateWorkers();
         generateTasks();
 
-        if(showBoard)
+        if(showKanbanBoard)
             kanbanBoardStage.show();
         else
             Model.setTimeToSleep(0);
@@ -142,7 +157,7 @@ public class MainApp extends Application{
         loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/KanbanBoard.fxml"));
         kanbanBoardStage = new Stage();
         kanbanBoardStage.setTitle("Kanban Model");
-        kanbanBoardStage.setScene(new Scene(loader.load(), sceneW, sceneH));
+        kanbanBoardStage.setScene(new Scene(loader.load(), kanbanBoardW, kanbanBoardH));
         kanbanBoardStage.setResizable(false);
 
         kanbanBoardStage.initOwner(settingsStage);
@@ -192,7 +207,7 @@ public class MainApp extends Application{
                           workers,
                           Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
 
-        if(showBoard)
+        if(showKanbanBoard)
             kanbanBoardController.setModelAndMainApp(model, this);
 
         modelThread = new Thread(model);
@@ -201,7 +216,7 @@ public class MainApp extends Application{
         model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue)
                 if(scenarioIterator.hasNext()){
-                    if(showBoard)
+                    if(showKanbanBoard)
                         Platform.runLater(() -> kanbanBoardController.clearEverything());
                     startNextScenario(scenarioIterator.next());
                 }
@@ -231,9 +246,9 @@ public class MainApp extends Application{
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
             Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
             scenariosPath = Paths.get(obj.getString("scenariosPath"));
-            showBoard = obj.getBoolean("showBoard");
-            sceneW = obj.getInt("sceneW");
-            sceneH = obj.getInt("sceneH");
+            showKanbanBoard = obj.getBoolean("showBoard");
+            kanbanBoardW = obj.getInt("kanbanBoardW");
+            kanbanBoardH = obj.getInt("kanbanBoardH");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -281,11 +296,11 @@ public class MainApp extends Application{
     }
 
     public boolean getShowBoard(){
-        return showBoard;
+        return showKanbanBoard;
     }
 
     public void setShowBoard(boolean showBoard) {
-        this.showBoard = showBoard;
+        this.showKanbanBoard = showBoard;
     }
 
     public String getScenariosPathAsString() {
