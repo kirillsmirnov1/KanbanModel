@@ -27,6 +27,7 @@ public class SettingsController {
 
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
+        showBoardCheckBox.setSelected(mainApp.getShowBoard());
     }
 
     @FXML
@@ -37,5 +38,10 @@ public class SettingsController {
     @FXML
     private void onShowResults(){
         mainApp.showScenariosResults();
+    }
+
+    @FXML
+    private void onCheckBoxChange(){
+        mainApp.setShowBoard(showBoardCheckBox.isSelected());
     }
 }

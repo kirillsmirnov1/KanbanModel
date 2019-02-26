@@ -279,4 +279,8 @@ public class MainApp extends Application{
     public boolean getShowBoard(){
         return showBoard;
     }
+
+    public void setShowBoard(boolean showBoard) {
+        this.showBoard = showBoard;
+    }
 }
