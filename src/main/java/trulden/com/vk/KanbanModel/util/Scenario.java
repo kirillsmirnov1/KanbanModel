@@ -16,9 +16,9 @@ public class Scenario {
 
     // Зона геттеров и сеттеров
 
-    public boolean isLinearTasksMovement() {
+    public boolean isLinearTasksMovement() {// TODO
         return linearTasksMovement;
-    } // TODO
+    }
 
     public void setLinearTasksMovement(boolean linearTasksMovement) {
         this.linearTasksMovement = linearTasksMovement;

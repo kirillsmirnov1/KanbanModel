@@ -25,7 +25,7 @@ import trulden.com.vk.KanbanModel.view.ScenarioComparisonController;
 public class MainApp extends Application{
 
     private int sceneW, sceneH;
-    private boolean showBoard = false; // TODO считывать из инишника
+    private boolean showBoard;
 
     private ArrayList<Scenario> scenarios;
     private Iterator<Scenario> scenarioIterator;
@@ -68,7 +68,7 @@ public class MainApp extends Application{
     }
 
     public void startModel() { // TODO рестарт
-        readScenarioJson();// TODO перенести отдельно
+        readScenarioJson();
         generateWorkers();
         generateTasks();
 
