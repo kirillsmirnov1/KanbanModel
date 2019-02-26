@@ -2,6 +2,7 @@
     "NUMBER_OF_DAYS" : 50,
     "NUMBER_OF_WORKERS": 5,
     "TIME_TO_SLEEP" : 5,
+    "showBoard" : false,
     "sceneW" : 1290,
     "sceneH" : 645
 }
