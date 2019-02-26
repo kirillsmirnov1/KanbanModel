@@ -230,6 +230,7 @@ public class MainApp extends Application{
             Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
             Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
+            scenariosPath = Paths.get(obj.getString("scenariosPath"));
             showBoard = obj.getBoolean("showBoard");
             sceneW = obj.getInt("sceneW");
             sceneH = obj.getInt("sceneH");
