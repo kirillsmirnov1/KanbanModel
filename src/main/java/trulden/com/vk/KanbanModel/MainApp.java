@@ -63,22 +63,20 @@ public class MainApp extends Application{
     private Stage settingsStage;
 
     // Путь к сценариям
-    private Path scenariosPath = Paths.get("scenarios.json");
+    private Path scenariosPath;
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage){
         this.settingsStage = primaryStage;
         resultsOfModel = new ArrayList<>();
 
-        parseInitJson();
+        readInitJson();
 
-        loadSettingsWindow(); // TODO грузить только то что нужно
-        loadKanbanBoardWindow();
-        loadCFDWindow();
+        loadSettingsWindow();
         loadScenariosWindow();
     }
 
@@ -87,12 +85,140 @@ public class MainApp extends Application{
         generateWorkers();
         generateTasks();
 
+        if(showKanbanBoard){
+            loadKanbanBoardWindow();
+            loadCFDWindow();
+        }
+
         if(showKanbanBoard)
             kanbanBoardStage.show();
         else
             Model.setTimeToSleep(0);
 
         startNextScenario(scenarioIterator.next());
+    }
+
+    public void stopModel(){
+        if(model != null){
+            model.timeToStop();
+            modelThread.stop(); // TODO это не хорошо, переделай
+        }
+    }
+
+    public void startNextScenario(Scenario scenario){
+
+        if(showKanbanBoard)
+            cfdController.clear();
+
+        model = new Model(this,
+                kanbanBoardController,
+                          cfdController,
+                          scenario,
+                          workers,
+                          Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
+
+        if(showKanbanBoard)
+            kanbanBoardController.setModelAndMainApp(model, this);
+
+        modelThread = new Thread(model);
+        modelThread.start();
+
+        model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue)
+                if(scenarioIterator.hasNext()){
+                    if(showKanbanBoard)
+                        Platform.runLater(() -> kanbanBoardController.clearEverything());
+                    startNextScenario(scenarioIterator.next());
+                }
+        });
+    }
+
+    private void generateTasks() {
+        int numberOfTasks = 50 * Model.getNumberOfDays() / Model.getNumberOfWorkers(); // TODO учитывать WIP лимиты ?
+        tasks = new Task[numberOfTasks];
+        for(int i = 0; i < numberOfTasks; ++i){
+            tasks[i] = Task.generateRandomTask();
+        }
+    }
+
+    private void generateWorkers(){
+        String[] workerNames = readWorkerNames();
+        workers = new Worker[Model.getNumberOfWorkers()];
+        for(int i=0; i < workers.length; ++i){
+            workers[i] = Worker.generateRandomWorker(workerNames[i]);
+        }
+    }
+
+    private static String[] readWorkerNames(){
+        int[] lineNumbers;
+        int numberOfLines;
+        int lineCounter = 1;
+
+        String[] workerNames = new String[Model.getNumberOfWorkers()];
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("shortAnimals.txt"));
+            String line = br.readLine();
+            numberOfLines = Integer.parseInt(line);
+            lineNumbers = new Random().ints(1, numberOfLines).limit(Model.getNumberOfWorkers()).sorted().toArray();
+
+            for (int i = 0; i < Model.getNumberOfWorkers(); ++i) {
+                while (lineCounter < lineNumbers[i] - 1) {
+                    br.readLine();
+                    lineCounter++;
+                }
+                workerNames[i] = br.readLine();
+                lineCounter++;
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return workerNames;
+    }
+
+    private void readScenarioJson() {
+        scenarios = new ArrayList<>();
+        try {
+            JSONObject obj = new JSONObject(new String(Files.readAllBytes(scenariosPath)));
+            JSONArray  arr = new JSONArray(obj.get("scenarios").toString());
+            for(int i=0; i < arr.length(); ++i){
+                Scenario sc = new Scenario();
+
+                sc.setLinearTasksMovement(arr.getJSONObject(i).getBoolean("linearTasksMovement"));
+                sc.setDefaultWIP(new Gson().fromJson(arr.getJSONObject(i).getString("defaultWIP"), int[].class));
+                sc.setDeploymentFrequency(arr.getJSONObject(i).getInt("deploymentFrequency"));
+                sc.setMaxWorkerEnergy(arr.getJSONObject(i).getInt("maxWorkerEnergy"));
+                sc.setTaskChangePenalty(arr.getJSONObject(i).getDouble("taskChangePenalty"));
+
+                scenarios.add(sc);
+            }
+
+            scenarioIterator = scenarios.iterator();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readInitJson() {
+        try {
+            JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
+            Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
+            Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
+            Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
+            scenariosPath = Paths.get(obj.getString("scenariosPath"));
+            showKanbanBoard = obj.getBoolean("showBoard");
+            kanbanBoardW = obj.getInt("kanbanBoardW");
+            kanbanBoardH = obj.getInt("kanbanBoardH");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addModelResult(ResultOfModel result){
+        scenarioComparisonController.addResult(resultsOfModel.size(), result);
+        resultsOfModel.add(result);
     }
 
     private void loadSettingsWindow() {
@@ -152,139 +278,21 @@ public class MainApp extends Application{
         }
     }
 
-    private void loadKanbanBoardWindow() throws Exception {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/KanbanBoard.fxml"));
-        kanbanBoardStage = new Stage();
-        kanbanBoardStage.setTitle("Kanban Model");
-        kanbanBoardStage.setScene(new Scene(loader.load(), kanbanBoardW, kanbanBoardH));
-        kanbanBoardStage.setResizable(false);
-
-        kanbanBoardStage.initOwner(settingsStage);
-
-        kanbanBoardController = loader.getController();
-    }
-
-    private void readScenarioJson() {
-        scenarios = new ArrayList<>();
+    private void loadKanbanBoardWindow() {
         try {
-            JSONObject obj = new JSONObject(new String(Files.readAllBytes(scenariosPath)));
-            JSONArray  arr = new JSONArray(obj.get("scenarios").toString());
-            for(int i=0; i < arr.length(); ++i){
-                Scenario sc = new Scenario();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/KanbanBoard.fxml"));
+            kanbanBoardStage = new Stage();
+            kanbanBoardStage.setTitle("Kanban Model");
+            kanbanBoardStage.setScene(new Scene(loader.load(), kanbanBoardW, kanbanBoardH));
+            kanbanBoardStage.setResizable(false);
 
-                sc.setLinearTasksMovement(arr.getJSONObject(i).getBoolean("linearTasksMovement"));
-                sc.setDefaultWIP(new Gson().fromJson(arr.getJSONObject(i).getString("defaultWIP"), int[].class));
-                sc.setDeploymentFrequency(arr.getJSONObject(i).getInt("deploymentFrequency"));
-                sc.setMaxWorkerEnergy(arr.getJSONObject(i).getInt("maxWorkerEnergy"));
-                sc.setTaskChangePenalty(arr.getJSONObject(i).getDouble("taskChangePenalty"));
+            kanbanBoardStage.initOwner(settingsStage);
 
-                scenarios.add(sc);
-            }
-
-            scenarioIterator = scenarios.iterator();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void stopModel(){
-        if(model != null){
-            model.timeToStop();
-            modelThread.stop(); // TODO это не хорошо, переделай
-        }
-    }
-
-    public void startNextScenario(Scenario scenario){
-
-        cfdController.clear();
-
-        model = new Model(this,
-                kanbanBoardController,
-                          cfdController,
-                          scenario,
-                          workers,
-                          Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
-
-        if(showKanbanBoard)
-            kanbanBoardController.setModelAndMainApp(model, this);
-
-        modelThread = new Thread(model);
-        modelThread.start();
-
-        model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue)
-                if(scenarioIterator.hasNext()){
-                    if(showKanbanBoard)
-                        Platform.runLater(() -> kanbanBoardController.clearEverything());
-                    startNextScenario(scenarioIterator.next());
-                }
-        });
-    }
-
-    private void generateTasks() {
-        int numberOfTasks = 50 * Model.getNumberOfDays() / Model.getNumberOfWorkers(); // TODO учитывать WIP лимиты ?
-        tasks = new Task[numberOfTasks];
-        for(int i = 0; i < numberOfTasks; ++i){
-            tasks[i] = Task.generateRandomTask();
-        }
-    }
-
-    private void generateWorkers(){
-        String[] workerNames = readWorkerNames();
-        workers = new Worker[Model.getNumberOfWorkers()];
-        for(int i=0; i < workers.length; ++i){
-            workers[i] = Worker.generateRandomWorker(workerNames[i]);
-        }
-    }
-
-    private void parseInitJson() {
-        try {
-            JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
-            Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
-            Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
-            Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
-            scenariosPath = Paths.get(obj.getString("scenariosPath"));
-            showKanbanBoard = obj.getBoolean("showBoard");
-            kanbanBoardW = obj.getInt("kanbanBoardW");
-            kanbanBoardH = obj.getInt("kanbanBoardH");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static String[] readWorkerNames(){
-        int[] lineNumbers;
-        int numberOfLines;
-        int lineCounter = 1;
-
-        String[] workerNames = new String[Model.getNumberOfWorkers()];
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("shortAnimals.txt"));
-            String line = br.readLine();
-            numberOfLines = Integer.parseInt(line);
-            lineNumbers = new Random().ints(1, numberOfLines).limit(Model.getNumberOfWorkers()).sorted().toArray();
-
-            for (int i = 0; i < Model.getNumberOfWorkers(); ++i) {
-                while (lineCounter < lineNumbers[i] - 1) {
-                    br.readLine();
-                    lineCounter++;
-                }
-                workerNames[i] = br.readLine();
-                lineCounter++;
-            }
+            kanbanBoardController = loader.getController();
         } catch (IOException e){
             e.printStackTrace();
         }
-
-        return workerNames;
-    }
-
-    public void addModelResult(ResultOfModel result){
-        scenarioComparisonController.addResult(resultsOfModel.size(), result);
-        resultsOfModel.add(result);
     }
 
     public void showCFD() {

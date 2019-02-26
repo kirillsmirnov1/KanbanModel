@@ -114,7 +114,8 @@ public class Model implements Runnable{
         leadTime = new ArrayList<>();
         cycleTime = new ArrayList<>();
 
-        cfdController.setDayTracking(currentDay, CFD);
+        if(mainApp.getShowBoard())
+            cfdController.setDayTracking(currentDay, CFD);
     }
 
     // Запуск модели
