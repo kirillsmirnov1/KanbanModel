@@ -69,6 +69,7 @@ public class MainApp extends Application{
         launch(args);
     }
 
+    // Показывает стартовое окно настроек
     @Override
     public void start(Stage primaryStage){
         this.settingsStage = primaryStage;
@@ -77,13 +78,17 @@ public class MainApp extends Application{
         readInitJson();
 
         loadSettingsWindow();
-        loadScenariosWindow();
+        
+        settingsStage.show();
     }
 
     public void startModel() { // TODO рестарт
         readScenarioJson();
+
         generateWorkers();
         generateTasks();
+
+        loadScenariosWindow();
 
         if(showKanbanBoard){
             loadKanbanBoardWindow();
@@ -229,8 +234,6 @@ public class MainApp extends Application{
             settingsStage.setScene(new Scene(loader.load()));
 
             settingsController = loader.getController();
-
-            settingsStage.show();
 
             settingsStage.setOnCloseRequest(event -> System.exit(0));
 
