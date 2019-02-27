@@ -29,7 +29,7 @@ public class MainApp extends Application{
     // Ширина и высота окна канбан-доски
     private int kanbanBoardW, kanbanBoardH;
     // Количество завершённых сценариев
-    private int scenariosFinished = 0;
+    private int scenariosFinished;
     // Отображать канбан-доску?
     private boolean showingKanbanBoard;
 
@@ -80,6 +80,7 @@ public class MainApp extends Application{
     // Первый запуск модели − читает сценарии, генерит сотрудников и таски
     public void startModel() { // TODO рестарт
         readScenarioJson();
+        scenariosFinished = 0;
 
         generateWorkers();
         generateTasks();
@@ -91,8 +92,10 @@ public class MainApp extends Application{
             loadCFDWindow();
             kanbanBoardStage.show();
         }
-        else
+        else{
             Model.setTimeToSleep(0);
+            scenarioComparisonStage.show();
+        }
 
         startScenario(scenarioIterator.next());
     }
