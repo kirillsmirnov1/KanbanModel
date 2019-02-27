@@ -185,8 +185,12 @@ public class KanbanBoardController {
                     stagesUpVBoxHashMap.get(newValue).getChildren().add(label);
             }
             else {
-                if(!stagesDownVBoxHashMap.get(newValue).getChildren().contains(label))
-                    stagesDownVBoxHashMap.get(newValue).getChildren().add(label);
+                try {
+                    if (!stagesDownVBoxHashMap.get(newValue).getChildren().contains(label))
+                        stagesDownVBoxHashMap.get(newValue).getChildren().add(label);
+                } catch (NullPointerException e ){
+                    // Иногда лэйбл устаревает. Проверка на null не помогает
+                }
             }
 
             updateWIPLimit(oldValue);
