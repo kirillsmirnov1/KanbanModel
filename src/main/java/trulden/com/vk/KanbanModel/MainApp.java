@@ -83,7 +83,6 @@ public class MainApp extends Application{
         scenariosFinished = 0;
 
         generateWorkers();
-        generateTasks();
 
         loadScenariosResultsWindow();
 
@@ -118,8 +117,7 @@ public class MainApp extends Application{
                 kanbanBoardController,
                           cfdController,
                           scenario,
-                          workers,
-                          Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
+                          workers);
 
 
         if(showingKanbanBoard) {
@@ -142,17 +140,6 @@ public class MainApp extends Application{
                     startScenario(scenarioIterator.next());
                 }
         });
-    }
-
-    // Генерация задач
-    // Задачи генерятся один раз, используются во всех моделях и сценариях
-    // FIXME если я хочу разных результатов, задачи должны генерироваться для каждого прогона
-    private void generateTasks() {
-        int numberOfTasks = 50 * Model.getNumberOfDays() / Model.getNumberOfWorkers(); // FIXME учитывать WIP лимиты ?
-        tasks = new Task[numberOfTasks];
-        for(int i = 0; i < numberOfTasks; ++i){
-            tasks[i] = Task.generateRandomTask();
-        }
     }
 
     // Генерация сотрудников

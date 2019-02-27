@@ -33,8 +33,6 @@ public class Model implements Runnable{
     private HashMap<StageType, Stage>  stages;
     // Сотрудники
     private Worker[] workers;
-    // Пак тасков для выполнения
-    private Task[]   bigPileOfTasks;
 
     // Данные для построения CFD-диаграммы
     private HashMap<Integer, int[]> CFD;
@@ -52,8 +50,8 @@ public class Model implements Runnable{
 
     // Частота деплоймента
     private int   deploymentFrequency;
+    // Ограничение на количество задач в работе
     public  int[] WIPLimits;
-    private int tasksInitiated = 0;
 
     private DoubleProperty  productivityLevel;   // минимум продуктивности
     private IntegerProperty currentDay;
@@ -98,11 +96,10 @@ public class Model implements Runnable{
     }
 
 
-    public Model(MainApp mainApp, KanbanBoardController kanbanBoardController, CFDController cfdController, Scenario scenario, Worker[] workers, Task[] tasks) {
+    public Model(MainApp mainApp, KanbanBoardController kanbanBoardController, CFDController cfdController, Scenario scenario, Worker[] workers) {
         this.mainApp = mainApp;
         this.kanbanBoardController = kanbanBoardController;
         this.workers = workers;
-        bigPileOfTasks = tasks;
         this.scenario = scenario;
 
         WIPLimits = scenario.getWIPLimits();
@@ -309,7 +306,7 @@ public class Model implements Runnable{
     // Заполнение бэклога
     private void fillBacklog() {
         while (stages.get(StageType.BACKLOG).canAddTask()){
-            Task newTask = bigPileOfTasks[tasksInitiated++];
+            Task newTask = Task.generateRandomTask();
             newTask.setBackLogDay(currentDay.get());
             stages.get(StageType.BACKLOG).addTask(newTask);
 
