@@ -9,13 +9,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import trulden.com.vk.KanbanModel.MainApp;
 import trulden.com.vk.KanbanModel.model.Model;
-import trulden.com.vk.KanbanModel.model.StageType;
+import trulden.com.vk.KanbanModel.model.stage.StageType;
 import trulden.com.vk.KanbanModel.model.Task;
 import trulden.com.vk.KanbanModel.model.Worker;
 
 import java.util.HashMap;
 
-import static trulden.com.vk.KanbanModel.model.StageType.*;
+import static trulden.com.vk.KanbanModel.model.stage.StageType.*;
 
 public class KanbanBoardController {
 

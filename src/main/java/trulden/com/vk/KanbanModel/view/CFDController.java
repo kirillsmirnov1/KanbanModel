@@ -5,7 +5,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.fxml.FXML;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.XYChart;
-import trulden.com.vk.KanbanModel.model.StageType;
+import trulden.com.vk.KanbanModel.model.stage.StageType;
 
 import java.util.HashMap;
 

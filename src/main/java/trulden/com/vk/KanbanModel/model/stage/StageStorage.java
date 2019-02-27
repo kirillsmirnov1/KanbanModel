@@ -1,11 +1,13 @@
-package trulden.com.vk.KanbanModel.model;
+package trulden.com.vk.KanbanModel.model.stage;
+
+import trulden.com.vk.KanbanModel.model.Task;
 
 import java.util.ArrayList;
 
 public class StageStorage extends Stage {
     private ArrayList<Task> tasksInStorage;
 
-    StageStorage(StageType type, int WIPLimit){
+    public StageStorage(StageType type, int WIPLimit){
         super(type, WIPLimit);
         tasksInStorage = new ArrayList<>();
     }

@@ -2,13 +2,15 @@ package trulden.com.vk.KanbanModel.model;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import trulden.com.vk.KanbanModel.MainApp;
+import trulden.com.vk.KanbanModel.model.stage.StageType;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
-import static trulden.com.vk.KanbanModel.model.StageType.workStages;
+import static trulden.com.vk.KanbanModel.model.stage.StageType.workStages;
+
+//TODO обучение сотрудников
 
 public class Worker {
     private static int workerCounter = 0;

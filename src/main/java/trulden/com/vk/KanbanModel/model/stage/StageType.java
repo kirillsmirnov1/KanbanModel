@@ -1,4 +1,4 @@
-package trulden.com.vk.KanbanModel.model;
+package trulden.com.vk.KanbanModel.model.stage;
 
 import org.apache.commons.lang3.ArrayUtils;
 

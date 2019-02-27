@@ -1,13 +1,14 @@
 package trulden.com.vk.KanbanModel.model;
 
 import javafx.beans.property.*;
+import trulden.com.vk.KanbanModel.model.stage.StageType;
 
 import java.util.HashMap;
 import java.util.Random;
 
-import static trulden.com.vk.KanbanModel.model.StageType.BACKLOG;
-import static trulden.com.vk.KanbanModel.model.StageType.DEPLOYMENT;
-import static trulden.com.vk.KanbanModel.model.StageType.workStages;
+import static trulden.com.vk.KanbanModel.model.stage.StageType.BACKLOG;
+import static trulden.com.vk.KanbanModel.model.stage.StageType.DEPLOYMENT;
+import static trulden.com.vk.KanbanModel.model.stage.StageType.workStages;
 
 // Задача
 public class Task {

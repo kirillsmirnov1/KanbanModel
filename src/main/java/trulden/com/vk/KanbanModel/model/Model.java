@@ -3,6 +3,10 @@ package trulden.com.vk.KanbanModel.model;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import trulden.com.vk.KanbanModel.MainApp;
+import trulden.com.vk.KanbanModel.model.stage.Stage;
+import trulden.com.vk.KanbanModel.model.stage.StageStorage;
+import trulden.com.vk.KanbanModel.model.stage.StageType;
+import trulden.com.vk.KanbanModel.model.stage.StageWorking;
 import trulden.com.vk.KanbanModel.util.Scenario;
 import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.CFDController;
@@ -39,18 +43,21 @@ public class Model implements Runnable{
     private ArrayList<Integer> leadTime;
     private ArrayList<Integer> cycleTime;
 
+    // Количество работников
     private static int   NUMBER_OF_WORKERS;
+    // Длительность выполнения модели
     private static int   NUMBER_OF_DAYS;
+    // Задержка выполнения модели для отображения изменений на канбан доске
     private static int   UI_REFRESH_DELAY;
 
+    // Частота деплоймента
     private int   deploymentFrequency;
     public  int[] defaultWip;
+    private int tasksInitiated = 0;
 
     private DoubleProperty  productivityLevel;   // минимум продуктивности
     private IntegerProperty currentDay;
     private IntegerProperty tasksDeployed;
-
-    private int tasksInitiated = 0;
 
     private static final boolean CONSOLE_LOG = false;
 

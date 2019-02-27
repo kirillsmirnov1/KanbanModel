@@ -1,4 +1,6 @@
-package trulden.com.vk.KanbanModel.model;
+package trulden.com.vk.KanbanModel.model.stage;
+
+import trulden.com.vk.KanbanModel.model.Task;
 
 // Абстрактный класс Стадии
 public abstract class Stage {
