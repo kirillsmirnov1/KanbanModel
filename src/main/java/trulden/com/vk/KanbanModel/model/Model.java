@@ -53,11 +53,14 @@ public class Model implements Runnable{
     // Ограничение на количество задач в работе
     public  int[] WIPLimits;
 
-    private DoubleProperty  productivityLevel;   // минимум продуктивности
+    // Минимум продуктивности
+    private DoubleProperty  productivityLevel;
+    // Текущий день модели
     private IntegerProperty currentDay;
+    // Количество задеплойенных таск
     private IntegerProperty tasksDeployed;
 
-    private static final boolean CONSOLE_LOG = false;
+    private static boolean PRINTINGS_RESULTS_TO_CONSOLE;
 
     private BooleanProperty timeToStop = new SimpleBooleanProperty(false);
 
@@ -118,7 +121,7 @@ public class Model implements Runnable{
             }
         }
 
-        if(CONSOLE_LOG) {// TODO в инишник
+        if(PRINTINGS_RESULTS_TO_CONSOLE) {// TODO в инишник
             System.out.println("Workers: ");
             Stream.of(workers).forEach(System.out::println);
         }
@@ -146,7 +149,7 @@ public class Model implements Runnable{
         // Прогоняю внешний цикл столько скольно нужно раз.
         // Считаю что цикл выполняется за день
         for(currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get()+1)){
-            if(CONSOLE_LOG)
+            if(PRINTINGS_RESULTS_TO_CONSOLE)
                 System.out.println("\nDay " + currentDay + " have started =========================================================");
 
             outerCycle();
@@ -194,7 +197,7 @@ public class Model implements Runnable{
         productivityLevel.setValue(1d);
         fillBacklog();
 
-        if(CONSOLE_LOG)
+        if(PRINTINGS_RESULTS_TO_CONSOLE)
             printStages();
 
         Stream.of(workers).forEach(Worker::refillEnergy);
@@ -335,5 +338,9 @@ public class Model implements Runnable{
 
     public BooleanProperty currentModelFinishedProperty() {
         return currentModelFinished;
+    }
+
+    public static void setPrintingsResultsToConsole(boolean printingsResultsToConsole) {
+        PRINTINGS_RESULTS_TO_CONSOLE = printingsResultsToConsole;
     }
 }
