@@ -1,5 +1,6 @@
 package trulden.com.vk.KanbanModel.model;
 
+// FIXME в объектах этого класса хранятся результаты моделирования сценария, надо адаптировать название
 public class ResultOfModel {
     private final double leadTime;
     private final double cycleTime;
