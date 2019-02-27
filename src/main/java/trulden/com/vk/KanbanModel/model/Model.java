@@ -47,6 +47,8 @@ public class Model implements Runnable{
     private static int   NUMBER_OF_DAYS;
     // Задержка выполнения модели для отображения изменений на канбан доске
     private static int   UI_REFRESH_DELAY;
+    // Печатать промежуточные результаты модели в консоль?
+    private static boolean PRINTINGS_RESULTS_TO_CONSOLE;
 
     // Частота деплоймента
     private int   deploymentFrequency;
@@ -60,44 +62,8 @@ public class Model implements Runnable{
     // Количество задеплойенных таск
     private IntegerProperty tasksDeployed;
 
-    private static boolean PRINTINGS_RESULTS_TO_CONSOLE;
-
+    // Флаг экстренного завершения модели
     private BooleanProperty timeToStop = new SimpleBooleanProperty(false);
-
-    public static int getNumberOfDays() {
-        return NUMBER_OF_DAYS;
-    }
-
-    public static int getUiRefreshDelay() {
-        return UI_REFRESH_DELAY;
-    }
-
-    public Worker[] getWorkers(){return workers;}
-
-    public static void setNumberOfWorkers(int numberOfWorkers) {
-        NUMBER_OF_WORKERS = numberOfWorkers;
-    }
-
-    public static void setNumberOfDays(int numberOfDays) {
-        NUMBER_OF_DAYS = numberOfDays;
-    }
-
-    public static void setUiRefreshDelay(int tts) {
-        UI_REFRESH_DELAY = tts;
-    }
-
-    public IntegerProperty currentDayProperty() {
-        return currentDay;
-    }
-
-    public DoubleProperty productivityLevelProperty() {
-        return productivityLevel;
-    }
-
-    public IntegerProperty tasksDeployedProperty(){
-        return tasksDeployed;
-    }
-
 
     public Model(MainApp mainApp, KanbanBoardController kanbanBoardController, CFDController cfdController, Scenario scenario, Worker[] workers) {
         this.mainApp = mainApp;
@@ -342,5 +308,39 @@ public class Model implements Runnable{
 
     public static void setPrintingsResultsToConsole(boolean printingsResultsToConsole) {
         PRINTINGS_RESULTS_TO_CONSOLE = printingsResultsToConsole;
+    }
+    
+    public static int getNumberOfDays() {
+        return NUMBER_OF_DAYS;
+    }
+
+    public static int getUiRefreshDelay() {
+        return UI_REFRESH_DELAY;
+    }
+
+    public Worker[] getWorkers(){return workers;}
+
+    public static void setNumberOfWorkers(int numberOfWorkers) {
+        NUMBER_OF_WORKERS = numberOfWorkers;
+    }
+
+    public static void setNumberOfDays(int numberOfDays) {
+        NUMBER_OF_DAYS = numberOfDays;
+    }
+
+    public static void setUiRefreshDelay(int tts) {
+        UI_REFRESH_DELAY = tts;
+    }
+
+    public IntegerProperty currentDayProperty() {
+        return currentDay;
+    }
+
+    public DoubleProperty productivityLevelProperty() {
+        return productivityLevel;
+    }
+
+    public IntegerProperty tasksDeployedProperty(){
+        return tasksDeployed;
     }
 }
