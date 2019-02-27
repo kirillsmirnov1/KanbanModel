@@ -112,6 +112,10 @@ public class MainApp extends Application{
     // TODO множественный прогон − просто цикл внутри этой функции
     // TODO с сохранением промежуточных результатов и их усреднением
 
+        // Чищу CFD от прошлых прогонов
+        // Должно быть именно здесь
+        if(showingKanbanBoard) { cfdController.clear(); }
+
         // Инициирую новую модель
         model = new Model(this,
                 kanbanBoardController,
@@ -121,8 +125,6 @@ public class MainApp extends Application{
 
 
         if(showingKanbanBoard) {
-            // Чищу CFD от прошлых прогонов
-            cfdController.clear();
             kanbanBoardController.clearEverything();
             // Даю доске ссылки на модель и главное приложение
             // FIXME не круто, что вьюха получает доступ к классам модели, надо бы переделать
