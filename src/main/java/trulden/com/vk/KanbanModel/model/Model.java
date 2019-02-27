@@ -12,17 +12,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
+// Модель рабочих процессов
 public class Model implements Runnable{
+    // Сценарий модели
     private final Scenario scenario;
+    // Ссылка на главное приложение
     private final MainApp mainApp;
+    // Ссылка на контроллер доски
     private KanbanBoardController kanbanBoardController;
+
+    // Флаг завершенности модели.
+    // В режиме с доской нужно ждать, пока завершится каждый прогон сценария
     private BooleanProperty currentModelFinished = new SimpleBooleanProperty(false);
 
+    // Стадии с тасками
     private HashMap<StageType, Stage>  stages;
+    // Сотрудники
     private Worker[] workers;
+    // Пак тасков для выполнения
     private Task[]   bigPileOfTasks;
 
+    // Данные для построения CFD-диаграммы
     private HashMap<Integer, int[]> CFD;
+
+    // Время прохождения всей доски и рабочих стадий каждой из карточек
     private ArrayList<Integer> leadTime;
     private ArrayList<Integer> cycleTime;
 
