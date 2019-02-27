@@ -114,7 +114,7 @@ public class Model implements Runnable{
         leadTime = new ArrayList<>();
         cycleTime = new ArrayList<>();
 
-        if(mainApp.getShowBoard())
+        if(mainApp.showingKanbanBoard())
             cfdController.setDayTracking(currentDay, CFD);
     }
 
@@ -293,7 +293,7 @@ public class Model implements Runnable{
             newTask.setBackLogDay(currentDay.get());
             stages.get(StageType.BACKLOG).addTask(newTask);
 
-            if(mainApp.getShowBoard())
+            if(mainApp.showingKanbanBoard())
                 kanbanBoardController.watchTask(newTask);
 
             Util.sleepMilliseconds(TIME_TO_SLEEP);

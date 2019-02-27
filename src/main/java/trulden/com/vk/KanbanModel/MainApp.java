@@ -31,7 +31,7 @@ public class MainApp extends Application{
     // Количество завершённых сценариев
     private int scenariosFinished = 0;
     // Отображать канбан-доску?
-    private boolean showKanbanBoard;
+    private boolean showingKanbanBoard;
 
     // Итератор сценариев
     private Iterator<Scenario> scenarioIterator;
@@ -84,9 +84,9 @@ public class MainApp extends Application{
         generateWorkers();
         generateTasks();
 
-        loadScenariosWindow();
+        loadScenariosResultsWindow();
 
-        if(showKanbanBoard){
+        if(showingKanbanBoard){
             loadKanbanBoardWindow();
             loadCFDWindow();
             kanbanBoardStage.show();
@@ -119,7 +119,7 @@ public class MainApp extends Application{
                           Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
 
 
-        if(showKanbanBoard) {
+        if(showingKanbanBoard) {
             // Чищу CFD от прошлых прогонов
             cfdController.clear();
             kanbanBoardController.clearEverything();
@@ -226,7 +226,7 @@ public class MainApp extends Application{
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
             Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
             scenariosPath = Paths.get(obj.getString("scenariosPath"));
-            showKanbanBoard = obj.getBoolean("showBoard");
+            showingKanbanBoard = obj.getBoolean("showBoard");
             kanbanBoardW = obj.getInt("kanbanBoardW");
             kanbanBoardH = obj.getInt("kanbanBoardH");
         } catch (IOException e) {
@@ -234,11 +234,12 @@ public class MainApp extends Application{
         }
     }
 
-    // Сохраняю результат прогона сценария
+    // Сохранение результата прогона сценария
     public void addScenarioResult(ResultOfModel result){
         scenarioComparisonController.addResult(scenariosFinished++, result);
     }
 
+    // Загрузка стартового окна настроек
     private void loadSettingsWindow() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(MainApp.class.getResource("/trulden/com/vk/KanbanModel/view/Settings.fxml"));
@@ -253,12 +254,12 @@ public class MainApp extends Application{
             settingsStage.setOnCloseRequest(event -> System.exit(0));
 
             settingsController.setMainApp(this);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    // Загрузка окна с CFD диаграммой
     private void loadCFDWindow() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(MainApp.class.getResource("/trulden/com/vk/KanbanModel/view/CFD.fxml"));
@@ -276,7 +277,8 @@ public class MainApp extends Application{
         }
     }
 
-    private void loadScenariosWindow() {
+    // Загрузка окна с результатами сценариев
+    private void loadScenariosResultsWindow() {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/trulden/com/vk/KanbanModel/view/ScenarioComparison.fxml"));
 
@@ -286,7 +288,7 @@ public class MainApp extends Application{
             scenarioComparisonStage.initOwner(settingsStage);
             scenarioComparisonStage.setScene(new Scene(loader.load()));
             scenarioComparisonStage.setMinHeight(200);
-            // Set the persons into the controller.
+
             scenarioComparisonController = loader.getController();
 
         } catch (IOException e) {
@@ -294,6 +296,7 @@ public class MainApp extends Application{
         }
     }
 
+    // Загрузка окна с канбан-доской
     private void loadKanbanBoardWindow() {
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -311,27 +314,15 @@ public class MainApp extends Application{
         }
     }
 
-    public void showCFD() {
-        cfdStage.show();
-    }
+    public void showCFD() { cfdStage.show(); }
 
-    public void showScenariosResults() {
-        scenarioComparisonStage.show();
-    }
+    public void showScenariosResults() { scenarioComparisonStage.show(); }
 
-    public boolean getShowBoard(){
-        return showKanbanBoard;
-    }
+    public boolean showingKanbanBoard(){ return showingKanbanBoard; }
 
-    public void setShowBoard(boolean showBoard) {
-        this.showKanbanBoard = showBoard;
-    }
+    public void setShowBoard(boolean showingKanbanBoard) { this.showingKanbanBoard = showingKanbanBoard; }
 
-    public String getScenariosPathAsString() {
-        return scenariosPath.toString();
-    }
+    public String getScenariosPathAsString() { return scenariosPath.toString(); }
 
-    public void setScenariosPath(String scenariosPath) {
-        this.scenariosPath = Paths.get(scenariosPath);
-    }
+    public void setScenariosPath(String scenariosPath) { this.scenariosPath = Paths.get(scenariosPath); }
 }

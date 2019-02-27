@@ -25,7 +25,7 @@ public class SettingsController {
     @FXML
     Button startModelButton;
     @FXML
-    Button resultsGraphicButton;
+    Button resultsGraphicButton; // FIXME замьютить до запуска модели
 
     MainApp mainApp;
 
@@ -36,7 +36,7 @@ public class SettingsController {
         numberOfWorkersTextField.setText(Integer.toString(Model.getNumberOfWorkers()));
         UISleepTimeTextField.setText(Integer.toString(Model.getTimeToSleep()));
         scenariosPathTextField.setText(mainApp.getScenariosPathAsString());
-        showBoardCheckBox.setSelected(mainApp.getShowBoard());
+        showBoardCheckBox.setSelected(mainApp.showingKanbanBoard());
     }
 
     // По клику чекбокса отображения доски − меняется отображение доски
