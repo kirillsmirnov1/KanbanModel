@@ -1,7 +1,6 @@
 package trulden.com.vk.KanbanModel;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -29,14 +28,13 @@ public class MainApp extends Application{
 
     // Ширина и высота окна канбан-доски
     private int kanbanBoardW, kanbanBoardH;
+    // Количество завершённых сценариев
+    private int scenariosFinished = 0;
     // Отображать канбан-доску?
     private boolean showKanbanBoard;
 
     // Итератор сценариев
     private Iterator<Scenario> scenarioIterator;
-
-    // Результаты моделирования. Сохраняются для отображения на соответствующем графике
-    private ArrayList<ResultOfModel> resultsOfModel;
 
     // Текущая модель
     private Model    model;
@@ -71,7 +69,6 @@ public class MainApp extends Application{
     @Override
     public void start(Stage primaryStage){
         this.settingsStage = primaryStage;
-        resultsOfModel = new ArrayList<>();
 
         readInitJson();
 
@@ -166,7 +163,7 @@ public class MainApp extends Application{
         }
     }
 
-    // Считываю (случайные) имена для сотрудников из текстового файла
+    // Чтение из текстового файла (случайных) имен сотрудников
     private static String[] readWorkerNames(){
         int[] lineNumbers;
         int numberOfLines;
@@ -195,7 +192,7 @@ public class MainApp extends Application{
         return workerNames;
     }
 
-    // Считываю сценарии из файла
+    // Чтение сценария из файла
     private void readScenarioJson() {
         ArrayList<Scenario> scenarios = new ArrayList<>();
         try {
@@ -213,6 +210,7 @@ public class MainApp extends Application{
                 scenarios.add(sc);
             }
 
+            // Для работы со сценариями достаточно их итератора
             scenarioIterator = scenarios.iterator();
 
         } catch (IOException e) {
@@ -220,6 +218,7 @@ public class MainApp extends Application{
         }
     }
 
+    // Чтение инишника
     private void readInitJson() {
         try {
             JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
@@ -235,9 +234,9 @@ public class MainApp extends Application{
         }
     }
 
-    public void addModelResult(ResultOfModel result){
-        scenarioComparisonController.addResult(resultsOfModel.size(), result);
-        resultsOfModel.add(result);
+    // Сохраняю результат прогона сценария
+    public void addScenarioResult(ResultOfModel result){
+        scenarioComparisonController.addResult(scenariosFinished++, result);
     }
 
     private void loadSettingsWindow() {

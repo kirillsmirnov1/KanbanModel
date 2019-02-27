@@ -140,7 +140,7 @@ public class Model implements Runnable{
             calculateCFDForToday();
         }
 
-        mainApp.addModelResult(
+        mainApp.addScenarioResult(
                 new ResultOfModel(
                         leadTime.stream().mapToInt(i -> i.intValue()).sum()*1d/leadTime.size(),
                         cycleTime.stream().mapToInt(i -> i.intValue()).sum()*1d/cycleTime.size(),
