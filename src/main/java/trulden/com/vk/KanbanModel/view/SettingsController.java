@@ -34,7 +34,7 @@ public class SettingsController {
         this.mainApp = mainApp;
         numberOfDaysTextField.setText(Integer.toString(Model.getNumberOfDays()));
         numberOfWorkersTextField.setText(Integer.toString(Model.getNumberOfWorkers()));
-        UISleepTimeTextField.setText(Integer.toString(Model.getTimeToSleep()));
+        UISleepTimeTextField.setText(Integer.toString(Model.getUiRefreshDelay()));
         scenariosPathTextField.setText(mainApp.getScenariosPathAsString());
         showBoardCheckBox.setSelected(mainApp.showingKanbanBoard());
     }
@@ -88,7 +88,7 @@ public class SettingsController {
 
         Model.setNumberOfDays(Integer.parseInt(numberOfDaysTextField.getText()));
         Model.setNumberOfWorkers(Integer.parseInt(numberOfWorkersTextField.getText()));
-        Model.setTimeToSleep(Integer.parseInt(UISleepTimeTextField.getText()));
+        Model.setUiRefreshDelay(Integer.parseInt(UISleepTimeTextField.getText()));
         mainApp.setScenariosPath(scenariosPathTextField.getText());
 
         mainApp.startModel();

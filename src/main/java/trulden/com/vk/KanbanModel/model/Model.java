@@ -41,7 +41,7 @@ public class Model implements Runnable{
 
     private static int   NUMBER_OF_WORKERS;
     private static int   NUMBER_OF_DAYS;
-    private static int   TIME_TO_SLEEP;
+    private static int   UI_REFRESH_DELAY;
 
     private int   deploymentFrequency;
     public  int[] defaultWip;
@@ -60,8 +60,8 @@ public class Model implements Runnable{
         return NUMBER_OF_DAYS;
     }
 
-    public static int getTimeToSleep() {
-        return TIME_TO_SLEEP;
+    public static int getUiRefreshDelay() {
+        return UI_REFRESH_DELAY;
     }
 
     public Worker[] getWorkers(){return workers;}
@@ -74,8 +74,8 @@ public class Model implements Runnable{
         NUMBER_OF_DAYS = numberOfDays;
     }
 
-    public static void setTimeToSleep(int tts) {
-        TIME_TO_SLEEP = tts;
+    public static void setUiRefreshDelay(int tts) {
+        UI_REFRESH_DELAY = tts;
     }
 
     public IntegerProperty currentDayProperty() {
@@ -180,7 +180,7 @@ public class Model implements Runnable{
             cycleTime.add(task.addedToStage(StageType.DEPLOYMENT) - task.addedToStage(StageType.ANALYSIS));
             task.deploy();
             stages.get(StageType.DEPLOYMENT).removeTask(task);
-            Util.sleepMilliseconds(TIME_TO_SLEEP);
+            Util.sleepMilliseconds(UI_REFRESH_DELAY);
         }
     }
 
@@ -242,7 +242,7 @@ public class Model implements Runnable{
                             stages.get(task.getNextStage()).addTask(task);
                             task.moveToNextStage(currentDay.get());
 
-                            Util.sleepMilliseconds(TIME_TO_SLEEP);
+                            Util.sleepMilliseconds(UI_REFRESH_DELAY);
 
                             // Записываю, что изменение было
                             tasksMoved = true;
@@ -288,7 +288,7 @@ public class Model implements Runnable{
 
                             if(workDone > 0){
                                 amountOfWork += workDone;
-                                Util.sleepMilliseconds(TIME_TO_SLEEP);
+                                Util.sleepMilliseconds(UI_REFRESH_DELAY);
                             }
                         }
                     }
@@ -309,7 +309,7 @@ public class Model implements Runnable{
             if(mainApp.showingKanbanBoard())
                 kanbanBoardController.watchTask(newTask);
 
-            Util.sleepMilliseconds(TIME_TO_SLEEP);
+            Util.sleepMilliseconds(UI_REFRESH_DELAY);
         }
     }
 

@@ -93,7 +93,7 @@ public class MainApp extends Application{
             kanbanBoardStage.show();
         }
         else{
-            Model.setTimeToSleep(0);
+            Model.setUiRefreshDelay(0);
             scenarioComparisonStage.show();
         }
 
@@ -227,7 +227,7 @@ public class MainApp extends Application{
             JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
             Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
-            Model.setTimeToSleep(obj.getInt("TIME_TO_SLEEP"));
+            Model.setUiRefreshDelay(obj.getInt("UI_REFRESH_DELAY"));
             scenariosPath = Paths.get(obj.getString("scenariosPath"));
             showingKanbanBoard = obj.getBoolean("showBoard");
             kanbanBoardW = obj.getInt("kanbanBoardW");

@@ -1,7 +1,7 @@
 {
     "NUMBER_OF_DAYS" : 50,
     "NUMBER_OF_WORKERS": 5,
-    "TIME_TO_SLEEP" : 5,
+    "UI_REFRESH_DELAY" : 5,
     "scenariosPath" : "scenarios.json",
     "showBoard" : false,
     "kanbanBoardW" : 1290,

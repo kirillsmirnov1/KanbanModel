@@ -35,8 +35,8 @@
                <children>
                   <VBox minWidth="170.0" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Label text="Задержка отображения, мс: " />
-                        <Label text="(не меньше 5 для UI)" />
+                        <Label text="Задержка обновления UI, мс: " />
+                        <Label text="(не меньше 5)" />
                      </children>
                   </VBox>
                   <TextField fx:id="UISleepTimeTextField" prefWidth="300.0" />
