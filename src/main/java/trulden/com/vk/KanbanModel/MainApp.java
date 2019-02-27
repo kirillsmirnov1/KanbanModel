@@ -88,10 +88,8 @@ public class MainApp extends Application{
         if(showKanbanBoard){
             loadKanbanBoardWindow();
             loadCFDWindow();
-        }
-
-        if(showKanbanBoard)
             kanbanBoardStage.show();
+        }
         else
             Model.setTimeToSleep(0);
 
