@@ -52,7 +52,7 @@ public class Model implements Runnable{
 
     // Частота деплоймента
     private int   deploymentFrequency;
-    public  int[] defaultWip;
+    public  int[] WIPLimits;
     private int tasksInitiated = 0;
 
     private DoubleProperty  productivityLevel;   // минимум продуктивности
@@ -105,7 +105,7 @@ public class Model implements Runnable{
         bigPileOfTasks = tasks;
         this.scenario = scenario;
 
-        defaultWip = scenario.getDefaultWIP();
+        WIPLimits = scenario.getWIPLimits();
         deploymentFrequency = scenario.getDeploymentFrequency();
         Worker.setMaxEnergy(scenario.getMaxWorkerEnergy());
         Worker.setTaskChangePenalty(scenario.getTaskChangePenalty());
@@ -114,10 +114,10 @@ public class Model implements Runnable{
 
         for(StageType stage : StageType.values()){
             if(stage == StageType.BACKLOG || stage == StageType.DEPLOYMENT) {
-                stages.put(stage, new StageStorage(stage, defaultWip[stage.ordinal()]));
+                stages.put(stage, new StageStorage(stage, WIPLimits[stage.ordinal()]));
             }
             else {
-                stages.put(stage, new StageWorking(stage, defaultWip[stage.ordinal()]));
+                stages.put(stage, new StageWorking(stage, WIPLimits[stage.ordinal()]));
             }
         }
 

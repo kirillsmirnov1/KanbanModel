@@ -86,7 +86,7 @@ public class KanbanBoardController {
     private MainApp mainApp;
     private Model   model;
 
-    private int[] WIPLimit;
+    private int[] WIPLimits;
 
     @FXML
     private void initialize(){
@@ -129,7 +129,7 @@ public class KanbanBoardController {
                                     + " [" + stagesUpVBoxHashMap.get(stage).getChildren().size()
                                     + (stage == DEPLOYMENT
                                             ? "]" // Если деплоймент, то скобочки хватит
-                                            : "/" + WIPLimit[stage.ordinal()] + "]" // Иначе – нужно лимит писать
+                                            : "/" + WIPLimits[stage.ordinal()] + "]" // Иначе – нужно лимит писать
                                       )
                             ));
     }
@@ -203,7 +203,7 @@ public class KanbanBoardController {
         this.mainApp = mainApp;
         this.model = model;
 
-        this.WIPLimit = model.defaultWip;
+        this.WIPLimits = model.WIPLimits;
 
         model.currentDayProperty().addListener(
                 (observable, oldValue, newValue) ->

@@ -12,7 +12,7 @@ public class Scenario {
     private int    deploymentFrequency = 7;
     private int    maxWorkerEnergy = 8;
     private double taskChangePenalty = 0.2;
-    private int[]  defaultWIP = {3, 3, 3, 3, 3, 3, 3, 1000000};
+    private int[] WIPLimits = {3, 3, 3, 3, 3, 3, 3, 1000000};
 
     // Зона геттеров и сеттеров
 
@@ -32,12 +32,12 @@ public class Scenario {
         this.deploymentFrequency = deploymentFrequency;
     }
 
-    public int[] getDefaultWIP() {
-        return defaultWIP;
+    public int[] getWIPLimits() {
+        return WIPLimits;
     }
 
-    public void setDefaultWIP(int[] defaultWIP) {
-        this.defaultWIP = defaultWIP;
+    public void setWIPLimits(int[] WIPLimits) {
+        this.WIPLimits = WIPLimits;
     }
 
     public int getMaxWorkerEnergy() {
