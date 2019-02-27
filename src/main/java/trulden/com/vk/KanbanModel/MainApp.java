@@ -32,8 +32,6 @@ public class MainApp extends Application{
     // Отображать канбан-доску?
     private boolean showKanbanBoard;
 
-    // Массив сценариев модели
-    private ArrayList<Scenario> scenarios;
     // Итератор сценариев
     private Iterator<Scenario> scenarioIterator;
 
@@ -78,10 +76,11 @@ public class MainApp extends Application{
         readInitJson();
 
         loadSettingsWindow();
-        
+
         settingsStage.show();
     }
 
+    // Первый запуск модели − читает сценарии, генерит сотрудников и таски
     public void startModel() { // TODO рестарт
         readScenarioJson();
 
@@ -98,9 +97,10 @@ public class MainApp extends Application{
         else
             Model.setTimeToSleep(0);
 
-        startNextScenario(scenarioIterator.next());
+        startScenario(scenarioIterator.next());
     }
 
+    // Команда на прекращение работы модели
     public void stopModel(){
         if(model != null){
             model.timeToStop();
@@ -108,11 +108,12 @@ public class MainApp extends Application{
         }
     }
 
-    public void startNextScenario(Scenario scenario){
+    // Запуск сценария в модели
+    public void startScenario(Scenario scenario){
+    // TODO множественный прогон − просто цикл внутри этой функции
+    // TODO с сохранением промежуточных результатов и их усреднением
 
-        if(showKanbanBoard)
-            cfdController.clear();
-
+        // Инициирую новую модель
         model = new Model(this,
                 kanbanBoardController,
                           cfdController,
@@ -120,30 +121,43 @@ public class MainApp extends Application{
                           workers,
                           Arrays.stream(tasks).map(Task::new).toArray(Task[]::new)); // Эта херобора нужна чтобы карточки были неюзанные
 
-        if(showKanbanBoard)
-            kanbanBoardController.setModelAndMainApp(model, this);
 
+        if(showKanbanBoard) {
+            // Чищу CFD от прошлых прогонов
+            cfdController.clear();
+            kanbanBoardController.clearEverything();
+            // Даю доске ссылки на модель и главное приложение
+            // FIXME не круто, что вьюха получает доступ к классам модели, надо бы переделать
+            kanbanBoardController.setModelAndMainApp(model, this);
+        }
+
+        // Запуск потока модели
         modelThread = new Thread(model);
         modelThread.start();
 
+        // Как завершилась одна модель − запускаем следующую
         model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue)
                 if(scenarioIterator.hasNext()){
-                    if(showKanbanBoard)
-                        Platform.runLater(() -> kanbanBoardController.clearEverything());
-                    startNextScenario(scenarioIterator.next());
+                    startScenario(scenarioIterator.next());
                 }
         });
     }
 
+    // Генерация задач
+    // Задачи генерятся один раз, используются во всех моделях и сценариях
+    // FIXME если я хочу разных результатов, задачи должны генерироваться для каждого прогона
     private void generateTasks() {
-        int numberOfTasks = 50 * Model.getNumberOfDays() / Model.getNumberOfWorkers(); // TODO учитывать WIP лимиты ?
+        int numberOfTasks = 50 * Model.getNumberOfDays() / Model.getNumberOfWorkers(); // FIXME учитывать WIP лимиты ?
         tasks = new Task[numberOfTasks];
         for(int i = 0; i < numberOfTasks; ++i){
             tasks[i] = Task.generateRandomTask();
         }
     }
 
+    // Генерация сотрудников
+    // FIXME обеспечивать заполненность стека способностей
+    // TODO читать сотрудников из файла
     private void generateWorkers(){
         String[] workerNames = readWorkerNames();
         workers = new Worker[Model.getNumberOfWorkers()];
@@ -152,6 +166,7 @@ public class MainApp extends Application{
         }
     }
 
+    // Считываю (случайные) имена для сотрудников из текстового файла
     private static String[] readWorkerNames(){
         int[] lineNumbers;
         int numberOfLines;
@@ -160,7 +175,7 @@ public class MainApp extends Application{
         String[] workerNames = new String[Model.getNumberOfWorkers()];
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("shortAnimals.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("shortAnimals.txt")); // TODO путь к именам сотрудников из инишника
             String line = br.readLine();
             numberOfLines = Integer.parseInt(line);
             lineNumbers = new Random().ints(1, numberOfLines).limit(Model.getNumberOfWorkers()).sorted().toArray();
@@ -180,8 +195,9 @@ public class MainApp extends Application{
         return workerNames;
     }
 
+    // Считываю сценарии из файла
     private void readScenarioJson() {
-        scenarios = new ArrayList<>();
+        ArrayList<Scenario> scenarios = new ArrayList<>();
         try {
             JSONObject obj = new JSONObject(new String(Files.readAllBytes(scenariosPath)));
             JSONArray  arr = new JSONArray(obj.get("scenarios").toString());

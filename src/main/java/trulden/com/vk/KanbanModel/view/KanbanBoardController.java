@@ -247,7 +247,7 @@ public class KanbanBoardController {
     private void handleRestart() {
         mainApp.stopModel();
         clearEverything();
-        mainApp.startNextScenario(model.getScenario());
+        mainApp.startScenario(model.getScenario());
     }
 
     public void clearEverything(){
