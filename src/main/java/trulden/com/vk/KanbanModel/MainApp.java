@@ -227,7 +227,7 @@ public class MainApp extends Application{
     }
 
     // Сохранение результата прогона сценария
-    public void addScenarioResult(ResultOfModel result){
+    public void addScenarioResult(ScenarioResults result){
         scenarioComparisonController.addResult(scenariosFinished++, result);
     }
 

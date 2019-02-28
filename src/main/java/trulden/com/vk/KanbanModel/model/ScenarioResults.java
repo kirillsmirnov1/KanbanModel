@@ -1,7 +1,6 @@
 package trulden.com.vk.KanbanModel.model;
 
-// FIXME в объектах этого класса хранятся результаты моделирования сценария, надо адаптировать название
-public class ResultOfModel {
+public class ScenarioResults {
     private final double leadTime;
     private final double cycleTime;
     private final int    tasksFinished;
@@ -18,7 +17,7 @@ public class ResultOfModel {
         return tasksFinished;
     }
 
-    ResultOfModel(double leadTime, double cycleTime, int tasksFinished){
+    ScenarioResults(double leadTime, double cycleTime, int tasksFinished){
         this.leadTime = leadTime;
         this.cycleTime = cycleTime;
         this.tasksFinished = tasksFinished;

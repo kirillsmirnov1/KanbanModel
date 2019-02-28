@@ -130,7 +130,7 @@ public class Model implements Runnable{
         // Возвращаю результат модели в основное приложение
         // Время задач на доске, время задач в работе, количество завершенных задач
         mainApp.addScenarioResult(
-                new ResultOfModel(
+                new ScenarioResults(
                         leadTime.stream().mapToInt(Integer::intValue).sum()*1d/leadTime.size(),
                         cycleTime.stream().mapToInt(Integer::intValue).sum()*1d/cycleTime.size(),
                         tasksDeployed.get()));
