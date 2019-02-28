@@ -25,7 +25,7 @@ public class SettingsController {
     @FXML
     Button startModelButton;
     @FXML
-    Button resultsGraphicButton; // FIXME замьютить до запуска модели
+    Button resultsGraphicButton;
 
     MainApp mainApp;
 
@@ -92,7 +92,12 @@ public class SettingsController {
         mainApp.setScenariosPath(scenariosPathTextField.getText());
 
         resultsGraphicButton.setDisable(false);
+        startModelButton.setDisable(true);
 
         mainApp.startModel();
+    }
+
+    public void modelFinished() {
+        startModelButton.setDisable(false);
     }
 }

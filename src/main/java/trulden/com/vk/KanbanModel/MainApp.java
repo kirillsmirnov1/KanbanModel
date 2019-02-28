@@ -116,7 +116,10 @@ public class MainApp extends Application{
 
         // Чищу CFD от прошлых прогонов
         // Должно быть именно здесь
-        if(showingKanbanBoard) { cfdController.clear(); }
+        if(showingKanbanBoard) {
+            cfdController.clear();
+            kanbanBoardController.clearEverything();
+        }
 
         // Инициирую новую модель
         model = new Model(this,
@@ -127,7 +130,6 @@ public class MainApp extends Application{
 
 
         if(showingKanbanBoard) {
-            kanbanBoardController.clearEverything();
             // Даю доске ссылки на модель и главное приложение
             // FIXME не круто, что вьюха получает доступ к классам модели, надо бы переделать
             kanbanBoardController.setModelAndMainApp(model, this);
@@ -142,6 +144,10 @@ public class MainApp extends Application{
             if(newValue)
                 if(scenarioIterator.hasNext()){
                     startScenario(scenarioIterator.next());
+                } else {
+                    settingsController.modelFinished();
+                    kanbanBoardStage.hide();
+                    scenarioComparisonStage.show();
                 }
         });
     }
