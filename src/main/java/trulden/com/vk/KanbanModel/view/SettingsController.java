@@ -100,4 +100,12 @@ public class SettingsController {
     public void modelFinished() {
         startModelButton.setDisable(false);
     }
+
+    // Обновление времени задержки по нажатию соответствующей кнопки
+    @FXML
+    private void onRefreshUISleepTime(){
+        if(! checkIntegerTextField(UISleepTimeTextField, showBoardCheckBox.isSelected() ? 5 : 0)) return;
+
+        Model.setUiRefreshDelay(Integer.parseInt(UISleepTimeTextField.getText()));
+    }
 }

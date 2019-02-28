@@ -15,6 +15,15 @@
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
+                  <Label minWidth="170.0" text="Сценарии: " />
+                  <TextField fx:id="scenariosPathTextField" prefWidth="300.0" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
                   <Label minWidth="170.0" text="Количество дней: " />
                   <TextField fx:id="numberOfDaysTextField" prefWidth="300.0" />
                </children>
@@ -40,15 +49,7 @@
                      </children>
                   </VBox>
                   <TextField fx:id="UISleepTimeTextField" prefWidth="300.0" />
-               </children>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-            </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-               <children>
-                  <Label minWidth="170.0" text="Сценарии: " />
-                  <TextField fx:id="scenariosPathTextField" prefWidth="300.0" />
+                  <Button mnemonicParsing="false" onAction="#onRefreshUISleepTime" text="ͻ" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
