@@ -7,7 +7,6 @@ import trulden.com.vk.KanbanModel.model.stage.Stage;
 import trulden.com.vk.KanbanModel.model.stage.StageStorage;
 import trulden.com.vk.KanbanModel.model.stage.StageType;
 import trulden.com.vk.KanbanModel.model.stage.StageWorking;
-import trulden.com.vk.KanbanModel.util.Scenario;
 import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.CFDController;
 import trulden.com.vk.KanbanModel.view.KanbanBoardController;

@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.*;
-import trulden.com.vk.KanbanModel.util.Scenario;
+import trulden.com.vk.KanbanModel.model.Scenario;
 import trulden.com.vk.KanbanModel.view.*;
 
 import java.io.*;
@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 

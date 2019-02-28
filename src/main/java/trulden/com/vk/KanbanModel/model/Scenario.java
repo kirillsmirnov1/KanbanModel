@@ -1,4 +1,4 @@
-package trulden.com.vk.KanbanModel.util;
+package trulden.com.vk.KanbanModel.model;
 
 
 public class Scenario {
