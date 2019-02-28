@@ -32,8 +32,9 @@ public class Task {
     private BooleanProperty doneAtCurrentStage;
 
     private IntegerProperty totalAdvance;
-
-    private HashMap<StageType, Integer> daysAtStages; // Дни в которые карточка прибывала на стадии
+    
+    // Дни в которые карточка прибывала на стадии
+    private HashMap<StageType, Integer> daysArrivedAtStages;
 
     // Карточка конструируется при добавлении в бэклог
     private Task(String name, HashMap<StageType, Integer> stageCosts) throws IllegalArgumentException{
@@ -48,7 +49,7 @@ public class Task {
 
         stageCosts.forEach((k, v) -> stagesAdvance.put(k, 0));
 
-        daysAtStages = new HashMap<>();
+        daysArrivedAtStages = new HashMap<>();
 
         stage = new SimpleObjectProperty<>(StageType.BACKLOG);
 
@@ -89,7 +90,7 @@ public class Task {
 
     public void moveToNextStage(int day){
         if(stage.get() != StageType.DEPLOYMENT) {
-            daysAtStages.put(nextStage, day);
+            daysArrivedAtStages.put(nextStage, day);
             stage.setValue(nextStage);
             calculateNextStage();
             if(stage.get() == DEPLOYMENT)
@@ -117,8 +118,8 @@ public class Task {
 
     // Возвращает количество дней, за которые задача прошла от одной стадии до другой
     private int daysFromTo(StageType from, StageType to){
-        if(daysAtStages.containsKey(from) && daysAtStages.containsKey(to))
-            return daysAtStages.get(to) - daysAtStages.get(from);
+        if(daysArrivedAtStages.containsKey(from) && daysArrivedAtStages.containsKey(to))
+            return daysArrivedAtStages.get(to) - daysArrivedAtStages.get(from);
         return -1;
     }
 
@@ -154,7 +155,7 @@ public class Task {
 
     // Возвращает день добавления на стадию
     public int addedToStage(StageType stageType){
-        return daysAtStages.get(stageType);
+        return daysArrivedAtStages.get(stageType);
     }
 
     // Количество работы на стадии
@@ -184,6 +185,6 @@ public class Task {
     }
 
     public void setBackLogDay(int day){
-        daysAtStages.put(BACKLOG, day);
+        daysArrivedAtStages.put(BACKLOG, day);
     }
 }
