@@ -111,6 +111,9 @@ public class MainApp extends Application{
     // TODO множественный прогон − просто цикл внутри этой функции
     // TODO с сохранением промежуточных результатов и их усреднением
 
+        // Сбрасываю счётчик созданных заданий
+        Task.resetTaskCounter();
+
         // Чищу CFD от прошлых прогонов
         // Должно быть именно здесь
         if(showingKanbanBoard) { cfdController.clear(); }

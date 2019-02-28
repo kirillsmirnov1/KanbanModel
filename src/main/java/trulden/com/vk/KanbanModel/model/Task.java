@@ -12,7 +12,8 @@ import static trulden.com.vk.KanbanModel.model.stage.StageType.workStages;
 
 // Задача
 public class Task {
-    private static int taskCounter = 0;
+    // Счётчик созданных задач
+    private static int taskCounter;
 
     private HashMap<StageType, Integer> stagesCosts;   // Стоимость выполнения каждой стадии
     private HashMap<StageType, Integer> stagesAdvance; // Остаток до выполнения каждой стадии
@@ -84,6 +85,7 @@ public class Task {
     public StageType getStage() {
         return stage.get();
     }
+
     public StageType getNextStage() { return nextStage; }
 
     public int getResumingWorkAtCurrentStage(){
@@ -92,6 +94,7 @@ public class Task {
 
         return stagesCosts.get(stage.get()) - stagesAdvance.get(stage.get());
     }
+
     public int getWorkAtStage(StageType stage) { return stagesCosts.get(stage); }
 
     public void makeSomeWork(int work){
@@ -179,4 +182,6 @@ public class Task {
         else
             throw new IllegalArgumentException("Can't deploy not finished task");
     }
+
+    public static void resetTaskCounter(){ taskCounter = 0; }
 }
