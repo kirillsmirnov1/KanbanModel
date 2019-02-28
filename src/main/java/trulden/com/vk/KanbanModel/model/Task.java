@@ -31,8 +31,9 @@ public class Task {
     // Флаг завершенности на текущей стадии
     private BooleanProperty doneAtCurrentStage;
 
+    // Прогресс выполнения карточки
     private IntegerProperty totalAdvance;
-    
+
     // Дни в которые карточка прибывала на стадии
     private HashMap<StageType, Integer> daysArrivedAtStages;
 
@@ -72,13 +73,7 @@ public class Task {
         return new Task(Integer.toString(taskCounter), randomCosts);
     }
 
-    public int getResumingWorkAtCurrentStage(){
-        if(stage.get() == BACKLOG || stage.get() == DEPLOYMENT)
-            throw new IllegalArgumentException("Backlog and Deployment have no work");
-
-        return stagesCosts.get(stage.get()) - stagesAdvance.get(stage.get());
-    }
-
+    // Зачитывает выполненную работу в карточку
     public void makeSomeWork(int work){
         stagesAdvance.replace(stage.get(), stagesAdvance.get(stage.get()) + work);
 
@@ -88,11 +83,13 @@ public class Task {
             doneAtCurrentStage.setValue(true);
     }
 
+    // Перемещение задачи на следующую стадию
     public void moveToNextStage(int day){
-        if(stage.get() != StageType.DEPLOYMENT) {
-            daysArrivedAtStages.put(nextStage, day);
+        if(stage.get() != DEPLOYMENT) {
+            daysArrivedAtStages.put(nextStage, day); // Сохраняю день прибытия на стадию
             stage.setValue(nextStage);
             calculateNextStage();
+
             if(stage.get() == DEPLOYMENT)
                 doneAtCurrentStage.setValue(false);
             else
@@ -102,11 +99,12 @@ public class Task {
         }
     }
 
+    // Возвращает следующую стадию, на которую переместится карточка
     private void calculateNextStage(){
             nextStage = stage.get().nextStage();
 
-        // Вариант когда задача сразу переходит на нужную стадию
-        // Потом нужно сделать это одной из опций
+        // Вариант, когда задача перескакивает стадии без работы
+        // TODO сделать это одной из опций
 //            do {
 //                nextStage = nextStage.nextStage();
 //                if (nextStage == StageType.DEPLOYMENT)
@@ -123,6 +121,8 @@ public class Task {
         return -1;
     }
 
+    // Метит карточку выполненной в деплое
+    // Использую для удаления с канбан-доски
     public void deploy(){
         if(stage.get() == DEPLOYMENT)
             doneAtCurrentStage.setValue(true);
@@ -161,6 +161,14 @@ public class Task {
     // Количество работы на стадии
     public int getWorkAtStage(StageType stage) { return stagesCosts.get(stage); }
 
+    // Количество оставшейся работы на текущей стадии
+    public int getResumingWorkAtCurrentStage(){
+        if(stage.get() == BACKLOG || stage.get() == DEPLOYMENT)
+            throw new IllegalArgumentException("Backlog and Deployment have no work");
+
+        return stagesCosts.get(stage.get()) - stagesAdvance.get(stage.get());
+    }
+
     // Геттеры и сеттеры
 
     public String getName() {
@@ -180,9 +188,7 @@ public class Task {
         return doneAtCurrentStage;
     }
 
-    public IntegerProperty totalAdvanceProperty() {
-        return totalAdvance;
-    }
+    public IntegerProperty totalAdvanceProperty() { return totalAdvance; }
 
     public void setBackLogDay(int day){
         daysArrivedAtStages.put(BACKLOG, day);
