@@ -22,22 +22,13 @@
               <menus>
                 <Menu mnemonicParsing="false" text="Model">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Start" />
-                        <MenuItem mnemonicParsing="false" text="Pause" />
-                        <MenuItem mnemonicParsing="false" text="Reset" />
                         <MenuItem mnemonicParsing="false" onAction="#handleRestart" text="Restart" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="Diagrams">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#handleShowCFD" text="CFD" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleShowScenariosResults" text="Scenarios results" />
                     </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="Scenarios">
-                     <items>
-                        <MenuItem mnemonicParsing="false" text="Set..." />
-                     </items>
                   </Menu>
               </menus>
             </MenuBar>
