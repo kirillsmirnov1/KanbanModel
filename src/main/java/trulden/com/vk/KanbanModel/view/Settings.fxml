@@ -65,7 +65,7 @@
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Button fx:id="startModelButton" mnemonicParsing="false" onAction="#onStartModelButtonPress" text="Запуск модели" />
-                  <Button fx:id="resultsGraphicButton" mnemonicParsing="false" onAction="#onShowResults" text="График с результатами" />
+                  <Button fx:id="resultsGraphicButton" disable="true" mnemonicParsing="false" onAction="#onShowResults" text="График с результатами" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

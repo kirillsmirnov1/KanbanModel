@@ -91,6 +91,8 @@ public class SettingsController {
         Model.setUiRefreshDelay(Integer.parseInt(UISleepTimeTextField.getText()));
         mainApp.setScenariosPath(scenariosPathTextField.getText());
 
+        resultsGraphicButton.setDisable(false);
+
         mainApp.startModel();
     }
 }
