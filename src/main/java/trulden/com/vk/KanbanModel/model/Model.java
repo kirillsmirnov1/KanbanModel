@@ -208,14 +208,14 @@ public class Model implements Runnable{
     // Выполненеи работы и перемещение задач по доске
     // Если что-то сделал − возвращает тру
     private boolean innerCycle() {
-        int workDoneAtThisCycle = makeSomeWork();
+        boolean workDoneAtThisCycle = makeSomeWork();
 
         // Таски могут двигаться, даже если работа не выполнена. Например, при добавлении в бэклог
         boolean tasksMoved = moveTasks();
 
         // Я бы с удовольствием перенес бы обе функции сюда и удалил бы переменные,
         // но || может выполнить только один операнд, а меня это не устраивает
-        return ((workDoneAtThisCycle != 0) || tasksMoved);
+        return (workDoneAtThisCycle || tasksMoved);
     }
 
     // Перемещает таски вправо по доске, если это возможно
@@ -251,10 +251,9 @@ public class Model implements Runnable{
     }
 
     // Выполнение работы на задачах
-    // Возвращает количество затраченного на работу времени
-    // FIXME это очень бесполезный результат, можно и без него
-    private int makeSomeWork() {
-        int amountOfWork = 0;
+    // Если работа была сделана − возвращает тру
+    private boolean makeSomeWork() {
+        boolean someWorkDone = false;
 
         // Для каждой стадии
         for(StageType stage : StageType.workStagesReverse){
@@ -293,7 +292,7 @@ public class Model implements Runnable{
                             }
 
                             if(workDone > 0){
-                                amountOfWork += workDone;
+                                someWorkDone = true;
                                 Util.sleepMilliseconds(UI_REFRESH_DELAY);
                             }
                         }
@@ -301,7 +300,7 @@ public class Model implements Runnable{
                 }
             }
         }
-        return amountOfWork;
+        return someWorkDone;
     }
 
     // Заполнение бэклога новыми карточками
