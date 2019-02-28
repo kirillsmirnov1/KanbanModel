@@ -166,10 +166,11 @@ public class Model implements Runnable{
         }
     }
 
-    // Внешний цикл
+    // Внешний цикл − день
+    // Освежает работников и бэклог, запускает внутренний цикл
     private void outerCycle(){
         // Подготовка цикла
-        reqSkillLevel.setValue(1d);
+        reqSkillLevel.setValue(1d); // Повышаю планку навыка до 100%
         fillBacklog();
 
         Stream.of(workers).forEach(Worker::refillEnergy);
@@ -178,12 +179,14 @@ public class Model implements Runnable{
             printStages();
         }
 
-        while(reqSkillLevel.get() > 0d && workersHaveEnergy()){
+        // Работа выполняется, пока у сотрудиков есть энергия и планка навыкала не упала ниже 0
+        while(reqSkillLevel.get() > 0d && workersHaveEnergy()){ // TODO усановить минимальный уровень навыка
             if(!innerCycle()) // Если во внутреннем цикле не было работы, снижаю планку навыка
                 reqSkillLevel.setValue(reqSkillLevel.get() - 0.05d);
         }
     }
 
+    // Распечатка стадий и задач на них
     private void printStages() {
         for(StageType stage : StageType.values()){
             System.out.println("\nIn " + stage.toString() + ": [" + stages.get(stage).getNumberOfTasks() + "/" + stages.get(stage).getWIPLimit() + "]");
@@ -192,6 +195,7 @@ public class Model implements Runnable{
         }
     }
 
+    // Проверка на наличие энергии у сотрудников
     private boolean workersHaveEnergy() {
         for(Worker worker : workers){
             if(worker.getEnergy() > 0)
@@ -200,6 +204,7 @@ public class Model implements Runnable{
         return false;
     }
 
+    // Внутренний цикл
     private boolean innerCycle() {
         int workDoneAtThisCycle;
         boolean tasksMoved;
