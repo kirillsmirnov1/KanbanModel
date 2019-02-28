@@ -55,8 +55,8 @@ public class Model implements Runnable{
     // Ограничение на количество задач в работе
     public  int[] WIPLimits;
 
-    // Минимум продуктивности
-    private DoubleProperty  productivityLevel;
+    // Необходимый уровень навыка для взятия задач
+    private DoubleProperty reqSkillLevel;
     // Текущий день модели
     private IntegerProperty currentDay;
     // Количество задеплойенных таск
@@ -95,7 +95,7 @@ public class Model implements Runnable{
 
         currentDay = new SimpleIntegerProperty();
         tasksDeployed = new SimpleIntegerProperty(0);
-        productivityLevel = new SimpleDoubleProperty();
+        reqSkillLevel = new SimpleDoubleProperty();
 
         CFD = new HashMap<>();
         leadTime = new ArrayList<>();
@@ -169,7 +169,7 @@ public class Model implements Runnable{
     // Внешний цикл
     private void outerCycle(){
         // Подготовка цикла
-        productivityLevel.setValue(1d);
+        reqSkillLevel.setValue(1d);
         fillBacklog();
 
         Stream.of(workers).forEach(Worker::refillEnergy);
@@ -178,9 +178,9 @@ public class Model implements Runnable{
             printStages();
         }
 
-        while(productivityLevel.get() > 0d && workersHaveEnergy()){
+        while(reqSkillLevel.get() > 0d && workersHaveEnergy()){
             if(!innerCycle()) // Если во внутреннем цикле не было работы, снижаю планку навыка
-                productivityLevel.setValue(productivityLevel.get() - 0.05d);
+                reqSkillLevel.setValue(reqSkillLevel.get() - 0.05d);
         }
     }
 
@@ -249,7 +249,7 @@ public class Model implements Runnable{
 
                         if(taskCanTake > 0                                                      // Если работа еще есть
                                 && (worker.getEnergy() - worker.calculatePenalty(task)) > 0     // И у работника есть силы
-                                && worker.getProductivityAtStage(stage) >= productivityLevel.get()){  // И он достаточно компетентен
+                                && worker.getProductivityAtStage(stage) >= reqSkillLevel.get()){  // И он достаточно компетентен
 
                             worker.applyPenalty(task); // Если работник раньше не занимался этой задачей, ему нужно в ней разобраться
 
@@ -346,8 +346,8 @@ public class Model implements Runnable{
         return currentDay;
     }
 
-    public DoubleProperty productivityLevelProperty() {
-        return productivityLevel;
+    public DoubleProperty reqSkillLevelProperty() {
+        return reqSkillLevel;
     }
 
     public IntegerProperty tasksDeployedProperty(){
