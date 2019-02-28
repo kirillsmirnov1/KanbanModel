@@ -205,51 +205,69 @@ public class Model implements Runnable{
     }
 
     // Внутренний цикл
+    // Выполненеи работы и перемещение задач по доске
+    // Если что-то сделал − возвращает тру
     private boolean innerCycle() {
-        int workDoneAtThisCycle;
-        boolean tasksMoved;
-        workDoneAtThisCycle = makeSomeWork();
-        tasksMoved = moveTasks();
+        int workDoneAtThisCycle = makeSomeWork();
+
+        // Таски могут двигаться, даже если работа не выполнена. Например, при добавлении в бэклог
+        boolean tasksMoved = moveTasks();
+
+        // Я бы с удовольствием перенес бы обе функции сюда и удалил бы переменные,
+        // но || может выполнить только один операнд, а меня это не устраивает
         return ((workDoneAtThisCycle != 0) || tasksMoved);
     }
 
+    // Перемещает таски вправо по доске, если это возможно
+    // Если переместил что-нибудь − возвращает тру
     private boolean moveTasks() {
         boolean tasksMoved = false;
         for(StageType stage : StageType.stagesReverse){
             switch (stage){
                 case DEPLOYMENT:
                     break;
-                default:
-                    for(Task task : stages.get(stage).getTasksToRemove()){
-                        if(task != null){
-                        if(stages.get(task.getNextStage()).canAddTask()){
-                            // Убираю таску с прошлой стадии
-                            stages.get(stage).removeTask(task);
+                default: {
+                    for (Task task : stages.get(stage).getTasksToRemove()) {
+                        if (task != null) {
+                            if (stages.get(task.getNextStage()).canAddTask()) {
+                                // Убираю таску с прошлой стадии
+                                stages.get(stage).removeTask(task);
 
-                            // Переношу на следующую
-                            stages.get(task.getNextStage()).addTask(task);
-                            task.moveToNextStage(currentDay.get());
+                                // Переношу на следующую
+                                stages.get(task.getNextStage()).addTask(task);
+                                task.moveToNextStage(currentDay.get());
 
-                            Util.sleepMilliseconds(UI_REFRESH_DELAY);
+                                Util.sleepMilliseconds(UI_REFRESH_DELAY);
 
-                            // Записываю, что изменение было
-                            tasksMoved = true;
-                        }
+                                // Записываю, что изменение было
+                                tasksMoved = true;
+                            }
                         }
                     }
+                }
             }
         }
         return tasksMoved;
     }
 
+    // Выполнение работы на задачах
+    // Возвращает количество затраченного на работу времени
+    // FIXME это очень бесполезный результат, можно и без него
     private int makeSomeWork() {
         int amountOfWork = 0;
+
+        // Для каждой стадии
         for(StageType stage : StageType.workStagesReverse){
 
+            // На которой есть карточки
             if(stages.get(stage).getNumberOfTasks() !=0){
+
+                // Берем незавершенные таски
                 for(Task task : ((StageWorking)stages.get(stage)).getTasksInWork()){
+
+                    // И всех сотрудников
                     for(Worker worker : workers){
-                        int taskCanTake   = task.getResumingWorkAtCurrentStage();       // Смотрю сколько в таске осталось работы
+                        int taskCanTake  = task.getResumingWorkAtCurrentStage();       // Смотрю сколько в таске осталось работы
 
 
                         if(taskCanTake > 0                                                      // Если работа еще есть
@@ -283,12 +301,12 @@ public class Model implements Runnable{
                 }
             }
         }
-
         return amountOfWork;
     }
 
-    // Заполнение бэклога
+    // Заполнение бэклога новыми карточками
     private void fillBacklog() {
+        // Запихиваю в юэклог карточки, пока там есть место
         while (stages.get(StageType.BACKLOG).canAddTask()){
             Task newTask = Task.generateRandomTask();
             newTask.setBackLogDay(currentDay.get());
@@ -301,61 +319,38 @@ public class Model implements Runnable{
         }
     }
 
-    public static int getNumberOfWorkers() {
-        return NUMBER_OF_WORKERS;
-    }
+    // Сигнал модели о том что пора останавливаться
+    public void timeToStop() { timeToStop.setValue(true); }
 
-    public HashMap<Integer,int[]> getCFD() {
-        return CFD;
-    }
+    // Геттеры и сеттеры
 
-    public void timeToStop() {
-        timeToStop.setValue(true);
-    }
+    public static int getNumberOfWorkers() { return NUMBER_OF_WORKERS; }
 
-    public Scenario getScenario() {
-        return scenario;
-    }
+    public HashMap<Integer,int[]> getCFD() { return CFD; }
 
-    public BooleanProperty currentModelFinishedProperty() {
-        return currentModelFinished;
-    }
+    public Scenario getScenario() { return scenario; }
+
+    public BooleanProperty currentModelFinishedProperty() { return currentModelFinished; }
+
+    public static int getNumberOfDays() { return NUMBER_OF_DAYS; }
+
+    public static int getUiRefreshDelay() { return UI_REFRESH_DELAY; }
+
+    public Worker[] getWorkers(){return workers;}
+
+    public IntegerProperty currentDayProperty() { return currentDay; }
+
+    public DoubleProperty reqSkillLevelProperty() { return reqSkillLevel; }
+
+    public IntegerProperty tasksDeployedProperty(){ return tasksDeployed; }
 
     public static void setPrintingsResultsToConsole(boolean printingsResultsToConsole) {
         PRINTINGS_RESULTS_TO_CONSOLE = printingsResultsToConsole;
     }
-    
-    public static int getNumberOfDays() {
-        return NUMBER_OF_DAYS;
-    }
 
-    public static int getUiRefreshDelay() {
-        return UI_REFRESH_DELAY;
-    }
+    public static void setNumberOfWorkers(int numberOfWorkers) { NUMBER_OF_WORKERS = numberOfWorkers; }
 
-    public Worker[] getWorkers(){return workers;}
+    public static void setNumberOfDays(int numberOfDays) { NUMBER_OF_DAYS = numberOfDays; }
 
-    public static void setNumberOfWorkers(int numberOfWorkers) {
-        NUMBER_OF_WORKERS = numberOfWorkers;
-    }
-
-    public static void setNumberOfDays(int numberOfDays) {
-        NUMBER_OF_DAYS = numberOfDays;
-    }
-
-    public static void setUiRefreshDelay(int tts) {
-        UI_REFRESH_DELAY = tts;
-    }
-
-    public IntegerProperty currentDayProperty() {
-        return currentDay;
-    }
-
-    public DoubleProperty reqSkillLevelProperty() {
-        return reqSkillLevel;
-    }
-
-    public IntegerProperty tasksDeployedProperty(){
-        return tasksDeployed;
-    }
+    public static void setUiRefreshDelay(int tts) { UI_REFRESH_DELAY = tts; }
 }
