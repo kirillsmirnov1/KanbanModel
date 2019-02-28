@@ -4,18 +4,16 @@ import trulden.com.vk.KanbanModel.model.Task;
 
 // Абстрактный класс Стадии
 public abstract class Stage {
-    private int WIPLimit;               // Ограничение на количество задач
+    // Ограничение на количество задач
+    private int WIPLimit;
 
-    final StageType TYPE;      // Тип Стадии
+    // Тип Стадии
+    final StageType TYPE;
+
     // Конструктор, заполняет тип и лимит Стадии
-
     Stage(StageType type, int WIPLimit){
         this.TYPE = type;
         this.WIPLimit = WIPLimit;
-    }
-
-    public int getWIPLimit() {
-        return WIPLimit;
     }
 
     @Override
@@ -23,10 +21,20 @@ public abstract class Stage {
         return "S: " + TYPE.toString() + " wl: " + WIPLimit;
     }
 
+    public int getWIPLimit() {
+        return WIPLimit;
+    }
+
+    // Можо ли добавить задачу на доску?
     public abstract boolean canAddTask();
+    // Добавление задачи на доску
     public abstract void    addTask(Task task);
+    // Удалить задачу с доски
     public abstract void    removeTask(Task task);
+    // Выдает статус задач на доске в виде строки
     public abstract String  composeTasksStatus();
-    public abstract int     getNumberOfTasks();
+    // Завершенные таски, которые можно двигать дальше
     public abstract Task[]  getTasksToRemove();
+    // Количество задач на доске
+    public abstract int     getNumberOfTasks();
 }
