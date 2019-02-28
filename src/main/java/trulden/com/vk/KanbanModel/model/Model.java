@@ -65,6 +65,7 @@ public class Model implements Runnable{
     // Флаг экстренного завершения модели
     private BooleanProperty timeToStop = new SimpleBooleanProperty(false);
 
+    // Конструктор модели
     public Model(MainApp mainApp, KanbanBoardController kanbanBoardController, CFDController cfdController, Scenario scenario, Worker[] workers) {
         this.mainApp = mainApp;
         this.kanbanBoardController = kanbanBoardController;
@@ -120,20 +121,24 @@ public class Model implements Runnable{
 
             outerCycle();
 
+            // Деплой в нужные дни
             if(currentDay.get() % deploymentFrequency == 0)
                 deploy();
 
             calculateCFDForToday();
         }
 
+        // Возвращаю результат модели в основное приложение
+        // Время задач на доске, время задач в работе, количество завершенных задач
         mainApp.addScenarioResult(
                 new ResultOfModel(
-                        leadTime.stream().mapToInt(i -> i.intValue()).sum()*1d/leadTime.size(),
-                        cycleTime.stream().mapToInt(i -> i.intValue()).sum()*1d/cycleTime.size(),
+                        leadTime.stream().mapToInt(Integer::intValue).sum()*1d/leadTime.size(),
+                        cycleTime.stream().mapToInt(Integer::intValue).sum()*1d/cycleTime.size(),
                         tasksDeployed.get()));
         Platform.runLater(() -> currentModelFinished.setValue(true));
     }
 
+    // Считает CFD-диаграмму в конце дня
     private void calculateCFDForToday() {
         int[] CFDForToday = new int[StageType.values().length + 1];
         CFDForToday[StageType.values().length] = tasksDeployed.get();
@@ -146,13 +151,17 @@ public class Model implements Runnable{
     }
 
     // Поставка выполненных задач
+    // Сохраняет данные задач из последнего столбца и удаляет их
     private void deploy() {
         tasksDeployed.setValue(tasksDeployed.get() + stages.get(StageType.DEPLOYMENT).getNumberOfTasks());
+
         for(Task task : stages.get(StageType.DEPLOYMENT).getTasksToRemove()){
             leadTime.add(currentDay.get() - task.addedToStage(StageType.BACKLOG));
             cycleTime.add(task.addedToStage(StageType.DEPLOYMENT) - task.addedToStage(StageType.ANALYSIS));
+
             task.deploy();
             stages.get(StageType.DEPLOYMENT).removeTask(task);
+
             Util.sleepMilliseconds(UI_REFRESH_DELAY);
         }
     }
@@ -163,13 +172,14 @@ public class Model implements Runnable{
         productivityLevel.setValue(1d);
         fillBacklog();
 
-        if(PRINTINGS_RESULTS_TO_CONSOLE)
-            printStages();
-
         Stream.of(workers).forEach(Worker::refillEnergy);
 
+        if(PRINTINGS_RESULTS_TO_CONSOLE) {
+            printStages();
+        }
+
         while(productivityLevel.get() > 0d && workersHaveEnergy()){
-            if(!innerCycle())
+            if(!innerCycle()) // Если во внутреннем цикле не было работы, снижаю планку навыка
                 productivityLevel.setValue(productivityLevel.get() - 0.05d);
         }
     }
