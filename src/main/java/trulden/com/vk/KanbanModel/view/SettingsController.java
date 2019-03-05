@@ -25,7 +25,7 @@ public class SettingsController {
     @FXML
     Button startModelButton;
     @FXML
-    Button resultsGraphicButton; // FIXME замьютить до запуска модели
+    Button resultsGraphicButton;
 
     MainApp mainApp;
 
@@ -91,6 +91,21 @@ public class SettingsController {
         Model.setUiRefreshDelay(Integer.parseInt(UISleepTimeTextField.getText()));
         mainApp.setScenariosPath(scenariosPathTextField.getText());
 
+        resultsGraphicButton.setDisable(false);
+        startModelButton.setDisable(true);
+
         mainApp.startModel();
+    }
+
+    public void modelFinished() {
+        startModelButton.setDisable(false);
+    }
+
+    // Обновление времени задержки по нажатию соответствующей кнопки
+    @FXML
+    private void onRefreshUISleepTime(){
+        if(! checkIntegerTextField(UISleepTimeTextField, showBoardCheckBox.isSelected() ? 5 : 0)) return;
+
+        Model.setUiRefreshDelay(Integer.parseInt(UISleepTimeTextField.getText()));
     }
 }

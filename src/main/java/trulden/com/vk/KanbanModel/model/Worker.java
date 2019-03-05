@@ -12,6 +12,7 @@ import static trulden.com.vk.KanbanModel.model.stage.StageType.workStages;
 
 //TODO обучение сотрудников
 
+// Класс сотрудника
 public class Worker {
     private static int workerCounter = 0;
 

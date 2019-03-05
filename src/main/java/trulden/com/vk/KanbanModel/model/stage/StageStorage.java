@@ -4,7 +4,9 @@ import trulden.com.vk.KanbanModel.model.Task;
 
 import java.util.ArrayList;
 
+// Стадия хранения
 public class StageStorage extends Stage {
+    // Хранимые задачи
     private ArrayList<Task> tasksInStorage;
 
     public StageStorage(StageType type, int WIPLimit){
@@ -12,21 +14,25 @@ public class StageStorage extends Stage {
         tasksInStorage = new ArrayList<>();
     }
 
+    // Можно ли добавить задачу на доску
     @Override
     public boolean canAddTask(){
         return getWIPLimit() > tasksInStorage.size();
     }
 
+    // Добавление таски на доску
     @Override
     public void addTask(Task task){
         tasksInStorage.add(task);
     }
 
+    // Удаление таски с доски
     @Override
     public void removeTask(Task task){
         tasksInStorage.remove(task);
     }
 
+    // Возвращает строкой статус задач на доске
     @Override
     public String composeTasksStatus(){
         StringBuilder str = new StringBuilder();
@@ -37,13 +43,14 @@ public class StageStorage extends Stage {
         return str.toString();
     }
 
-    @Override
-    public int getNumberOfTasks() {
-        return tasksInStorage.size();
-    }
-
+    // Возвращает задачи, которые можно двигать дальше по доске
     @Override
     public Task[] getTasksToRemove() {
         return tasksInStorage.toArray(new Task[0]);
+    }
+
+    @Override
+    public int getNumberOfTasks() {
+        return tasksInStorage.size();
     }
 }

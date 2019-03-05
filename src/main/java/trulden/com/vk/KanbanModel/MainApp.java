@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.*;
-import trulden.com.vk.KanbanModel.util.Scenario;
+import trulden.com.vk.KanbanModel.model.Scenario;
 import trulden.com.vk.KanbanModel.view.*;
 
 import java.io.*;
@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -112,9 +111,15 @@ public class MainApp extends Application{
     // TODO множественный прогон − просто цикл внутри этой функции
     // TODO с сохранением промежуточных результатов и их усреднением
 
+        // Сбрасываю счётчик созданных заданий
+        Task.resetTaskCounter();
+
         // Чищу CFD от прошлых прогонов
         // Должно быть именно здесь
-        if(showingKanbanBoard) { cfdController.clear(); }
+        if(showingKanbanBoard) {
+            cfdController.clear();
+            kanbanBoardController.clearEverything();
+        }
 
         // Инициирую новую модель
         model = new Model(this,
@@ -125,7 +130,6 @@ public class MainApp extends Application{
 
 
         if(showingKanbanBoard) {
-            kanbanBoardController.clearEverything();
             // Даю доске ссылки на модель и главное приложение
             // FIXME не круто, что вьюха получает доступ к классам модели, надо бы переделать
             kanbanBoardController.setModelAndMainApp(model, this);
@@ -140,6 +144,10 @@ public class MainApp extends Application{
             if(newValue)
                 if(scenarioIterator.hasNext()){
                     startScenario(scenarioIterator.next());
+                } else {
+                    settingsController.modelFinished();
+                    kanbanBoardStage.hide();
+                    scenarioComparisonStage.show();
                 }
         });
     }
@@ -164,7 +172,7 @@ public class MainApp extends Application{
         String[] workerNames = new String[Model.getNumberOfWorkers()];
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("shortAnimals.txt")); // TODO путь к именам сотрудников из инишника
+            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/shortAnimals.txt"));
             String line = br.readLine();
             numberOfLines = Integer.parseInt(line);
             lineNumbers = new Random().ints(1, numberOfLines).limit(Model.getNumberOfWorkers()).sorted().toArray();
@@ -213,7 +221,7 @@ public class MainApp extends Application{
     // Чтение инишника
     private void readInitJson() {
         try {
-            JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("init.json"))));
+            JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("src/main/resources/init.json"))));
             Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
             Model.setUiRefreshDelay(obj.getInt("UI_REFRESH_DELAY"));
@@ -228,7 +236,7 @@ public class MainApp extends Application{
     }
 
     // Сохранение результата прогона сценария
-    public void addScenarioResult(ResultOfModel result){
+    public void addScenarioResult(ScenarioResults result){
         scenarioComparisonController.addResult(scenariosFinished++, result);
     }
 

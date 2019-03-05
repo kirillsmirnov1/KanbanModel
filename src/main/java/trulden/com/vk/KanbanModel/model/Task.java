@@ -12,37 +12,30 @@ import static trulden.com.vk.KanbanModel.model.stage.StageType.workStages;
 
 // Задача
 public class Task {
-    private static int taskCounter = 0;
+    // Счётчик созданных задач
+    private static int taskCounter;
 
-    private HashMap<StageType, Integer> stagesCosts;   // Стоимость выполнения каждой стадии
-    private HashMap<StageType, Integer> stagesAdvance; // Остаток до выполнения каждой стадии
+    // Стоимость выполнения каждой стадии
+    private HashMap<StageType, Integer> stagesCosts;
+    // Остаток до выполнения каждой стадии
+    private HashMap<StageType, Integer> stagesAdvance;
 
-    private final String name;       // Название задачи
+    // Название задачи
+    private final String name;
 
-    private ObjectProperty<StageType> stage;        // Текущая стадия
-    private StageType nextStage;    // Следующая стадия
+    // Текущая стадия
+    private ObjectProperty<StageType> stage;
+    // Следующая стадия
+    private StageType nextStage;
 
+    // Флаг завершенности на текущей стадии
     private BooleanProperty doneAtCurrentStage;
 
-    public ObjectProperty<StageType> stageProperty() {
-        return stage;
-    }
-
-    public BooleanProperty doneAtCurrentStageProperty() {
-        return doneAtCurrentStage;
-    }
-
-    public IntegerProperty totalAdvanceProperty() {
-        return totalAdvance;
-    }
-
+    // Прогресс выполнения карточки
     private IntegerProperty totalAdvance;
 
-    private HashMap<StageType, Integer> daysAtStages; // Дни в которые карточка прибывала на стадии
-
-    public int addedToStage(StageType stageType){
-        return daysAtStages.get(stageType);
-    }
+    // Дни в которые карточка прибывала на стадии
+    private HashMap<StageType, Integer> daysArrivedAtStages;
 
     // Карточка конструируется при добавлении в бэклог
     private Task(String name, HashMap<StageType, Integer> stageCosts) throws IllegalArgumentException{
@@ -57,43 +50,30 @@ public class Task {
 
         stageCosts.forEach((k, v) -> stagesAdvance.put(k, 0));
 
-        daysAtStages = new HashMap<>();
+        daysArrivedAtStages = new HashMap<>();
 
         stage = new SimpleObjectProperty<>(StageType.BACKLOG);
 
         nextStage = stage.get();
-        calculateNextStage(); // Это нужно для сценария с непоследовательной сменой стадий
+        calculateNextStage(); // Это нужно для сценария с непоследовательной сменой стадий (который сейчас не доступен)
 
         doneAtCurrentStage = new SimpleBooleanProperty(false);
         totalAdvance = new SimpleIntegerProperty(0);
     }
 
-    public Task(Task task){
-        this(task.name, task.getStagesCosts());
+    // Генерирует и возвращает задачу со случайными параметрами
+    public static Task generateRandomTask(){
+        HashMap<StageType, Integer> randomCosts = new HashMap<>();
+        for(StageType stage : workStages){
+            randomCosts.put(stage, new Random().nextInt(10));
+        }
+
+        taskCounter++;
+
+        return new Task(Integer.toString(taskCounter), randomCosts);
     }
 
-    private HashMap<StageType, Integer> getStagesCosts() {
-        return stagesCosts;
-    }
-
-    public void setBackLogDay(int day){
-        daysAtStages.put(BACKLOG, day);
-    }
-
-    // Возвращает стадию на которой сейчас находится карточка
-    public StageType getStage() {
-        return stage.get();
-    }
-    public StageType getNextStage() { return nextStage; }
-
-    public int getResumingWorkAtCurrentStage(){
-        if(stage.get() == BACKLOG || stage.get() == DEPLOYMENT)
-            throw new IllegalArgumentException("Backlog and Deployment have no work");
-
-        return stagesCosts.get(stage.get()) - stagesAdvance.get(stage.get());
-    }
-    public int getWorkAtStage(StageType stage) { return stagesCosts.get(stage); }
-
+    // Зачитывает выполненную работу в карточку
     public void makeSomeWork(int work){
         stagesAdvance.replace(stage.get(), stagesAdvance.get(stage.get()) + work);
 
@@ -103,11 +83,13 @@ public class Task {
             doneAtCurrentStage.setValue(true);
     }
 
+    // Перемещение задачи на следующую стадию
     public void moveToNextStage(int day){
-        if(stage.get() != StageType.DEPLOYMENT) {
-            daysAtStages.put(nextStage, day);
+        if(stage.get() != DEPLOYMENT) {
+            daysArrivedAtStages.put(nextStage, day); // Сохраняю день прибытия на стадию
             stage.setValue(nextStage);
             calculateNextStage();
+
             if(stage.get() == DEPLOYMENT)
                 doneAtCurrentStage.setValue(false);
             else
@@ -117,11 +99,12 @@ public class Task {
         }
     }
 
+    // Возвращает следующую стадию, на которую переместится карточка
     private void calculateNextStage(){
             nextStage = stage.get().nextStage();
 
-        // Вариант когда задача сразу переходит на нужную стадию
-        // Потом нужно сделать это одной из опций
+        // Вариант, когда задача перескакивает стадии без работы
+        // TODO сделать это одной из опций
 //            do {
 //                nextStage = nextStage.nextStage();
 //                if (nextStage == StageType.DEPLOYMENT)
@@ -130,6 +113,25 @@ public class Task {
 //                    return;
 //            } while (true);
     }
+
+    // Возвращает количество дней, за которые задача прошла от одной стадии до другой
+    private int daysFromTo(StageType from, StageType to){
+        if(daysArrivedAtStages.containsKey(from) && daysArrivedAtStages.containsKey(to))
+            return daysArrivedAtStages.get(to) - daysArrivedAtStages.get(from);
+        return -1;
+    }
+
+    // Метит карточку выполненной в деплое
+    // Использую для удаления с канбан-доски
+    public void deploy(){
+        if(stage.get() == DEPLOYMENT)
+            doneAtCurrentStage.setValue(true);
+        else
+            throw new IllegalArgumentException("Can't deploy not finished task");
+    }
+
+    // Сбрасывает количество созданных задач
+    public static void resetTaskCounter(){ taskCounter = 0; }
 
     @Override
     public String toString(){
@@ -151,32 +153,44 @@ public class Task {
         return getName() + "\n" + str.toString();
     }
 
-    private int daysFromTo(StageType from, StageType to){
-        if(daysAtStages.containsKey(from) && daysAtStages.containsKey(to))
-            return daysAtStages.get(to) - daysAtStages.get(from);
-        return -1;
+    // Возвращает день добавления на стадию
+    public int addedToStage(StageType stageType){
+        return daysArrivedAtStages.get(stageType);
     }
 
-    public static Task generateRandomTask(){
-        HashMap<StageType, Integer> randomCosts = new HashMap<>();
-        for(StageType stage : workStages){
-            randomCosts.put(stage, new Random().nextInt(10));
-        }
+    // Количество работы на стадии
+    public int getWorkAtStage(StageType stage) { return stagesCosts.get(stage); }
 
-        taskCounter++;
+    // Количество оставшейся работы на текущей стадии
+    public int getResumingWorkAtCurrentStage(){
+        if(stage.get() == BACKLOG || stage.get() == DEPLOYMENT)
+            throw new IllegalArgumentException("Backlog and Deployment have no work");
 
-        //return new Task(RandomStringUtils.random(10, true, false), randomCosts);
-        return new Task(Integer.toString(taskCounter), randomCosts);
+        return stagesCosts.get(stage.get()) - stagesAdvance.get(stage.get());
     }
+
+    // Геттеры и сеттеры
 
     public String getName() {
         return "T: " + name;
     }
 
-    public void deploy(){
-        if(stage.get() == DEPLOYMENT)
-            doneAtCurrentStage.setValue(true);
-        else
-            throw new IllegalArgumentException("Can't deploy not finished task");
+    public StageType getStage() {
+        return stage.get();
+    }
+    public StageType getNextStage() { return nextStage; }
+
+    public ObjectProperty<StageType> stageProperty() {
+        return stage;
+    }
+
+    public BooleanProperty doneAtCurrentStageProperty() {
+        return doneAtCurrentStage;
+    }
+
+    public IntegerProperty totalAdvanceProperty() { return totalAdvance; }
+
+    public void setBackLogDay(int day){
+        daysArrivedAtStages.put(BACKLOG, day);
     }
 }

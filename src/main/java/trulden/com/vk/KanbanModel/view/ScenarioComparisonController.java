@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.CheckBox;
-import trulden.com.vk.KanbanModel.model.ResultOfModel;
+import trulden.com.vk.KanbanModel.model.ScenarioResults;
 
 public class ScenarioComparisonController {
 
@@ -36,7 +36,7 @@ public class ScenarioComparisonController {
         scenariosChart.getData().addAll(leadTimeSeries, cycleTimeSeries, tasksFinishedSeries);
     }
 
-    public void addResult(int pos, ResultOfModel result) {
+    public void addResult(int pos, ScenarioResults result) {
         Platform.runLater(() -> {
             leadTimeSeries.getData().add(new XYChart.Data(pos, result.getLeadTime()));
             cycleTimeSeries.getData().add(new XYChart.Data(pos, result.getCycleTime()));
