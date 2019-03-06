@@ -3,7 +3,7 @@ package trulden.com.vk.KanbanModel.model;
 
 public class Scenario {
     //private boolean allRoundEmployees   = true;     // TODO
-    private boolean linearTasksMovement = true;
+    //private boolean linearTasksMovement = true;     // TODO
     //private boolean workersNeedToRest   = false;    // TODO
     //private boolean performCardsFromRightToLeft = true; // TODO
 
@@ -16,13 +16,13 @@ public class Scenario {
 
     // Зона геттеров и сеттеров
 
-    public boolean isLinearTasksMovement() {// TODO
-        return linearTasksMovement;
-    }
+//    public boolean isLinearTasksMovement() {// TODO
+//        return linearTasksMovement;
+//    }
 
-    public void setLinearTasksMovement(boolean linearTasksMovement) {
-        this.linearTasksMovement = linearTasksMovement;
-    }
+//    public void setLinearTasksMovement(boolean linearTasksMovement) {
+//        this.linearTasksMovement = linearTasksMovement;
+//    }
 
     public int getDeploymentFrequency() {
         return deploymentFrequency;

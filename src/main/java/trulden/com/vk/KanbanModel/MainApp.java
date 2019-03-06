@@ -201,7 +201,7 @@ public class MainApp extends Application{
             for(int i=0; i < arr.length(); ++i){
                 Scenario sc = new Scenario();
 
-                sc.setLinearTasksMovement(arr.getJSONObject(i).getBoolean("linearTasksMovement"));
+                //sc.setLinearTasksMovement(arr.getJSONObject(i).getBoolean("linearTasksMovement"));
                 sc.setWIPLimits(new Gson().fromJson(arr.getJSONObject(i).getString("WIPLimits"), int[].class));
                 sc.setDeploymentFrequency(arr.getJSONObject(i).getInt("deploymentFrequency"));
                 sc.setMaxWorkerEnergy(arr.getJSONObject(i).getInt("maxWorkerEnergy"));
