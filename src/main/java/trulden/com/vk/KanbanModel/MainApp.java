@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import trulden.com.vk.KanbanModel.model.*;
 import trulden.com.vk.KanbanModel.model.Scenario;
+import trulden.com.vk.KanbanModel.util.Util;
 import trulden.com.vk.KanbanModel.view.*;
 
 import java.io.*;
@@ -146,7 +147,7 @@ public class MainApp extends Application{
                     startScenario(scenarioIterator.next());
                 } else {
                     settingsController.modelFinished();
-                    kanbanBoardStage.hide();
+                    kanbanBoardStage.hide(); //FIXME
                     scenarioComparisonStage.show();
                 }
         });
@@ -221,7 +222,17 @@ public class MainApp extends Application{
     // Чтение инишника
     private void readInitJson() {
         try {
-            JSONObject obj = new JSONObject(new String(Files.readAllBytes(Paths.get("src/main/resources/init.json"))));
+            JSONObject obj;
+            String initPath;
+
+            if(Util.runningFromJar()) {
+                initPath = "init.json";
+            } else {
+                initPath = "src/main/resources/init.json";
+            }
+
+            obj = new JSONObject(new String(Files.readAllBytes(Paths.get(initPath))));
+
             Model.setNumberOfDays(obj.getInt("NUMBER_OF_DAYS"));
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
             Model.setUiRefreshDelay(obj.getInt("UI_REFRESH_DELAY"));
