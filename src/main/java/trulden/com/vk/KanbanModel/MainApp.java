@@ -174,7 +174,15 @@ public class MainApp extends Application{
         String[] workerNames = new String[Model.getNumberOfWorkers()];
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/shortAnimals.txt"));
+            BufferedReader br;
+            String animalsPath;
+
+            if(Util.runningFromJar())
+                animalsPath = "names.txt";
+            else
+                animalsPath = "src/main/resources/names.txt";
+
+            br = new BufferedReader(new FileReader(animalsPath));
             String line = br.readLine();
             numberOfLines = Integer.parseInt(line);
             lineNumbers = new Random().ints(1, numberOfLines).limit(Model.getNumberOfWorkers()).sorted().toArray();
