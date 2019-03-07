@@ -147,7 +147,8 @@ public class MainApp extends Application{
                     startScenario(scenarioIterator.next());
                 } else {
                     settingsController.modelFinished();
-                    kanbanBoardStage.hide(); //FIXME
+                    if(kanbanBoardStage != null)
+                        kanbanBoardStage.hide();
                     scenarioComparisonStage.show();
                 }
         });
