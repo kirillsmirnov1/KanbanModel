@@ -49,6 +49,12 @@ public class StageStorage extends Stage {
         return tasksInStorage.toArray(new Task[0]);
     }
 
+    // Очистка доски
+    @Override
+    public void clean() {
+        tasksInStorage = new ArrayList<>();
+    }
+
     @Override
     public int getNumberOfTasks() {
         return tasksInStorage.size();
