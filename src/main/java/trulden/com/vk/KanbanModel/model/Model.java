@@ -95,13 +95,11 @@ public class Model implements Runnable{
         }
 
         currentDay = new SimpleIntegerProperty();
-        tasksDeployed = new SimpleIntegerProperty(0);
         reqSkillLevel = new SimpleDoubleProperty();
+        tasksDeployed = new SimpleIntegerProperty(0);
 
         CFD = new HashMap<>();
-        scenarioResults = new ScenarioResults(1); // TODO считывать из инишника
-        leadTime = new ArrayList<>();
-        cycleTime = new ArrayList<>();
+        scenarioResults = new ScenarioResults(10000); // TODO считывать из инишника
 
         if(mainApp.showingKanbanBoard())
             cfdController.setDayTracking(currentDay, CFD);
@@ -117,6 +115,10 @@ public class Model implements Runnable{
         });
 
         for(int i = 0; i < scenarioResults.getNumberOfRuns(); ++i) {
+
+            leadTime = new ArrayList<>();
+            cycleTime = new ArrayList<>();
+            tasksDeployed.set(0);
 
             // Прогоняю внешний цикл столько скольно нужно раз.
             // Считаю что цикл выполняется за день
