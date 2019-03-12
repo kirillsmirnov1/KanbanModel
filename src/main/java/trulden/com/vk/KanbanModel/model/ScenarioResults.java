@@ -8,6 +8,7 @@ public class ScenarioResults {
     private double cycleTime;
     // Количество завершенных задач
     private double tasksFinished;
+
     // Количество прогонов сценария
     private final int numberOfRuns;
 
@@ -51,5 +52,9 @@ public class ScenarioResults {
 
     public double getTasksFinished() {
         return tasksFinished;
+    }
+
+    public int getNumberOfRuns() {
+        return numberOfRuns;
     }
 }
