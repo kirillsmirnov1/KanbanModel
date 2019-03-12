@@ -35,6 +35,8 @@ public class Model implements Runnable{
 
     // Данные для построения CFD-диаграммы
     private HashMap<Integer, int[]> CFD;
+    // Результаты прогонов сценария
+    private ScenarioResults scenarioResults;
 
     // Время прохождения всей доски и рабочих стадий каждой из карточек
     private ArrayList<Integer> leadTime;
@@ -87,7 +89,7 @@ public class Model implements Runnable{
             }
         }
 
-        if(PRINTINGS_RESULTS_TO_CONSOLE) {// TODO в инишник
+        if(PRINTINGS_RESULTS_TO_CONSOLE) {
             System.out.println("Workers: ");
             Stream.of(workers).forEach(System.out::println);
         }
@@ -97,6 +99,7 @@ public class Model implements Runnable{
         reqSkillLevel = new SimpleDoubleProperty();
 
         CFD = new HashMap<>();
+        scenarioResults = new ScenarioResults(1); // TODO считывать из инишника
         leadTime = new ArrayList<>();
         cycleTime = new ArrayList<>();
 
@@ -112,28 +115,33 @@ public class Model implements Runnable{
                 return;
             }
         });
-        // Прогоняю внешний цикл столько скольно нужно раз.
-        // Считаю что цикл выполняется за день
-        for(currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get()+1)){
-            if(PRINTINGS_RESULTS_TO_CONSOLE)
-                System.out.println("\nDay " + currentDay + " have started =========================================================");
 
-            outerCycle();
+        for(int i = 0; i < scenarioResults.getNumberOfRuns(); ++i) {
 
-            // Деплой в нужные дни
-            if(currentDay.get() % deploymentFrequency == 0)
-                deploy();
+            // Прогоняю внешний цикл столько скольно нужно раз.
+            // Считаю что цикл выполняется за день
+            for (currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get() + 1)) {
+                if (PRINTINGS_RESULTS_TO_CONSOLE)
+                    System.out.println("\nDay " + currentDay + " have started =========================================================");
 
-            calculateCFDForToday();
+                outerCycle();
+
+                // Деплой в нужные дни
+                if (currentDay.get() % deploymentFrequency == 0)
+                    deploy();
+
+                calculateCFDForToday();
+            }
+
+            // Сохраняю промежуточный результат
+            scenarioResults.addResult(
+                    leadTime.stream().mapToInt(Integer::intValue).sum() * 1d / leadTime.size(),
+                    cycleTime.stream().mapToInt(Integer::intValue).sum() * 1d / cycleTime.size(),
+                    tasksDeployed.get());
         }
-
         // Возвращаю результат модели в основное приложение
-        // Время задач на доске, время задач в работе, количество завершенных задач
-        mainApp.addScenarioResult(
-                new ScenarioResults(
-                        leadTime.stream().mapToInt(Integer::intValue).sum()*1d/leadTime.size(),
-                        cycleTime.stream().mapToInt(Integer::intValue).sum()*1d/cycleTime.size(),
-                        tasksDeployed.get()));
+        mainApp.addScenarioResult(scenarioResults);
+
         Platform.runLater(() -> currentModelFinished.setValue(true));
     }
 
