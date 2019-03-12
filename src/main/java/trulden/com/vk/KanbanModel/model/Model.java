@@ -134,7 +134,8 @@ public class Model implements Runnable{
                 if (currentDay.get() % deploymentFrequency == 0)
                     deploy();
 
-                calculateCFDForToday();
+                if(mainApp.showingKanbanBoard());
+                    calculateCFDForToday();
             }
 
             // Сохраняю промежуточный результат
@@ -142,7 +143,9 @@ public class Model implements Runnable{
                     leadTime.stream().mapToInt(Integer::intValue).sum() * 1d / leadTime.size(),
                     cycleTime.stream().mapToInt(Integer::intValue).sum() * 1d / cycleTime.size(),
                     tasksDeployed.get());
-            Platform.runLater(() -> kanbanBoardController.clearEverything());
+
+            if(mainApp.isShowingKanbanBoard())
+                Platform.runLater(() -> kanbanBoardController.clearEverything());
 
             stages.forEach((stageType, stage) -> stage.clean());
         }

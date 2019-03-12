@@ -344,7 +344,9 @@ public class MainApp extends Application{
 
     public void setShowBoard(boolean showingKanbanBoard) { this.showingKanbanBoard = showingKanbanBoard; }
 
+    public void setScenariosPath(String scenariosPath) { this.scenariosPath = Paths.get(scenariosPath); }
+
     public String getScenariosPathAsString() { return scenariosPath.toString(); }
 
-    public void setScenariosPath(String scenariosPath) { this.scenariosPath = Paths.get(scenariosPath); }
+    public boolean isShowingKanbanBoard() { return showingKanbanBoard; }
 }
