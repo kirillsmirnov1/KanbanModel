@@ -48,6 +48,8 @@ public class Model implements Runnable{
     private static int   NUMBER_OF_DAYS;
     // Задержка выполнения модели для отображения изменений на канбан доске
     private static int   UI_REFRESH_DELAY;
+    // Количество прогонов сценария
+    private static int SCENARIO_RUNS = 0;
     // Печатать промежуточные результаты модели в консоль?
     private static boolean PRINTINGS_RESULTS_TO_CONSOLE;
 
@@ -99,7 +101,7 @@ public class Model implements Runnable{
         tasksDeployed = new SimpleIntegerProperty(0);
 
         CFD = new HashMap<>();
-        scenarioResults = new ScenarioResults(10000); // TODO считывать из инишника
+        scenarioResults = new ScenarioResults(SCENARIO_RUNS);
 
         if(mainApp.showingKanbanBoard())
             cfdController.setDayTracking(currentDay, CFD);
@@ -363,4 +365,6 @@ public class Model implements Runnable{
     public static void setNumberOfDays(int numberOfDays) { NUMBER_OF_DAYS = numberOfDays; }
 
     public static void setUiRefreshDelay(int tts) { UI_REFRESH_DELAY = tts; }
+
+    public static void setScenarioRuns(int scenarioRuns) { SCENARIO_RUNS = scenarioRuns; }
 }

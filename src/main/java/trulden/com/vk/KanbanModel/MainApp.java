@@ -246,6 +246,7 @@ public class MainApp extends Application{
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
             Model.setUiRefreshDelay(obj.getInt("UI_REFRESH_DELAY"));
             Model.setPrintingsResultsToConsole(obj.getBoolean("PRINTING_RESULTS_TO_CONSOLE"));
+            Model.setScenarioRuns(obj.getInt("scenarioRuns"));
             scenariosPath = Paths.get(obj.getString("scenariosPath"));
             showingKanbanBoard = obj.getBoolean("showBoard");
             kanbanBoardW = obj.getInt("kanbanBoardW");
