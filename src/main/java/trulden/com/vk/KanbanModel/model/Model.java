@@ -350,6 +350,8 @@ public class Model implements Runnable{
 
     public Worker[] getWorkers(){return workers;}
 
+    public static int getNumberOfScenarioRuns() { return SCENARIO_RUNS; }
+
     public IntegerProperty currentDayProperty() { return currentDay; }
 
     public DoubleProperty reqSkillLevelProperty() { return reqSkillLevel; }
