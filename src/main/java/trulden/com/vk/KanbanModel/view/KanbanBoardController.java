@@ -254,12 +254,20 @@ public class KanbanBoardController {
         mainApp.startScenario(model.getScenario());
     }
 
-    public void clearEverything(){
+    public void clearTasks(){
         for(StageType stage : StageType.values()){
             stagesUpVBoxHashMap.get(stage).getChildren().clear();
             if(stage != BACKLOG && stage != DEPLOYMENT)
                 stagesDownVBoxHashMap.get(stage).getChildren().clear();
         }
+    }
+
+    public void clearWorkers(){
         workersGrid.getChildren().clear();
+    }
+
+    public void clearEverything(){
+        clearTasks();
+        clearWorkers();
     }
 }

@@ -145,7 +145,7 @@ public class Model implements Runnable{
                     tasksDeployed.get());
 
             if(mainApp.isShowingKanbanBoard())
-                Platform.runLater(() -> kanbanBoardController.clearEverything());
+                Platform.runLater(() -> kanbanBoardController.clearTasks());
 
             stages.forEach((stageType, stage) -> stage.clean());
         }
