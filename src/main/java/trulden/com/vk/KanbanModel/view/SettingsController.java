@@ -93,12 +93,14 @@ public class SettingsController {
 
         resultsGraphicButton.setDisable(false);
         startModelButton.setDisable(true);
+        showBoardCheckBox.setDisable(true);
 
         mainApp.startModel();
     }
 
     public void modelFinished() {
         startModelButton.setDisable(false);
+        showBoardCheckBox.setDisable(false);
     }
 
     // Обновление времени задержки по нажатию соответствующей кнопки
