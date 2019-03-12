@@ -142,6 +142,7 @@ public class Model implements Runnable{
                     leadTime.stream().mapToInt(Integer::intValue).sum() * 1d / leadTime.size(),
                     cycleTime.stream().mapToInt(Integer::intValue).sum() * 1d / cycleTime.size(),
                     tasksDeployed.get());
+            Platform.runLater(() -> kanbanBoardController.clearEverything());
 
             stages.forEach((stageType, stage) -> stage.clean());
         }
