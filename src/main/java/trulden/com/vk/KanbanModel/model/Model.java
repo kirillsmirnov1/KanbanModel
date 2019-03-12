@@ -140,6 +140,8 @@ public class Model implements Runnable{
                     leadTime.stream().mapToInt(Integer::intValue).sum() * 1d / leadTime.size(),
                     cycleTime.stream().mapToInt(Integer::intValue).sum() * 1d / cycleTime.size(),
                     tasksDeployed.get());
+
+            stages.forEach((stageType, stage) -> stage.clean());
         }
         // Возвращаю результат модели в основное приложение
         mainApp.addScenarioResult(scenarioResults);
