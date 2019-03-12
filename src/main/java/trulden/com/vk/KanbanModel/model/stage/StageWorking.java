@@ -71,6 +71,13 @@ public class StageWorking extends Stage {
         return finishedTasks.toArray(new Task[0]);
     }
 
+    // Очистка доски
+    @Override
+    public void clean() {
+        tasksInWork   = new ArrayList<>();
+        finishedTasks = new ArrayList<>();
+    }
+
     @Override
     public int getNumberOfTasks() {
         return tasksInWork.size() + finishedTasks.size();

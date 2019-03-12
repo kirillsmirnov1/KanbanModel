@@ -35,6 +35,8 @@ public class Model implements Runnable{
 
     // Данные для построения CFD-диаграммы
     private HashMap<Integer, int[]> CFD;
+    // Результаты прогонов сценария
+    private ScenarioResults scenarioResults;
 
     // Время прохождения всей доски и рабочих стадий каждой из карточек
     private ArrayList<Integer> leadTime;
@@ -46,6 +48,8 @@ public class Model implements Runnable{
     private static int   NUMBER_OF_DAYS;
     // Задержка выполнения модели для отображения изменений на канбан доске
     private static int   UI_REFRESH_DELAY;
+    // Количество прогонов сценария
+    private static int SCENARIO_RUNS = 0;
     // Печатать промежуточные результаты модели в консоль?
     private static boolean PRINTINGS_RESULTS_TO_CONSOLE;
 
@@ -87,18 +91,17 @@ public class Model implements Runnable{
             }
         }
 
-        if(PRINTINGS_RESULTS_TO_CONSOLE) {// TODO в инишник
+        if(PRINTINGS_RESULTS_TO_CONSOLE) {
             System.out.println("Workers: ");
             Stream.of(workers).forEach(System.out::println);
         }
 
         currentDay = new SimpleIntegerProperty();
-        tasksDeployed = new SimpleIntegerProperty(0);
         reqSkillLevel = new SimpleDoubleProperty();
+        tasksDeployed = new SimpleIntegerProperty(0);
 
         CFD = new HashMap<>();
-        leadTime = new ArrayList<>();
-        cycleTime = new ArrayList<>();
+        scenarioResults = new ScenarioResults(SCENARIO_RUNS);
 
         if(mainApp.showingKanbanBoard())
             cfdController.setDayTracking(currentDay, CFD);
@@ -112,28 +115,43 @@ public class Model implements Runnable{
                 return;
             }
         });
-        // Прогоняю внешний цикл столько скольно нужно раз.
-        // Считаю что цикл выполняется за день
-        for(currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get()+1)){
-            if(PRINTINGS_RESULTS_TO_CONSOLE)
-                System.out.println("\nDay " + currentDay + " have started =========================================================");
 
-            outerCycle();
+        for(int i = 0; i < scenarioResults.getNumberOfRuns(); ++i) {
 
-            // Деплой в нужные дни
-            if(currentDay.get() % deploymentFrequency == 0)
-                deploy();
+            leadTime = new ArrayList<>();
+            cycleTime = new ArrayList<>();
+            tasksDeployed.set(0);
 
-            calculateCFDForToday();
+            // Прогоняю внешний цикл столько скольно нужно раз.
+            // Считаю что цикл выполняется за день
+            for (currentDay.setValue(0); currentDay.get() < NUMBER_OF_DAYS; currentDay.setValue(currentDay.get() + 1)) {
+                if (PRINTINGS_RESULTS_TO_CONSOLE)
+                    System.out.println("\nDay " + currentDay + " have started =========================================================");
+
+                outerCycle();
+
+                // Деплой в нужные дни
+                if (currentDay.get() % deploymentFrequency == 0)
+                    deploy();
+
+                if(mainApp.showingKanbanBoard());
+                    calculateCFDForToday();
+            }
+
+            // Сохраняю промежуточный результат
+            scenarioResults.addResult(
+                    leadTime.stream().mapToInt(Integer::intValue).sum() * 1d / leadTime.size(),
+                    cycleTime.stream().mapToInt(Integer::intValue).sum() * 1d / cycleTime.size(),
+                    tasksDeployed.get());
+
+            if(mainApp.isShowingKanbanBoard())
+                Platform.runLater(() -> kanbanBoardController.clearTasks());
+
+            stages.forEach((stageType, stage) -> stage.clean());
         }
-
         // Возвращаю результат модели в основное приложение
-        // Время задач на доске, время задач в работе, количество завершенных задач
-        mainApp.addScenarioResult(
-                new ScenarioResults(
-                        leadTime.stream().mapToInt(Integer::intValue).sum()*1d/leadTime.size(),
-                        cycleTime.stream().mapToInt(Integer::intValue).sum()*1d/cycleTime.size(),
-                        tasksDeployed.get()));
+        mainApp.addScenarioResult(scenarioResults);
+
         Platform.runLater(() -> currentModelFinished.setValue(true));
     }
 
@@ -336,6 +354,8 @@ public class Model implements Runnable{
 
     public Worker[] getWorkers(){return workers;}
 
+    public static int getNumberOfScenarioRuns() { return SCENARIO_RUNS; }
+
     public IntegerProperty currentDayProperty() { return currentDay; }
 
     public DoubleProperty reqSkillLevelProperty() { return reqSkillLevel; }
@@ -351,4 +371,6 @@ public class Model implements Runnable{
     public static void setNumberOfDays(int numberOfDays) { NUMBER_OF_DAYS = numberOfDays; }
 
     public static void setUiRefreshDelay(int tts) { UI_REFRESH_DELAY = tts; }
+
+    public static void setScenarioRuns(int scenarioRuns) { SCENARIO_RUNS = scenarioRuns; }
 }

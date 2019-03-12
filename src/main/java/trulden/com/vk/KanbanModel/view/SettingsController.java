@@ -15,6 +15,8 @@ public class SettingsController {
     @FXML
     TextField numberOfDaysTextField;
     @FXML
+    TextField numberOfRunsTextField;
+    @FXML
     TextField numberOfWorkersTextField;
     @FXML
     TextField UISleepTimeTextField;
@@ -32,6 +34,7 @@ public class SettingsController {
     // Заполнение полей формы и сохранение ссылки на основное приложение
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
+        numberOfRunsTextField.setText(Integer.toString(Model.getNumberOfScenarioRuns()));
         numberOfDaysTextField.setText(Integer.toString(Model.getNumberOfDays()));
         numberOfWorkersTextField.setText(Integer.toString(Model.getNumberOfWorkers()));
         UISleepTimeTextField.setText(Integer.toString(Model.getUiRefreshDelay()));
@@ -80,12 +83,14 @@ public class SettingsController {
     // Запуск сценариев модели
     @FXML
     private void onStartModelButtonPress(){
-        if( ! ( checkIntegerTextField(numberOfDaysTextField, 1)
+        if( ! ( checkIntegerTextField(numberOfRunsTextField, 1)
+                && checkIntegerTextField(numberOfDaysTextField, 1)
                 && checkIntegerTextField(numberOfWorkersTextField, 1)
                 && checkIntegerTextField(UISleepTimeTextField, showBoardCheckBox.isSelected() ? 5 : 0)
                 && checkScenariosValue()))
             return;
 
+        Model.setScenarioRuns(Integer.parseInt(numberOfRunsTextField.getText()));
         Model.setNumberOfDays(Integer.parseInt(numberOfDaysTextField.getText()));
         Model.setNumberOfWorkers(Integer.parseInt(numberOfWorkersTextField.getText()));
         Model.setUiRefreshDelay(Integer.parseInt(UISleepTimeTextField.getText()));

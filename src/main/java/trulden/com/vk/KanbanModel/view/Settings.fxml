@@ -22,6 +22,15 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </HBox>
+            <HBox prefHeight="100.0" prefWidth="300.0" spacing="10.0">
+               <children>
+                  <Label minWidth="170.0" text="Количество прогонов:" />
+                  <TextField fx:id="numberOfRunsTextField" prefWidth="300.0" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                <children>
                   <Label minWidth="170.0" text="Количество дней: " />

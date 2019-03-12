@@ -246,6 +246,7 @@ public class MainApp extends Application{
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
             Model.setUiRefreshDelay(obj.getInt("UI_REFRESH_DELAY"));
             Model.setPrintingsResultsToConsole(obj.getBoolean("PRINTING_RESULTS_TO_CONSOLE"));
+            Model.setScenarioRuns(obj.getInt("scenarioRuns"));
             scenariosPath = Paths.get(obj.getString("scenariosPath"));
             showingKanbanBoard = obj.getBoolean("showBoard");
             kanbanBoardW = obj.getInt("kanbanBoardW");
@@ -343,7 +344,9 @@ public class MainApp extends Application{
 
     public void setShowBoard(boolean showingKanbanBoard) { this.showingKanbanBoard = showingKanbanBoard; }
 
+    public void setScenariosPath(String scenariosPath) { this.scenariosPath = Paths.get(scenariosPath); }
+
     public String getScenariosPathAsString() { return scenariosPath.toString(); }
 
-    public void setScenariosPath(String scenariosPath) { this.scenariosPath = Paths.get(scenariosPath); }
+    public boolean isShowingKanbanBoard() { return showingKanbanBoard; }
 }

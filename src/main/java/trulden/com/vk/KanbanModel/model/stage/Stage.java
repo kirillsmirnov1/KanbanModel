@@ -37,4 +37,6 @@ public abstract class Stage {
     public abstract Task[]  getTasksToRemove();
     // Количество задач на доске
     public abstract int     getNumberOfTasks();
+    // Очистка доски
+    public abstract void clean();
 }

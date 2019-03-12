@@ -3,16 +3,43 @@ package trulden.com.vk.KanbanModel.model;
 // Результаты выполнения сценария
 public class ScenarioResults {
     // Время тасок на доске
-    private final double leadTime;
+    private double leadTime;
     // Время тасок на рабочих стадиях
-    private final double cycleTime;
+    private double cycleTime;
     // Количество завершенных задач
-    private final int    tasksFinished;
+    private double tasksFinished;
 
+    // Количество прогонов сценария
+    private final int numberOfRuns;
+
+    // Конструктор для однократного прогона
     ScenarioResults(double leadTime, double cycleTime, int tasksFinished){
         this.leadTime = leadTime;
         this.cycleTime = cycleTime;
         this.tasksFinished = tasksFinished;
+
+        numberOfRuns = 1;
+    }
+
+    // Конструктор для многократного прогона
+    ScenarioResults(int numberOfRuns){
+        this.numberOfRuns = numberOfRuns;
+
+        leadTime = 0d;
+        cycleTime = 0d;
+        tasksFinished = 0d;
+    }
+
+    // Добавить результат одного прогона к общему усредненному результату
+    public void addResult(double leadTime, double cycleTime, int tasksFinished){
+        this.leadTime       += findFraction(leadTime);
+        this.cycleTime      += findFraction(cycleTime);
+        this.tasksFinished  += findFraction(tasksFinished);
+    }
+
+    // Нахожу пропорцию числа для добавления к усредненному
+    private double findFraction(double number){
+        return number / (1d * numberOfRuns);
     }
 
     public double getLeadTime() {
@@ -23,7 +50,11 @@ public class ScenarioResults {
         return cycleTime;
     }
 
-    public int getTasksFinished() {
+    public double getTasksFinished() {
         return tasksFinished;
+    }
+
+    public int getNumberOfRuns() {
+        return numberOfRuns;
     }
 }
