@@ -45,8 +45,6 @@ public class MainApp extends Application{
 
     // Соотрудники
     private Worker[] workers;
-    // Задачи
-    private Task[]   tasks;
 
     // Контроллеры форм
     private KanbanBoardController kanbanBoardController;
