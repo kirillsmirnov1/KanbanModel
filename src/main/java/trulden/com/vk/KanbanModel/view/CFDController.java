@@ -17,14 +17,17 @@ public class CFDController {
 
     @FXML
     AreaChart CFDChart;
-
     @FXML
     NumberAxis daysAxis;
+    @FXML
+    NumberAxis tasksAxis;
 
     @FXML
     private void initialize(){
         daysAxis.setUpperBound(Model.getNumberOfDays());
         daysAxis.setTickUnit(Model.getNumberOfDays()/10);
+
+        tasksAxis.setUpperBound(10);
     }
 
     public void setDayTracking(IntegerProperty currentDay, HashMap<Integer, int[]> CFD) {
@@ -45,6 +48,12 @@ public class CFDController {
 
         // Начальное заполнение столбцов
         for(int day=0; day < CFD.size(); ++day){
+
+            // Шкала задач кратна десяти
+            if(CFD.get(CFD.size()-1)[0] >= tasksAxis.getUpperBound()){
+                tasksAxis.setUpperBound(CFD.get(CFD.size()-1)[0] - CFD.get(CFD.size()-1)[numberOfSeries-1]%10);
+            }
+
             for(int seriesIterator = 0; seriesIterator < numberOfSeries; ++seriesIterator){
                 CFDSeries[seriesIterator].getData().add(new XYChart.Data(day+1, CFD.get(day)[seriesIterator]));
             }
@@ -52,6 +61,12 @@ public class CFDController {
 
         // Установка слежки за изменением дня
         currentDay.addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+
+            // Поддержание кратности шкалы
+            if(CFD.get(oldValue)[0] >= tasksAxis.getUpperBound()){
+                tasksAxis.setUpperBound(tasksAxis.getUpperBound()+10);
+            }
+
             for(int seriesIterator=0; seriesIterator < numberOfSeries; ++seriesIterator){
                 CFDSeries[seriesIterator].getData().add(new XYChart.Data(oldValue.intValue()+1, CFD.get(oldValue)[seriesIterator]));
             }

@@ -11,7 +11,7 @@
           <NumberAxis fx:id="daysAxis" autoRanging="false" label="Дни" minorTickCount="0" minorTickLength="0.0" minorTickVisible="false" side="BOTTOM" tickLabelGap="0.0" tickLength="5.0" />
         </xAxis>
         <yAxis>
-          <NumberAxis label="Задачи" minorTickVisible="false" side="LEFT" />
+          <NumberAxis fx:id="tasksAxis" autoRanging="false" label="Задачи" minorTickCount="0" minorTickLength="0.0" minorTickVisible="false" side="LEFT" tickLabelGap="0.0" tickLength="5.0" />
         </yAxis>
       </AreaChart>
    </children>
