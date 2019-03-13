@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.chart.AreaChart?>
-<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -9,10 +8,10 @@
    <children>
       <AreaChart fx:id="CFDChart" layoutX="38.0" layoutY="-14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <xAxis>
-          <NumberAxis side="BOTTOM" />
+          <NumberAxis fx:id="daysAxis" autoRanging="false" label="Дни" minorTickCount="0" minorTickLength="0.0" minorTickVisible="false" side="BOTTOM" tickLabelGap="0.0" tickLength="5.0" />
         </xAxis>
         <yAxis>
-          <NumberAxis side="LEFT" />
+          <NumberAxis label="Задачи" minorTickVisible="false" side="LEFT" />
         </yAxis>
       </AreaChart>
    </children>

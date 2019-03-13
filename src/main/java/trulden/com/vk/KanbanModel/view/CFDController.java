@@ -4,7 +4,9 @@ import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.fxml.FXML;
 import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import trulden.com.vk.KanbanModel.model.Model;
 import trulden.com.vk.KanbanModel.model.stage.StageType;
 
 import java.util.HashMap;
@@ -15,6 +17,15 @@ public class CFDController {
 
     @FXML
     AreaChart CFDChart;
+
+    @FXML
+    NumberAxis daysAxis;
+
+    @FXML
+    private void initialize(){
+        daysAxis.setUpperBound(Model.getNumberOfDays());
+        daysAxis.setTickUnit(Model.getNumberOfDays()/10);
+    }
 
     public void setDayTracking(IntegerProperty currentDay, HashMap<Integer, int[]> CFD) {
         int numberOfSeries = StageType.values().length + 1;
