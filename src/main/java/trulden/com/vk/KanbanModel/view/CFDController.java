@@ -35,14 +35,14 @@ public class CFDController {
         // Начальное заполнение столбцов
         for(int day=0; day < CFD.size(); ++day){
             for(int seriesIterator = 0; seriesIterator < numberOfSeries; ++seriesIterator){
-                CFDSeries[seriesIterator].getData().add(new XYChart.Data(day, CFD.get(day)[seriesIterator]));
+                CFDSeries[seriesIterator].getData().add(new XYChart.Data(day+1, CFD.get(day)[seriesIterator]));
             }
         }
 
         // Установка слежки за изменением дня
         currentDay.addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
             for(int seriesIterator=0; seriesIterator < numberOfSeries; ++seriesIterator){
-                CFDSeries[seriesIterator].getData().add(new XYChart.Data(oldValue, CFD.get(oldValue)[seriesIterator]));
+                CFDSeries[seriesIterator].getData().add(new XYChart.Data(oldValue.intValue()+1, CFD.get(oldValue)[seriesIterator]));
             }
         }));
     }
