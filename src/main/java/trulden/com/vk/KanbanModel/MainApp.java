@@ -35,6 +35,8 @@ public class MainApp extends Application{
 
     // Итератор сценариев
     private Iterator<Scenario> scenarioIterator;
+    // Количество сценариев
+    private int numberOfScenarios;
 
     // Текущая модель
     private Model    model;
@@ -129,7 +131,6 @@ public class MainApp extends Application{
                           scenario,
                           workers);
 
-
         if(showingKanbanBoard) {
             // Даю доске ссылки на модель и главное приложение
             // FIXME не круто, что вьюха получает доступ к классам модели, надо бы переделать
@@ -147,9 +148,13 @@ public class MainApp extends Application{
                     startScenario(scenarioIterator.next());
                 } else {
                     settingsController.modelFinished();
-                    if(kanbanBoardStage != null)
-                        kanbanBoardStage.hide();
-                    scenarioComparisonStage.show();
+
+                    // Как завершились все модели − показываю сравнение, если есть что показывать
+                    if(numberOfScenarios > 1){
+                        if(kanbanBoardStage != null)
+                            kanbanBoardStage.hide();
+                        scenarioComparisonStage.show();
+                    }
                 }
         });
     }
@@ -222,6 +227,7 @@ public class MainApp extends Application{
 
             // Для работы со сценариями достаточно их итератора
             scenarioIterator = scenarios.iterator();
+            numberOfScenarios = scenarios.size();
 
         } catch (IOException e) {
             e.printStackTrace();
