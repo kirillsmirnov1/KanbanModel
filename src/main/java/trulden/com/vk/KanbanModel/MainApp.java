@@ -37,6 +37,8 @@ public class MainApp extends Application{
     private ArrayList<Scenario> scenarios;
     // Текущий сценарий
     private int currentScenarioNumber;
+    // Результаты сценария
+    private ScenarioResults scenarioResults;
 
     // Текущая модель
     private Model    model;
@@ -102,6 +104,7 @@ public class MainApp extends Application{
 
         currentRunNumber = 0;
         currentScenarioNumber = 0;
+        scenarioResults = new ScenarioResults(scenarioRuns);
         startScenario(scenarios.get(currentScenarioNumber));
     }
 
@@ -149,9 +152,12 @@ public class MainApp extends Application{
         model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue){
                 currentRunNumber++;
-                if(currentRunNumber < scenarioRuns){
+                if(currentRunNumber < scenarioRuns){ // следующий прогон
                     startScenario(scenarios.get(currentScenarioNumber));
-                } else {
+                } else { // следующий сценарий
+                    scenarioComparisonController.addResult(currentScenarioNumber, scenarioResults);
+                    scenarioResults = new ScenarioResults(scenarioRuns);
+
                     currentScenarioNumber++;
                     currentRunNumber = 0;
                     if(currentScenarioNumber < scenarios.size()){
@@ -263,7 +269,7 @@ public class MainApp extends Application{
 
     // Сохранение результата прогона сценария
     public void addScenarioResult(ScenarioResults result){
-        scenarioComparisonController.addResult(scenariosFinished++, result);
+        scenarioResults.addResult(result);
     }
 
     // Загрузка стартового окна настроек

@@ -35,8 +35,6 @@ public class Model implements Runnable{
 
     // Данные для построения CFD-диаграммы
     private HashMap<Integer, int[]> CFD;
-    // Результаты прогонов сценария
-    private ScenarioResults scenarioResults;
 
     // Время прохождения всей доски и рабочих стадий каждой из карточек
     private ArrayList<Integer> leadTime;
@@ -101,7 +99,6 @@ public class Model implements Runnable{
         tasksDeployed = new SimpleIntegerProperty(0);
 
         CFD = new HashMap<>();
-        scenarioResults = new ScenarioResults(SCENARIO_RUNS);
 
         if(mainApp.showingKanbanBoard())
             cfdController.setDayTracking(currentDay, CFD);
@@ -136,17 +133,14 @@ public class Model implements Runnable{
                     calculateCFDForToday();
             }
 
-            // Сохраняю промежуточный результат
-            scenarioResults.addResult(
-                    leadTime.stream().mapToInt(Integer::intValue).sum() * 1d / leadTime.size(),
-                    cycleTime.stream().mapToInt(Integer::intValue).sum() * 1d / cycleTime.size(),
-                    tasksDeployed.get());
-
             if(mainApp.isShowingKanbanBoard())
                 Platform.runLater(() -> kanbanBoardController.clearEverything());
 
         // Возвращаю результат модели в основное приложение
-        mainApp.addScenarioResult(scenarioResults);
+        mainApp.addScenarioResult(new ScenarioResults(
+                leadTime.stream().mapToInt(Integer::intValue).sum() * 1d / leadTime.size(),
+                cycleTime.stream().mapToInt(Integer::intValue).sum() * 1d / cycleTime.size(),
+                tasksDeployed.get()));
 
         Platform.runLater(() -> currentModelFinished.setValue(true));
     }

@@ -22,7 +22,7 @@ public class ScenarioResults {
     }
 
     // Конструктор для многократного прогона
-    ScenarioResults(int numberOfRuns){
+    public ScenarioResults(int numberOfRuns){
         this.numberOfRuns = numberOfRuns;
 
         leadTime = 0d;
@@ -56,5 +56,9 @@ public class ScenarioResults {
 
     public int getNumberOfRuns() {
         return numberOfRuns;
+    }
+
+    public void addResult(ScenarioResults result) {
+        addResult(result.getLeadTime(), result.getCycleTime(), (int)result.getTasksFinished());
     }
 }
