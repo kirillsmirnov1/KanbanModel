@@ -33,8 +33,10 @@ public class MainApp extends Application{
     // Отображать канбан-доску?
     private boolean showingKanbanBoard;
 
-    // Итератор сценариев
-    private Iterator<Scenario> scenarioIterator;
+    // Сценарии
+    private ArrayList<Scenario> scenarios;
+    // Текущий сценарий
+    private int currentScenarioNumber;
 
     // Текущая модель
     private Model    model;
@@ -62,6 +64,8 @@ public class MainApp extends Application{
     private Path scenariosPath;
     // Количество прогонов сценария
     private int scenarioRuns;
+    // Номер текущего прогона
+    private int currentRunNumber;
 
     public static void main(String[] args) {
         launch(args);
@@ -98,7 +102,9 @@ public class MainApp extends Application{
             scenarioComparisonStage.show();
         }
 
-        startScenario(scenarioIterator.next());
+        currentRunNumber = 0;
+        currentScenarioNumber = 0;
+        startScenario(scenarios.get(currentScenarioNumber));
     }
 
     // Команда на прекращение работы модели
@@ -144,15 +150,18 @@ public class MainApp extends Application{
 
         // Как завершилась одна модель − запускаем следующую
         model.currentModelFinishedProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue)
-                if(scenarioIterator.hasNext()){
-                    startScenario(scenarioIterator.next());
+            if(newValue){
+                currentRunNumber++;
+                if(currentRunNumber < scenarioRuns){
+                    startScenario(scenarios.get(currentScenarioNumber));
                 } else {
-                    settingsController.modelFinished();
-                    if(kanbanBoardStage != null)
-                        kanbanBoardStage.hide();
-                    scenarioComparisonStage.show();
+                    currentScenarioNumber++;
+                    currentRunNumber = 0;
+                    if(currentScenarioNumber < scenarios.size()){
+                        startScenario(scenarios.get(currentScenarioNumber));
+                    }
                 }
+            }
         });
     }
 
@@ -206,7 +215,7 @@ public class MainApp extends Application{
 
     // Чтение сценария из файла
     private void readScenarioJson() {
-        ArrayList<Scenario> scenarios = new ArrayList<>();
+        scenarios = new ArrayList<>();
         try {
             JSONObject obj = new JSONObject(new String(Files.readAllBytes(scenariosPath)));
             JSONArray  arr = new JSONArray(obj.get("scenarios").toString());
@@ -221,9 +230,6 @@ public class MainApp extends Application{
 
                 scenarios.add(sc);
             }
-
-            // Для работы со сценариями достаточно их итератора
-            scenarioIterator = scenarios.iterator();
 
         } catch (IOException e) {
             e.printStackTrace();
