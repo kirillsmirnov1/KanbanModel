@@ -298,6 +298,8 @@ public class MainApp extends Application{
             cfdStage.initOwner(settingsStage);
             cfdStage.setScene(new Scene(loader.load()));
 
+            cfdStage.getScene().getStylesheets().add(this.getClass().getResource("style.css").toExternalForm());
+
             cfdController = loader.getController();
 
         } catch (IOException e) {
