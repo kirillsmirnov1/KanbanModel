@@ -45,8 +45,6 @@ public class MainApp extends Application{
 
     // Соотрудники
     private Worker[] workers;
-    // Задачи
-    private Task[]   tasks;
 
     // Контроллеры форм
     private KanbanBoardController kanbanBoardController;
@@ -136,7 +134,6 @@ public class MainApp extends Application{
                           cfdController,
                           scenario,
                           workers);
-
 
         if(showingKanbanBoard) {
             // Даю доске ссылки на модель и главное приложение
@@ -359,4 +356,6 @@ public class MainApp extends Application{
     public int getScenarioRuns() { return scenarioRuns; }
 
     public void setScenarioRuns(int scenarioRuns) { this.scenarioRuns = scenarioRuns; }
+
+    public boolean isShowingKanbanBoard() { return showingKanbanBoard; }
 }
