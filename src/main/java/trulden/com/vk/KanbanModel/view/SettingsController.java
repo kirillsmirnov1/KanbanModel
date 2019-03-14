@@ -15,6 +15,8 @@ public class SettingsController {
     @FXML
     TextField numberOfDaysTextField;
     @FXML
+    TextField numberOfRunsTextField;
+    @FXML
     TextField numberOfWorkersTextField;
     @FXML
     TextField UISleepTimeTextField;
