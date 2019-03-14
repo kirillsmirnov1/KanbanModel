@@ -162,6 +162,8 @@ public class MainApp extends Application{
                     currentRunNumber = 0;
                     if(currentScenarioNumber < scenarios.size()){
                         startScenario(scenarios.get(currentScenarioNumber));
+                    } else {
+                        settingsController.modelFinished();
                     }
                 }
             }
