@@ -3,6 +3,7 @@
     "NUMBER_OF_WORKERS": 5,
     "UI_REFRESH_DELAY" : 5,
     "PRINTING_RESULTS_TO_CONSOLE" : false,
+    "scenarioRuns" : 10,
     "scenariosPath" : "src/main/resources/scenarios.json",
     "showBoard" : false,
     "kanbanBoardW" : 1290,

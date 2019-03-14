@@ -60,6 +60,8 @@ public class MainApp extends Application{
 
     // Путь к сценариям
     private Path scenariosPath;
+    // Количество прогонов сценария
+    private int scenarioRuns;
 
     public static void main(String[] args) {
         launch(args);
@@ -246,6 +248,7 @@ public class MainApp extends Application{
             Model.setNumberOfWorkers(obj.getInt("NUMBER_OF_WORKERS"));
             Model.setUiRefreshDelay(obj.getInt("UI_REFRESH_DELAY"));
             Model.setPrintingsResultsToConsole(obj.getBoolean("PRINTING_RESULTS_TO_CONSOLE"));
+            scenarioRuns = obj.getInt("scenarioRuns");
             scenariosPath = Paths.get(obj.getString("scenariosPath"));
             showingKanbanBoard = obj.getBoolean("showBoard");
             kanbanBoardW = obj.getInt("kanbanBoardW");
