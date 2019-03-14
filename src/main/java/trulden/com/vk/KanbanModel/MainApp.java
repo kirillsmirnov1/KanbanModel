@@ -355,4 +355,8 @@ public class MainApp extends Application{
     public String getScenariosPathAsString() { return scenariosPath.toString(); }
 
     public void setScenariosPath(String scenariosPath) { this.scenariosPath = Paths.get(scenariosPath); }
+
+    public int getScenarioRuns() { return scenarioRuns; }
+
+    public void setScenarioRuns(int scenarioRuns) { this.scenarioRuns = scenarioRuns; }
 }
