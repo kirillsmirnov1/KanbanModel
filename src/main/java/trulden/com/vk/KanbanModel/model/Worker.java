@@ -118,4 +118,8 @@ public class Worker {
     public String getName() {
         return name;
     }
+
+    public String getLastTask() {
+        return lastTask;
+    }
 }
