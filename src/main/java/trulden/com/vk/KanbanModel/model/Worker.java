@@ -58,9 +58,6 @@ public class Worker {
 
     private Worker(String name, int id, HashMap<StageType, Double> productivityAtStage){
 
-        if(productivityAtStage.size() != workStages.length)
-            throw new IllegalArgumentException("Неправильный размер массива");
-
         energy = new SimpleIntegerProperty(0);
 
         this.name = name;
