@@ -66,6 +66,11 @@ public class Worker {
     }
 
     public static Worker generateRandomWorker(String name) {
+
+        if(name == null || name.length() == 0){
+            throw new IllegalArgumentException("Worker's name must not be null or empty");
+        }
+
         HashMap<StageType, Double> randomProductivity = new HashMap<>();
         for (StageType stage : workStages) {
             randomProductivity.put(stage, new Random().nextDouble());
